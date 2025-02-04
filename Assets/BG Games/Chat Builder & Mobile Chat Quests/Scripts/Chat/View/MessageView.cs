@@ -1,0 +1,89 @@
+using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Buttons;
+using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System;
+using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
+{
+    public class MessageView : MonoBehaviour
+    {
+        [SerializeField] private string _freeImagText = "Free";
+        [Space] 
+        [SerializeField] private int _emojiTopPadding = -67;
+        [SerializeField] private int _emojiBottomPadding = -5;
+        [SerializeField] private float _emojiFontSize = 208.5f;
+        [SerializeField] private TextAlignmentOptions _emojiLayoutOptions;
+        [Space]
+        [SerializeField] private Image _background;
+        [SerializeField] private HorizontalOrVerticalLayoutGroup _messageLayout;
+        [SerializeField] private TMP_Text _messageText;
+        [SerializeField] private GameObject _imageHolder;
+        [SerializeField] private Image _image;
+        [SerializeField] private TMP_Text _imageCost;
+        [SerializeField] private GameObject _coinIcon;
+        
+        [SerializeField] private UIButton _openImageButton;
+        [SerializeField] private GameObject _frameBlur;
+        
+        [SerializeField] private ImageOnFullScreenAdjuster _adjuster;
+        
+        private CurrencyService _currencyService;
+        private int _imageCostValue;
+
+        public void Setup(string message, bool isBlur)
+        {
+            _messageText.text = message;
+
+            if (message.IsOneEmoji())
+            {
+                _messageLayout.padding.top = _emojiTopPadding;
+                _messageLayout.padding.bottom = _emojiBottomPadding;
+
+                _messageText.fontSize = _emojiFontSize;
+                _messageText.alignment = _emojiLayoutOptions;
+                _background.enabled = false;
+            }
+        }
+
+        public void Setup(Sprite spite, CurrencyService currencyService, bool isBlur, int imagePrice)
+        {
+            if (spite == null) return;
+            _currencyService = currencyService;
+
+            _imageHolder.SetActive(true);
+            _image.sprite = spite;
+            _adjuster.SetupProportions();
+
+            if (!isBlur)
+            {
+                _openImageButton.gameObject.SetActive(false);
+            }
+            
+            _imageCostValue = imagePrice;
+            
+            if (imagePrice == 0)
+            {
+                _coinIcon.gameObject.SetActive(false);
+                _imageCost.text = _freeImagText;
+            }
+            else
+            {
+                _imageCost.text = _imageCostValue.ToString();
+            }
+
+            _openImageButton.AssignAction(OpenImageClickHandler);
+        }
+
+        private void OpenImageClickHandler()
+        {
+            if (_currencyService.Pay(_imageCostValue))
+            {
+                _openImageButton.gameObject.SetActive(false);
+                if(_frameBlur)
+                    _frameBlur.SetActive(false);
+            }
+        }
+    }
+}
