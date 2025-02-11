@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 343c67e40b52d7445a07c0d5a8158935, type: 3}
+  m_Name: PruebaChat1
+  m_EditorClassIdentifier: 
+  ChatId: 74d31e71-4503-46c0-bea2-f2bc3e66ef12
+  StartPointLinkId: e82fe8d5-ff89-45b4-ba45-f07aa5af58d1
+  MessageSolutionInfos:
+  - LocalisationDictionary:
+    - Key: 0
+      Value: message1
+    AnswerInfos: []
+    Id: e82fe8d5-ff89-45b4-ba45-f07aa5af58d1
+    BlurType: 0
+    NextMessageId: eefbef48-d2e7-42e9-8eff-3b81d09bd673
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: message2
+    AnswerInfos:
+    - NextMessageId: 87fde9a7-accb-41bf-8a0e-5491f634506e
+      LocalisationDictionary:
+      - Key: 0
+        Value: answer2
+      Id: b69de39c-00e0-47f8-b792-6efb7f47b483
+      Free: 1
+    - NextMessageId: 08a5b134-0c2b-4d9e-8fb8-d10f4a2aa1a4
+      LocalisationDictionary:
+      - Key: 0
+        Value: answer1
+      Id: f6dfa9b9-d437-4003-bc14-7f49f629f373
+      Free: 1
+    Id: eefbef48-d2e7-42e9-8eff-3b81d09bd673
+    BlurType: 0
+    NextMessageId: 
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: message3
+    AnswerInfos: []
+    Id: 08a5b134-0c2b-4d9e-8fb8-d10f4a2aa1a4
+    BlurType: 0
+    NextMessageId: dde824ba-01df-4bbb-8a73-947d0f00351f
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: message4
+    AnswerInfos: []
+    Id: 87fde9a7-accb-41bf-8a0e-5491f634506e
+    BlurType: 0
+    NextMessageId: dde824ba-01df-4bbb-8a73-947d0f00351f
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: message5
+    AnswerInfos: []
+    Id: dde824ba-01df-4bbb-8a73-947d0f00351f
+    BlurType: 0
+    NextMessageId: 074a1aa2-84af-4846-bb47-1ea3aedb9be3
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}

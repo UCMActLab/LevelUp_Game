@@ -4,13 +4,27 @@ using UnityEngine;
 public class MessageParser : MonoBehaviour
 {
     [SerializeField]
-    ChatData chatData;
+    string chatData = "Assets/BG Games/Chat Builder & Mobile Chat Quests/ChatDataObjects/PruebaChat1.asset";
 
-    string sourceJSON = "messagesData";
+    [SerializeField]
+    string sourceJSON = "Assets/Resources/messagesData.json";
 
     void Awake()
     {
-        Resources.Load(sourceJSON);
-        chatData.MessageSolutionInfos[0].LocalisationDictionary[0].Value = ;
+        string json = System.IO.File.ReadAllText(sourceJSON);
+        JSONData data = JsonUtility.FromJson<JSONData>(json);
+
+        string chat = System.IO.File.ReadAllText(chatData);
+
+        for (int i = 0; i < data.numMessages; ++i)
+        {
+            chat = chat.Replace("message" + (i + 1), data.messages[i].value);
+        }
+        for (int i = 0; i < data.numAnswers; ++i)
+        {
+            chat = chat.Replace("answer" + (i + 1), data.answers[i].value);
+        }
+
+        System.IO.File.WriteAllText(chatData, chat);
     }
 }

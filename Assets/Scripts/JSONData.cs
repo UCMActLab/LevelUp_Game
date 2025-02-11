@@ -6,10 +6,22 @@ using UnityEngine;
 [Serializable]
 public class JSONData
 {
-    public messageData[] messageData;
+    public int numMessages;
+    public int numAnswers;
+    public messagesData[] messages;
+    public answerData[] answers;
 };
 
-public class messageData
+[Serializable]
+public class messagesData
+{
+    public string id;
+    public string value;
+    
+}
+
+[Serializable]
+public class answerData
 {
     public string id;
     public string value;
