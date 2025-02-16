@@ -1,6 +1,7 @@
 using System;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 {
@@ -32,6 +33,17 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             
             SpawnedMessage?.Invoke();
             
+            return newMessage;
+        }
+
+        public MessageView SpawnMessage(SenderType senderType, VideoClip video)
+        {
+            var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
+            var newMessage = Instantiate(prefab, _parent);
+            newMessage.Setup(video);
+
+            SpawnedMessage?.Invoke();
+
             return newMessage;
         }
     }

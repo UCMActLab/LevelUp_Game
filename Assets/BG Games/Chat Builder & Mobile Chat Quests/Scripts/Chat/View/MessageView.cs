@@ -4,6 +4,7 @@ using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
 {
@@ -20,6 +21,9 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         [SerializeField] private HorizontalOrVerticalLayoutGroup _messageLayout;
         [SerializeField] private TMP_Text _messageText;
         [SerializeField] private GameObject _imageHolder;
+        [SerializeField] private GameObject _videoHolder;
+        [SerializeField] private VideoPlayer _videoPlayer;
+        [SerializeField] private RawImage _rawImage;
         [SerializeField] private Image _image;
         [SerializeField] private TMP_Text _imageCost;
         [SerializeField] private GameObject _coinIcon;
@@ -75,6 +79,19 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
             }
 
             _openImageButton.AssignAction(OpenImageClickHandler);
+        }
+
+        public void Setup(VideoClip video)
+        {
+            if (video == null) return;
+
+            _videoHolder.SetActive(true);
+            RenderTexture tex = new RenderTexture((int)video.width, (int)video.height, 32);
+
+            _rawImage.texture = tex;
+            _videoPlayer.targetTexture = tex;
+
+            _videoPlayer.clip = video;
         }
 
         private void OpenImageClickHandler()

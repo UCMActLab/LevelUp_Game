@@ -87,11 +87,17 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         private void DisplayNextMessage()
         {
             if (_currentMessage != null)
-            {
-                if (_currentMessage.IsText)
+            { 
+                if(_currentMessage.VideoClip != null)
                 {
+                    _messageContainer.AddMessage(SenderType.Interlocutor, _currentMessage.VideoClip);
+                }
+                else if (_currentMessage.IsText)
+                {
+                   
                     _messageContainer.AddMessage(SenderType.Interlocutor, GetMessage(_currentMessage),
                         _currentMessage.BlurType);
+
                 }
                 else
                 {

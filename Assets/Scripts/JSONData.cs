@@ -9,9 +9,11 @@ public class JSONData
     public int numMessages;
     public int numAnswers;
     public int numPictures;
+    public int numVideos;
     public messagesData[] messages;
     public answerData[] answers;
     public pictureData[] pictures;
+    public videoData[] videos;
 };
 
 [Serializable]
@@ -31,6 +33,13 @@ public class answerData
 
 [Serializable]
 public class pictureData
+{
+    public string id;
+    public string path;
+}
+
+[Serializable]
+public class videoData
 {
     public string id;
     public string path;

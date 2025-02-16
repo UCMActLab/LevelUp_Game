@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.Data
 {
@@ -18,6 +19,6 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.Data
         public int ImageFormat;
         public int ImagePrice;
         public Texture2D Texture2D;
-
+        public VideoClip VideoClip;
     }
 }

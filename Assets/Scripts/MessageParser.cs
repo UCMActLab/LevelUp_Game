@@ -4,26 +4,33 @@ using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.EditorChatData;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Video;
 
 public class MessageParser : MonoBehaviour
 {
+    // Referencia al ConversationManager
     [SerializeField]
     ConversationManager chatManager;
 
+    // Referencia al chat "plantilla"
     [SerializeField]
     ChatData sourceChat;
 
+    // Referencia al JSON con la info real de los mensajes
     [SerializeField]
     TextAsset sourceJSON;
 
 
     void Awake()
     {
+        // Leemos y serializamos la informacion del JSON
         string json = System.IO.File.ReadAllText("Assets/Resources/" + sourceJSON.name + ".json");
         JSONData data = JsonUtility.FromJson<JSONData>(json);
 
+        // Recorremos el chat plantilla sustituyendo los placeholders con la informacion real del json
         for (int i = 0, j = 0; i < sourceChat.MessageSolutionInfos.Length; ++i)
         {
+            // Sustituimos los mensajes de texto (formato original: message1 -> "hola")
             for(int k = 0; k < data.numMessages; ++k)
             {
                 if (sourceChat.MessageSolutionInfos[i].LocalisationDictionary[0].Value == data.messages[k].id)
@@ -31,6 +38,7 @@ public class MessageParser : MonoBehaviour
                     sourceChat.MessageSolutionInfos[i].LocalisationDictionary[0].Value = data.messages[k].value;
                 }
             }
+            // Sustituimos las respuestas (formato original: answer1 -> "hola")
             for (int k = 0; k < sourceChat.MessageSolutionInfos[i].AnswerInfos.Length; ++k)
             {
                 for (int l = 0; l < data.numAnswers; ++l)
@@ -41,19 +49,23 @@ public class MessageParser : MonoBehaviour
                     }
                 }
             }
+            // Sustituimos los videos (formato original: video1 -> (cargamos el VideoClip gracias al path del json))
+            for (int k = 0; k < data.numVideos; ++k)
+            {
+                if (sourceChat.MessageSolutionInfos[i].LocalisationDictionary[0].Value == data.videos[k].id)
+                {
+                    sourceChat.MessageSolutionInfos[i].VideoClip = Resources.Load(data.videos[k].path) as VideoClip;
+                }
+            }
+            // Sustituimos las imagenes (formato original: picture1 -> (cargamos la imagen gracias al path del json))
             if (sourceChat.MessageSolutionInfos[i].Texture2D != null)
             {
-                string filename = data.pictures[j].path;
-                var rawData = System.IO.File.ReadAllBytes(filename);
-                Texture2D tex = new Texture2D(2, 2); // Create an empty Texture; size doesn't matter (she said)
-                tex.LoadImage(rawData);
-                sourceChat.MessageSolutionInfos[i].Texture2D = tex;
+                sourceChat.MessageSolutionInfos[i].Texture2D = Resources.Load(data.pictures[j].path) as Texture2D;
                 j++;
             }
         }
 
-
+        // Asignamos al ConversationManager el chat ya completo
         chatManager._chatData = sourceChat;
-
     }
 }
