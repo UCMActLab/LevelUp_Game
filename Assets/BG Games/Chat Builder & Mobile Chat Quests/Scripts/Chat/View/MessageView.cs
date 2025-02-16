@@ -59,6 +59,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
             if (!isBlur)
             {
                 _openImageButton.gameObject.SetActive(false);
+                _frameBlur.SetActive(false);
             }
             
             _imageCostValue = imagePrice;

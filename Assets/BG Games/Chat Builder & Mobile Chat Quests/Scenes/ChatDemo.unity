@@ -763,8 +763,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b1c4dff25e3be34fbe6543a20de947e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chatData: Assets/BG Games/Chat Builder & Mobile Chat Quests/ChatDataObjects/PruebaChat1.asset
-  sourceJSON: Assets/Resources/messagesData.json
+  chatManager: {fileID: 2063202180}
+  sourceChat: {fileID: 11400000, guid: 11fd89714d95fb54ca0c3ea3ba3a619e, type: 2}
+  sourceJSON: {fileID: 4900000, guid: 0650696961d7dec468085346054da041, type: 3}
 --- !u!1 &590518243
 GameObject:
   m_ObjectHideFlags: 0
@@ -2583,7 +2584,7 @@ MonoBehaviour:
   _messageWritingAnimator: {fileID: 9036100761903122668}
   _messageContainer: {fileID: 1172878388}
   _languageSelectionPanel: {fileID: 100253072}
-  _chatData: {fileID: 11400000, guid: 19e25145c2119ae459445186a466987a, type: 2}
+  _chatData: {fileID: 0}
   _responseTimeInSeconds: 1.5
 --- !u!4 &2063202181
 Transform:

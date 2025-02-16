@@ -17,7 +17,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         [SerializeField] private MessageWritingAnimator _messageWritingAnimator;
         [SerializeField] private MessageContainer _messageContainer;
         [SerializeField] private LanguageSelectionPanel _languageSelectionPanel;
-        [SerializeField] private ChatData _chatData;
+        [SerializeField] public ChatData _chatData;
 
         [Space] [Range(0.2f, 10f)] [SerializeField]
         private float _responseTimeInSeconds;
