@@ -92,6 +92,10 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 {
                     _messageContainer.AddMessage(SenderType.Interlocutor, _currentMessage.VideoClip);
                 }
+                else if (_currentMessage.AudioClip != null)
+                {
+                    _messageContainer.AddMessage(SenderType.Interlocutor, _currentMessage.AudioClip);
+                }
                 else if (_currentMessage.IsText)
                 {
                    

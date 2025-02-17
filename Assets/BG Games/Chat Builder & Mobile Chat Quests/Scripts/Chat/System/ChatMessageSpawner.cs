@@ -46,6 +46,17 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
             return newMessage;
         }
+
+        public MessageView SpawnMessage(SenderType senderType, AudioClip audio)
+        {
+            var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
+            var newMessage = Instantiate(prefab, _parent);
+            newMessage.Setup(audio);
+
+            SpawnedMessage?.Invoke();
+
+            return newMessage;
+        }
     }
 
     public enum SenderType

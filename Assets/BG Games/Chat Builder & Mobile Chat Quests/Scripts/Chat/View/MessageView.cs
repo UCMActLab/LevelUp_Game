@@ -22,8 +22,10 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         [SerializeField] private TMP_Text _messageText;
         [SerializeField] private GameObject _imageHolder;
         [SerializeField] private GameObject _videoHolder;
+        [SerializeField] private GameObject _audioHolder;
         [SerializeField] private VideoPlayer _videoPlayer;
         [SerializeField] private RawImage _rawImage;
+        [SerializeField] private AudioSource _audioSource;
         [SerializeField] private Image _image;
         [SerializeField] private TMP_Text _imageCost;
         [SerializeField] private GameObject _coinIcon;
@@ -92,6 +94,15 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
             _videoPlayer.targetTexture = tex;
 
             _videoPlayer.clip = video;
+        }
+
+        public void Setup(AudioClip audio)
+        {
+            if (audio == null) return;
+
+            _audioHolder.SetActive(true);
+
+            _audioSource.clip = audio;
         }
 
         private void OpenImageClickHandler()

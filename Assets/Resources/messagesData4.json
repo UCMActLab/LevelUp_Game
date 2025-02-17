@@ -1,35 +1,36 @@
 {
     "numMessages":2,
     "numAnswers":2,
-    "numPictures":1,
+    "numPictures":0,
     "numVideos":0,
-    "numAudios":0,
+    "numAudios": 1,
     "messages":[
         {
             "id": "message1",
-            "value": "hola Rome mira mi gato"
+            "value": "hola Rome escucha esto"
         },
         {
             "id": "message2",
-            "value": "a que esta guapo"
+            "value": "Estas de acuerdo?"
         }
     ],
     "answers":[
         {
             "id": "answer1",
-            "value": "si"
+            "value": "Por supuesto"
         },
         {
             "id": "answer2",
-            "value": "la verdad que si"
+            "value": "Totalmente"
         }
     ],
-    "pictures":[
+    "pictures":[],
+    "videos":[],
+    "audios": [
         {
-            "id": "picture1",
-            "path": "picture2"
+            "id": "audio1",
+            "path": "audio1"
         }
-    ],
-    "videos": [],
-    "audios": []
+    ]
+    
 }

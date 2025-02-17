@@ -57,6 +57,13 @@ public class MessageParser : MonoBehaviour
                     sourceChat.MessageSolutionInfos[i].VideoClip = Resources.Load(data.videos[k].path) as VideoClip;
                 }
             }
+            for (int k = 0; k < data.numAudios; ++k)
+            {
+                if (sourceChat.MessageSolutionInfos[i].LocalisationDictionary[0].Value == data.audios[k].id)
+                {
+                    sourceChat.MessageSolutionInfos[i].AudioClip = Resources.Load(data.audios[k].path) as AudioClip;
+                }
+            }
             // Sustituimos las imagenes (formato original: picture1 -> (cargamos la imagen gracias al path del json))
             if (sourceChat.MessageSolutionInfos[i].Texture2D != null)
             {

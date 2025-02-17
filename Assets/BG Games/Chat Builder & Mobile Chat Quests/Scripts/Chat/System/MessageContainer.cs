@@ -28,5 +28,11 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             var messageView = _messageSpawner.SpawnMessage(interlocutor, messageVideo);
             _messageViews.Add(messageView);
         }
+
+        public void AddMessage(SenderType interlocutor, AudioClip messageAudio)
+        {
+            var messageView = _messageSpawner.SpawnMessage(interlocutor, messageAudio);
+            _messageViews.Add(messageView);
+        }
     }
 }
