@@ -28,7 +28,7 @@ public class MessageParser : MonoBehaviour
         JSONData data = JsonUtility.FromJson<JSONData>(json);
 
         // Recorremos el chat plantilla sustituyendo los placeholders con la informacion real del json
-        for (int i = 0, j = 0; i < sourceChat.MessageSolutionInfos.Length; ++i)
+        for (int i = 0; i < sourceChat.MessageSolutionInfos.Length; ++i)
         {
             // Sustituimos los mensajes de texto (formato original: message1 -> "hola")
             for(int k = 0; k < data.numMessages; ++k)
@@ -56,8 +56,8 @@ public class MessageParser : MonoBehaviour
             {
                 if (sourceChat.MessageSolutionInfos[i].LocalisationDictionary[0].Value == data.pictures[k].id)
                 {
-                    sourceChat.MessageSolutionInfos[i].Texture2D = Resources.Load(data.pictures[j].path) as Texture2D;
-                    j++;
+                    sourceChat.MessageSolutionInfos[i].Texture2D = Resources.Load(data.pictures[k].path) as Texture2D;
+                    break;
                 }
             }
             // Sustituimos los videos (formato original: video1 -> (cargamos el VideoClip gracias al path del json))
