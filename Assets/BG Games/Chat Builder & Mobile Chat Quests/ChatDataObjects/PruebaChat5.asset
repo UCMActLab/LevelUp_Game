@@ -1,0 +1,221 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 343c67e40b52d7445a07c0d5a8158935, type: 3}
+  m_Name: PruebaChat5
+  m_EditorClassIdentifier: 
+  ChatId: 6d57083f-7461-4921-ae9c-ac314d62942a
+  StartPointLinkId: 3a47e727-38e8-45d6-a677-18ca17e1863f
+  MessageSolutionInfos:
+  - LocalisationDictionary:
+    - Key: 0
+      Value: message1
+    AnswerInfos:
+    - NextMessageId: bc722c61-2fc6-458f-b314-a0edd5539fed
+      LocalisationDictionary:
+      - Key: 0
+        Value: answer3
+      Id: 74776e67-5f9d-4c79-a155-c9fba0b45714
+      Free: 1
+    - NextMessageId: f60e084f-e2f9-418d-a068-21e47f290f32
+      LocalisationDictionary:
+      - Key: 0
+        Value: answer2
+      Id: f2809216-4222-49cc-bb47-256dccaaca29
+      Free: 1
+    - NextMessageId: 69f7609a-e820-4ba4-be2f-92e3df6ca4bb
+      LocalisationDictionary:
+      - Key: 0
+        Value: answer1
+      Id: 0fd801de-0df3-4b05-982a-376244c203ff
+      Free: 1
+    Id: 3a47e727-38e8-45d6-a677-18ca17e1863f
+    BlurType: 0
+    NextMessageId: 
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+    VideoClip: {fileID: 0}
+    AudioClip: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: message2
+    AnswerInfos:
+    - NextMessageId: 6b0f235e-d81b-46a9-8910-1d8e0b334021
+      LocalisationDictionary:
+      - Key: 0
+        Value: answer5
+      Id: 18bc1498-7196-4143-8007-1901ad2f691f
+      Free: 1
+    - NextMessageId: 446a13a6-696a-4011-9b55-791dab7229cd
+      LocalisationDictionary:
+      - Key: 0
+        Value: answer4
+      Id: 815ef817-5e96-45b7-b2eb-c38523ba302f
+      Free: 1
+    Id: 69f7609a-e820-4ba4-be2f-92e3df6ca4bb
+    BlurType: 0
+    NextMessageId: 
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+    VideoClip: {fileID: 0}
+    AudioClip: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: picture1
+    AnswerInfos:
+    - NextMessageId: 7f1537de-4c06-4631-8485-102e5002b28f
+      LocalisationDictionary:
+      - Key: 0
+        Value: answer7
+      Id: 2d36c69e-f012-4e48-946f-3634d7f69502
+      Free: 1
+    - NextMessageId: 8a6914d4-7359-4f3c-8b79-bd5da2877488
+      LocalisationDictionary:
+      - Key: 0
+        Value: answer6
+      Id: 8be8978c-4d74-40bf-91a9-1bd23566d910
+      Free: 1
+    Id: f60e084f-e2f9-418d-a068-21e47f290f32
+    BlurType: 0
+    NextMessageId: 
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+    VideoClip: {fileID: 0}
+    AudioClip: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: picture2
+    AnswerInfos:
+    - NextMessageId: 6e931807-cf7e-4e6f-beca-8aa38385d69b
+      LocalisationDictionary:
+      - Key: 0
+        Value: answer9
+      Id: 9b45fa60-1d46-4b95-ab08-e0800c5ab1ed
+      Free: 1
+    - NextMessageId: 2d825148-249c-4873-9acc-a56efc88856a
+      LocalisationDictionary:
+      - Key: 0
+        Value: answer8
+      Id: 68ef56ae-0b08-4f17-95f7-062fba7221bf
+      Free: 1
+    Id: bc722c61-2fc6-458f-b314-a0edd5539fed
+    BlurType: 0
+    NextMessageId: 
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+    VideoClip: {fileID: 0}
+    AudioClip: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: audio1
+    AnswerInfos: []
+    Id: 446a13a6-696a-4011-9b55-791dab7229cd
+    BlurType: 0
+    NextMessageId: 074a1aa2-84af-4846-bb47-1ea3aedb9be3
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+    VideoClip: {fileID: 0}
+    AudioClip: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: video1
+    AnswerInfos: []
+    Id: 6b0f235e-d81b-46a9-8910-1d8e0b334021
+    BlurType: 0
+    NextMessageId: 074a1aa2-84af-4846-bb47-1ea3aedb9be3
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+    VideoClip: {fileID: 0}
+    AudioClip: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: video2
+    AnswerInfos: []
+    Id: 8a6914d4-7359-4f3c-8b79-bd5da2877488
+    BlurType: 0
+    NextMessageId: 074a1aa2-84af-4846-bb47-1ea3aedb9be3
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+    VideoClip: {fileID: 0}
+    AudioClip: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: picture3
+    AnswerInfos: []
+    Id: 7f1537de-4c06-4631-8485-102e5002b28f
+    BlurType: 0
+    NextMessageId: 074a1aa2-84af-4846-bb47-1ea3aedb9be3
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+    VideoClip: {fileID: 0}
+    AudioClip: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: audio2
+    AnswerInfos: []
+    Id: 2d825148-249c-4873-9acc-a56efc88856a
+    BlurType: 0
+    NextMessageId: 074a1aa2-84af-4846-bb47-1ea3aedb9be3
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+    VideoClip: {fileID: 0}
+    AudioClip: {fileID: 0}
+  - LocalisationDictionary:
+    - Key: 0
+      Value: video3
+    AnswerInfos: []
+    Id: 6e931807-cf7e-4e6f-beca-8aa38385d69b
+    BlurType: 0
+    NextMessageId: 074a1aa2-84af-4846-bb47-1ea3aedb9be3
+    IsText: 1
+    IsImage: 0
+    ImageId: 
+    ImageFormat: 0
+    ImagePrice: 0
+    Texture2D: {fileID: 0}
+    VideoClip: {fileID: 0}
+    AudioClip: {fileID: 0}
