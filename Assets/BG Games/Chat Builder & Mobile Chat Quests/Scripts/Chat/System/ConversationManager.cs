@@ -96,17 +96,17 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 {
                     _messageContainer.AddMessage(SenderType.Interlocutor, _currentMessage.AudioClip);
                 }
-                else if (_currentMessage.IsText)
+                else if (_currentMessage.Texture2D != null)
+                {
+                    _messageContainer.AddMessage(SenderType.Interlocutor, GetSprite(_currentMessage),
+                        _currentMessage.ImagePrice, _currentMessage.BlurType);
+                }
+                else
                 {
                    
                     _messageContainer.AddMessage(SenderType.Interlocutor, GetMessage(_currentMessage),
                         _currentMessage.BlurType);
 
-                }
-                else
-                {
-                    _messageContainer.AddMessage(SenderType.Interlocutor, GetSprite(_currentMessage),
-                        _currentMessage.ImagePrice, _currentMessage.BlurType);
                 }
             }
         }

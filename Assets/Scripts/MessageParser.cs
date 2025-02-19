@@ -36,6 +36,7 @@ public class MessageParser : MonoBehaviour
                 if (sourceChat.MessageSolutionInfos[i].LocalisationDictionary[0].Value == data.messages[k].id)
                 {
                     sourceChat.MessageSolutionInfos[i].LocalisationDictionary[0].Value = data.messages[k].value;
+                    break;
                 }
             }
             // Sustituimos las respuestas (formato original: answer1 -> "hola")
@@ -46,7 +47,17 @@ public class MessageParser : MonoBehaviour
                     if(sourceChat.MessageSolutionInfos[i].AnswerInfos[k].LocalisationDictionary[0].Value == data.answers[l].id)
                     {
                         sourceChat.MessageSolutionInfos[i].AnswerInfos[k].LocalisationDictionary[0].Value = data.answers[l].value;
+                        break;
                     }
+                }
+            }
+            // Sustituimos las imagenes (formato original: picture1 -> (cargamos la imagen gracias al path del json))
+            for (int k = 0; k < data.numPictures; ++k)
+            {
+                if (sourceChat.MessageSolutionInfos[i].LocalisationDictionary[0].Value == data.pictures[k].id)
+                {
+                    sourceChat.MessageSolutionInfos[i].Texture2D = Resources.Load(data.pictures[j].path) as Texture2D;
+                    j++;
                 }
             }
             // Sustituimos los videos (formato original: video1 -> (cargamos el VideoClip gracias al path del json))
@@ -55,20 +66,17 @@ public class MessageParser : MonoBehaviour
                 if (sourceChat.MessageSolutionInfos[i].LocalisationDictionary[0].Value == data.videos[k].id)
                 {
                     sourceChat.MessageSolutionInfos[i].VideoClip = Resources.Load(data.videos[k].path) as VideoClip;
+                    break;                
                 }
             }
+            // Sustituimos los audios (formato original: video1 -> (cargamos el audio gracias al path del json))
             for (int k = 0; k < data.numAudios; ++k)
             {
                 if (sourceChat.MessageSolutionInfos[i].LocalisationDictionary[0].Value == data.audios[k].id)
                 {
                     sourceChat.MessageSolutionInfos[i].AudioClip = Resources.Load(data.audios[k].path) as AudioClip;
+                    break;
                 }
-            }
-            // Sustituimos las imagenes (formato original: picture1 -> (cargamos la imagen gracias al path del json))
-            if (sourceChat.MessageSolutionInfos[i].Texture2D != null)
-            {
-                sourceChat.MessageSolutionInfos[i].Texture2D = Resources.Load(data.pictures[j].path) as Texture2D;
-                j++;
             }
         }
 
