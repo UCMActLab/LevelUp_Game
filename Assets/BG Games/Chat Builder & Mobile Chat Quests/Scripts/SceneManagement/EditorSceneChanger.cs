@@ -14,5 +14,10 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.SceneManagement
       {
          SceneManager.LoadScene(SceneManager.GetActiveScene().name);
       }
-   }
+
+        public void ReturnToMenu()
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+    }
 }

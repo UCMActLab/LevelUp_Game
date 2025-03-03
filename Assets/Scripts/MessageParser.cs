@@ -20,7 +20,6 @@ public class MessageParser : MonoBehaviour
     [SerializeField]
     TextAsset sourceJSON;
 
-
     void Awake()
     {
         // Leemos y serializamos la informacion del JSON

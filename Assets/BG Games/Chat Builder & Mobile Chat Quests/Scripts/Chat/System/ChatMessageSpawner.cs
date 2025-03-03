@@ -17,12 +17,16 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         public MessageView SpawnMessage(SenderType senderType, string message, bool isBlur)
         {
             var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
-            var newMessage = Instantiate(prefab, _parent);
-            newMessage.Setup(message, isBlur);
+            if(_parent != null)
+            {
+                var newMessage = Instantiate(prefab, _parent);
+                newMessage.Setup(message, isBlur);
             
-            SpawnedMessage?.Invoke();
+                SpawnedMessage?.Invoke();
             
-            return newMessage;
+                return newMessage;
+            }
+            return null;
         }
     
         public MessageView SpawnMessage(SenderType senderType, Sprite sprite, bool isBlur, int imagePrice)

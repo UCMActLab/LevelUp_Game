@@ -29,11 +29,14 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         private void SpawnDialogueAnswerButton(AnswerInfo answerInfo, LanguageType languageType)
         {
             var prefab = DefiningResponseType(answerInfo);
-            var answer = Instantiate(prefab, _parent);
+            if(_parent != null)
+            {
+                var answer = Instantiate(prefab, _parent);
 
-            answer.AnswerClicked += OnAnswerClicked;
-            answer.Setup(answerInfo, answerInfo.Free ? 0 : _currencyService.GetAnswerCost(), languageType);
-            _dialogueAnswerButtons.Add(answer);
+                answer.AnswerClicked += OnAnswerClicked;
+                answer.Setup(answerInfo, answerInfo.Free ? 0 : _currencyService.GetAnswerCost(), languageType);
+                _dialogueAnswerButtons.Add(answer);
+            }
         }
 
         private DialogueAnswerButton DefiningResponseType(AnswerInfo answerInfo)

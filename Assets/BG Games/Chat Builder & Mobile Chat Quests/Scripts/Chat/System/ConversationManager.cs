@@ -103,10 +103,8 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 }
                 else
                 {
-                   
                     _messageContainer.AddMessage(SenderType.Interlocutor, GetMessage(_currentMessage),
                         _currentMessage.BlurType);
-
                 }
             }
         }
@@ -130,9 +128,11 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         private async Task StartPrintingSimulation()
         {
-            _messageWritingAnimator.Enable();
+            if (_messageWritingAnimator != null)
+                _messageWritingAnimator.Enable();
             await Task.Delay((int)(_responseTimeInSeconds * _secondsMultiplier));
-            _messageWritingAnimator.Disable();
+            if(_messageWritingAnimator != null)
+                _messageWritingAnimator.Disable();
         }
 
         private string GetMessage(MessageSolution messageSolution)
