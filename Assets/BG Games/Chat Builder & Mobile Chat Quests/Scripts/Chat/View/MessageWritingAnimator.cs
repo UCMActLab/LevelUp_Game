@@ -30,8 +30,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
 
         public void Disable()
         {
-            if(gameObject != null)
-                gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
 
         private void Update()

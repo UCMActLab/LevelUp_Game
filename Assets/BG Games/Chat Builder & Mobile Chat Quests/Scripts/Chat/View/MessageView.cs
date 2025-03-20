@@ -27,18 +27,10 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         [SerializeField] private RawImage _rawImage;
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private Image _image;
-        [SerializeField] private TMP_Text _imageCost;
-        [SerializeField] private GameObject _coinIcon;
-        
-        [SerializeField] private UIButton _openImageButton;
-        [SerializeField] private GameObject _frameBlur;
-        
         [SerializeField] private ImageOnFullScreenAdjuster _adjuster;
         
-        private CurrencyService _currencyService;
-        private int _imageCostValue;
 
-        public void Setup(string message, bool isBlur)
+        public void Setup(string message)
         {
             _messageText.text = message;
 
@@ -53,34 +45,13 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
             }
         }
 
-        public void Setup(Sprite spite, CurrencyService currencyService, bool isBlur, int imagePrice)
+        public void Setup(Sprite spite)
         {
             if (spite == null) return;
-            _currencyService = currencyService;
 
             _imageHolder.SetActive(true);
             _image.sprite = spite;
             _adjuster.SetupProportions();
-
-            if (!isBlur)
-            {
-                _openImageButton.gameObject.SetActive(false);
-                _frameBlur.SetActive(false);
-            }
-            
-            _imageCostValue = imagePrice;
-            
-            if (imagePrice == 0)
-            {
-                _coinIcon.gameObject.SetActive(false);
-                _imageCost.text = _freeImagText;
-            }
-            else
-            {
-                _imageCost.text = _imageCostValue.ToString();
-            }
-
-            _openImageButton.AssignAction(OpenImageClickHandler);
         }
 
         public void Setup(VideoClip video)
@@ -103,16 +74,6 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
             _audioHolder.SetActive(true);
 
             _audioSource.clip = audio;
-        }
-
-        private void OpenImageClickHandler()
-        {
-            if (_currencyService.Pay(_imageCostValue))
-            {
-                _openImageButton.gameObject.SetActive(false);
-                if(_frameBlur)
-                    _frameBlur.SetActive(false);
-            }
         }
     }
 }

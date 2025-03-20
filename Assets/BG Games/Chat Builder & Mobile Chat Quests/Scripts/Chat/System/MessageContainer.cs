@@ -11,15 +11,15 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         private List<MessageView> _messageViews = new();
 
-        public void AddMessage(SenderType interlocutor, string messageText, bool isBlur=false)
+        public void AddMessage(SenderType interlocutor, string messageText)
         {
-            var messageView = _messageSpawner.SpawnMessage(interlocutor, messageText, isBlur);
+            var messageView = _messageSpawner.SpawnMessage(interlocutor, messageText);
             _messageViews.Add(messageView);
         }
     
-        public void AddMessage(SenderType interlocutor, Sprite messageSprite, int imagePrice, bool isBlur=false)
+        public void AddMessage(SenderType interlocutor, Sprite messageSprite)
         {
-            var messageView = _messageSpawner.SpawnMessage(interlocutor, messageSprite, isBlur, imagePrice);
+            var messageView = _messageSpawner.SpawnMessage(interlocutor, messageSprite);
             _messageViews.Add(messageView);
         }
 

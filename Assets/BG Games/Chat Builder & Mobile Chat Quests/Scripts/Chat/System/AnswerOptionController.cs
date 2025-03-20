@@ -2,55 +2,44 @@ using System;
 using System.Collections.Generic;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.Data;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
-using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Localisation.SO;
+using Ink.Runtime;
 using UnityEngine;
 
 namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 {
     public class AnswerOptionController : MonoBehaviour
     {
-        [SerializeField] private CurrencyService _currencyService;
         [SerializeField] private DialogueAnswerButton _dialogueAnswerButtonPrefab;
-        [SerializeField] private DialogueAnswerButton _paidDialogueAnswerButtonPrefab;
         [SerializeField] private Transform _parent;
 
         private List<DialogueAnswerButton> _dialogueAnswerButtons=new();
 
-        public event Action<string> SelectedAnswer;
+        public event Action<Choice> SelectedAnswer;
 
-        public void DisplayAnswers(AnswerInfo[] answerInfos, LanguageType languageType)
+        public void DisplayAnswers(List<Choice> answers)
         {
-            foreach (var info in answerInfos)
+            foreach (var info in answers)
             {
-                SpawnDialogueAnswerButton(info, languageType);
+                SpawnDialogueAnswerButton(info);
             }
         }
 
-        private void SpawnDialogueAnswerButton(AnswerInfo answerInfo, LanguageType languageType)
+        private void SpawnDialogueAnswerButton(Choice answerChoice)
         {
-            var prefab = DefiningResponseType(answerInfo);
             if(_parent != null)
             {
-                var answer = Instantiate(prefab, _parent);
+                var answer = Instantiate(_dialogueAnswerButtonPrefab, _parent);
 
                 answer.AnswerClicked += OnAnswerClicked;
-                answer.Setup(answerInfo, answerInfo.Free ? 0 : _currencyService.GetAnswerCost(), languageType);
+                answer.Setup(answerChoice);
                 _dialogueAnswerButtons.Add(answer);
             }
         }
 
-        private DialogueAnswerButton DefiningResponseType(AnswerInfo answerInfo)
+        private void OnAnswerClicked(Choice answer)
         {
-            return answerInfo.Free ? _dialogueAnswerButtonPrefab : _paidDialogueAnswerButtonPrefab;
-        }
-
-        private void OnAnswerClicked(string answerId, int cost)
-        {
-            if (_currencyService.Pay(cost))
-            {
-                SelectedAnswer?.Invoke(answerId);
-                DestroyAnswers();
-            }
+            SelectedAnswer?.Invoke(answer);
+            DestroyAnswers();
         }
 
         private void DestroyAnswers()
