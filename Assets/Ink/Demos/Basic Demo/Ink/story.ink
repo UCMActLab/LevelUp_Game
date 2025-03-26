@@ -17,7 +17,7 @@ Sabías que el cambio climático es un invento de los aliens?
             Acaso no te fías de tu viejo amigo?
             Menudo aguafiestas, seguro que eres parte del nuevo orden mundial
 *   Eso es imposible
-    No no, puedo demostrarlo, mira esta foto #image:image4
+    No no, puedo demostrarlo, mira esta foto #image:image1
     * *     Me has convencido
             ~credulity++
             Genial, sabía que acabarias entrando en razón
