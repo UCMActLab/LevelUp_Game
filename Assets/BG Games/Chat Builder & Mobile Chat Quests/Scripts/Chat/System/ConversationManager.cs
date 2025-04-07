@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils;
 using Ink.Runtime;
 using UnityEngine;
 using UnityEngine.Video;
+using static System.Net.WebRequestMethods;
 
 namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 {
@@ -28,6 +30,9 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         private readonly int _secondsMultiplier = 1000;
         private MessageSolution _currentMessage;
 
+        private bool _isWriting = false;
+        private float _currentTime = 0;
+
         private void Start() => Init();
 
         private void OnDisable() => _answerOptionController.SelectedAnswer -= SubmitAnswer;
@@ -41,10 +46,10 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         {
             story = new Story(inkJSONAsset.text);
             _answerOptionController.SelectedAnswer += SubmitAnswer;
-            UpdateDialogueView();
+            StartCoroutine(UpdateDialogueView());
         }
 
-        private async void UpdateDialogueView()
+        IEnumerator UpdateDialogueView()
         {
             while (story.canContinue)
             {
@@ -56,7 +61,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 _currentMessage = new MessageSolution();
                 _currentMessage.text = text;
 
-                await StartPrintingSimulation();
+                yield return StartCoroutine(StartPrintingSimulation());
                 DisplayNextMessage();
 
                 handleTags();
@@ -84,10 +89,13 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 string key = splitTag[0].Trim();
                 string value = splitTag[1].Trim();
 
-                if(key == "image")
+                if (key == "image")
                     _currentMessage.Texture2D = Resources.Load(value) as Texture2D;
                 else if (key == "video")
-                    _currentMessage.VideoClip = Resources.Load(value) as VideoClip;
+                {
+                    Debug.Log(value);
+                    _currentMessage.VideoURL = "https://drive.google.com/uc?export=download&id=" + value;
+                }
                 else if (key == "audio")
                     _currentMessage.AudioClip = Resources.Load(value) as AudioClip;
 
@@ -99,9 +107,9 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         {
             if (_currentMessage != null)
             { 
-                if(_currentMessage.VideoClip != null)
+                if(_currentMessage.VideoURL != null)
                 {
-                    _messageContainer.AddMessage(SenderType.Interlocutor, _currentMessage.VideoClip);
+                    _messageContainer.AddMessageV(SenderType.Interlocutor, _currentMessage.VideoURL);
                 }
                 else if (_currentMessage.AudioClip != null)
                 {
@@ -120,7 +128,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         private void DisplayAnswers(List<Choice> answers)
         {
-             _answerOptionController.DisplayAnswers(answers);
+            _answerOptionController.DisplayAnswers(answers);
         }
 
         private void SubmitAnswer(Choice answerChoice)
@@ -128,16 +136,14 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             _messageContainer.AddMessage(SenderType.Player, answerChoice.text);
             story.ChooseChoiceIndex(answerChoice.index);
             story.Continue();
-            UpdateDialogueView();
+            StartCoroutine(UpdateDialogueView());
         }
 
-        private async Task StartPrintingSimulation()
+        IEnumerator StartPrintingSimulation()
         {
-            if (_messageWritingAnimator != null)
-                _messageWritingAnimator.Enable();
-            await Task.Delay((int)(_responseTimeInSeconds * _secondsMultiplier));
-            if(_messageWritingAnimator != null)
-                _messageWritingAnimator.Disable();
+            _messageWritingAnimator.Enable();
+            yield return new WaitForSeconds(_responseTimeInSeconds);
+            _messageWritingAnimator.Disable();
         }
 
         private Sprite GetSprite(MessageSolution messageSolution)

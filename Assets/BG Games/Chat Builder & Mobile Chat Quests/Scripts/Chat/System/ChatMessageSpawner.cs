@@ -43,13 +43,13 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             return null;
         }
 
-        public MessageView SpawnMessage(SenderType senderType, VideoClip video)
+        public MessageView SpawnMessageV(SenderType senderType, string video)
         {
             var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
             if (_parent != null)
             {
                 var newMessage = Instantiate(prefab, _parent);
-                newMessage.Setup(video);
+                newMessage.SetupV(video);
 
                 SpawnedMessage?.Invoke();
 

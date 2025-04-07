@@ -54,17 +54,17 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
             _adjuster.SetupProportions();
         }
 
-        public void Setup(VideoClip video)
+        public void SetupV(string video)
         {
             if (video == null) return;
 
             _videoHolder.SetActive(true);
-            RenderTexture tex = new RenderTexture((int)video.width, (int)video.height, 32);
+            RenderTexture tex = new RenderTexture(1080, 1080, 32);
 
             _rawImage.texture = tex;
             _videoPlayer.targetTexture = tex;
 
-            _videoPlayer.clip = video;
+            _videoPlayer.url = video;
         }
 
         public void Setup(AudioClip audio)
