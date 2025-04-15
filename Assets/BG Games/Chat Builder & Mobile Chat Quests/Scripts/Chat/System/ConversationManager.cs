@@ -6,6 +6,7 @@ using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.Data;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils;
 using Ink.Runtime;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Video;
 using static System.Net.WebRequestMethods;
@@ -30,15 +31,13 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         private readonly int _secondsMultiplier = 1000;
         private MessageSolution _currentMessage;
 
-        private bool _isWriting = false;
-        private float _currentTime = 0;
-
         private void Start() => Init();
 
         private void OnDisable() => _answerOptionController.SelectedAnswer -= SubmitAnswer;
 
         private void Init()
         {
+            inkJSONAsset = (TextAsset)AssetDatabase.LoadAssetAtPath("Assets/Languages/" + LanguageSelection.chosenLanguage + "/main.json", typeof(TextAsset));
             StartConversation();
         }
 
@@ -135,7 +134,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         {
             _messageContainer.AddMessage(SenderType.Player, answerChoice.text);
             story.ChooseChoiceIndex(answerChoice.index);
-            story.Continue();
+            //story.Continue();
             StartCoroutine(UpdateDialogueView());
         }
 
