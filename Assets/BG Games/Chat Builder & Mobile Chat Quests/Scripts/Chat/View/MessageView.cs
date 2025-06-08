@@ -34,15 +34,15 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         {
             _messageText.text = message;
 
-            if (message.IsOneEmoji())
-            {
-                _messageLayout.padding.top = _emojiTopPadding;
-                _messageLayout.padding.bottom = _emojiBottomPadding;
+            //if (message.IsOneEmoji())
+            //{
+            //    _messageLayout.padding.top = _emojiTopPadding;
+            //    _messageLayout.padding.bottom = _emojiBottomPadding;
 
-                _messageText.fontSize = _emojiFontSize;
-                _messageText.alignment = _emojiLayoutOptions;
-                _background.enabled = false;
-            }
+            //    _messageText.fontSize = _emojiFontSize;
+            //    _messageText.alignment = _emojiLayoutOptions;
+            //    _background.enabled = false;
+            //}
         }
 
         public void Setup(Sprite spite)

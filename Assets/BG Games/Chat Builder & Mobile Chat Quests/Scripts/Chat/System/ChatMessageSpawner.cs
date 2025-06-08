@@ -18,12 +18,15 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
             if(_parent != null)
             {
-                var newMessage = Instantiate(prefab, _parent);
-                newMessage.Setup(message);
+                if(message.Length > 0)
+                {
+                    var newMessage = Instantiate(prefab, _parent);
+                    newMessage.Setup(message);
             
-                SpawnedMessage?.Invoke();
+                    SpawnedMessage?.Invoke();
             
-                return newMessage;
+                    return newMessage;
+                }
             }
             return null;
         }
