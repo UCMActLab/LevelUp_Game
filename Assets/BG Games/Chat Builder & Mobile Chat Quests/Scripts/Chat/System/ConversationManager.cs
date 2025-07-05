@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.Data;
@@ -9,7 +9,7 @@ using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils;
 using Ink.Runtime;
 using UnityEngine;
 using UnityEngine.Video;
-using static System.Net.WebRequestMethods;
+//using static System.Net.WebRequestMethods;
 
 namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 {
@@ -28,17 +28,13 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         [Space] [Range(0.2f, 10f)] [SerializeField]
         private float _responseTimeInSeconds;
 
-        private readonly int _secondsMultiplier = 1000;
         private MessageSolution _currentMessage;
-
-        private void Start() => Init();
 
         private void OnDisable() => _answerOptionController.SelectedAnswer -= SubmitAnswer;
 
-        private void Init()
+        private void Start()
         {
-            
-            inkJSONAsset = (TextAsset)Resources.Load("Languages/" + LanguageSelection.chosenLanguage + "/main");
+            inkJSONAsset = new TextAsset(ServerManager.Instance.inkText);
             StartConversation();
         }
 

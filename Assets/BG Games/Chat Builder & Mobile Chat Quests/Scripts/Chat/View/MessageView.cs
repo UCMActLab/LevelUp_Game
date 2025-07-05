@@ -11,11 +11,6 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
     public class MessageView : MonoBehaviour
     {
         [SerializeField] private string _freeImagText = "Free";
-        [Space] 
-        [SerializeField] private int _emojiTopPadding = -67;
-        [SerializeField] private int _emojiBottomPadding = -5;
-        [SerializeField] private float _emojiFontSize = 208.5f;
-        [SerializeField] private TextAlignmentOptions _emojiLayoutOptions;
         [Space]
         [SerializeField] private Image _background;
         [SerializeField] private HorizontalOrVerticalLayoutGroup _messageLayout;
@@ -33,16 +28,6 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         public void Setup(string message)
         {
             _messageText.text = message;
-
-            //if (message.IsOneEmoji())
-            //{
-            //    _messageLayout.padding.top = _emojiTopPadding;
-            //    _messageLayout.padding.bottom = _emojiBottomPadding;
-
-            //    _messageText.fontSize = _emojiFontSize;
-            //    _messageText.alignment = _emojiLayoutOptions;
-            //    _background.enabled = false;
-            //}
         }
 
         public void Setup(Sprite spite)
