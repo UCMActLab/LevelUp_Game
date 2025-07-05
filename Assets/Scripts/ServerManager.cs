@@ -147,7 +147,7 @@ public class ServerManager : MonoBehaviour
         TextAsset inkAsset = Resources.Load<TextAsset>("Languages/" + LanguageSelection.chosenLanguage + "/main");
         inkText = inkAsset.text;
 
-        inkText = inkText.Replace("\"^WELCOME TO OUR GAME\"", "\"^chao\",\"#\",\"^image:image2\",\"/#\"");
+        //inkText = inkText.Replace("\"^WELCOME TO OUR GAME\"", "\"^chao\",\"#\",\"^image:image2\",\"/#\"");
 
         //for (int i = 0; i < serverAnswer.data.data.Count; ++i)
         //{
