@@ -3,7 +3,7 @@
 
 // This file is a sample of how the game for the Level Up Project would flow. 
 
-WELCOME TO OUR GAME 
+WELCOME TO OUR GAME
 -> tutorial_check
 
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,25 +14,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
-[Serializable]
-public class _user {
-    public string username;
-    public string role;
-}
-
-[Serializable]
-public class _data
-{
-    public bool success;
-    public string token;
-    public _user user;
-}
-
-[Serializable]
-public class serverData
-{
-    public _data data;
-}
+// TODO ESTO EN UNA PANTALLA DE CARGA ENTRE IDIOMAS Y EL JUEGO
 
 public class ServerManager : MonoBehaviour
 {
@@ -65,8 +48,17 @@ public class ServerManager : MonoBehaviour
     }
     #endregion
 
+    [SerializeField]
     string userID = "admin";
+    [SerializeField]
     string userPassword = "j8$K2!";
+
+    LoginData serverLoginInfo;
+    [HideInInspector]
+    public RootObject serverAnswer;
+
+    [HideInInspector]
+    public string inkText = "";
 
     // Start is called before the first frame update
     void Start()
@@ -76,13 +68,9 @@ public class ServerManager : MonoBehaviour
 
     IEnumerator serverLogin()
     {
-        //WWWForm form = new WWWForm();
-        //form.AddField("username", userID);
-        //form.AddField("password", userPassword); 
-
         string message = "{\n\"user\": \"" + userID + "\",\n\"password\":\"" + userPassword + "\"\n}";
 
-        using (UnityWebRequest www = UnityWebRequest.Post("http://159.69.190.201:8080/login", /*form*/ message, "application/json"))
+        using (UnityWebRequest www = UnityWebRequest.Post("http://159.69.190.201:8080/login", message, "application/json"))
         {
             yield return www.SendWebRequest();
 
@@ -93,29 +81,104 @@ public class ServerManager : MonoBehaviour
             }
             else 
             {
-                serverData serverAnswer = JsonUtility.FromJson<serverData>(www.downloadHandler.text);
+                serverLoginInfo = JsonUtility.FromJson<LoginData>(www.downloadHandler.text);
 
                 Debug.Log(www.downloadHandler.text);
                 Debug.Log("Register complete!");
 
-                
-                UnityWebRequest www2 = UnityWebRequest.Get("http://159.69.190.201:8080/resources/");
-                
-                www2.SetRequestHeader("Authorization", serverAnswer.data.token);
-                
-                yield return www2.SendWebRequest();
+                StartCoroutine(serverRequest());
+            }
+        }
+    }
 
-                if (www2.result != UnityWebRequest.Result.Success)
+    IEnumerator serverRequest()
+    {
+        UnityWebRequest www = UnityWebRequest.Get("http://159.69.190.201:8080/resources/");
+
+        www.SetRequestHeader("Authorization", serverLoginInfo.data.token);
+
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error);
+            Debug.Log(www.downloadHandler.text);
+        }
+        else
+        {
+            serverAnswer = JsonUtility.FromJson<RootObject>(www.downloadHandler.text);
+
+            Debug.Log(www.downloadHandler.text);
+
+            //StartCoroutine(downloadResources());
+            processServerAnswer();
+        }
+
+    }
+
+    IEnumerator downloadResources()
+    {
+        foreach (ItemData i in serverAnswer.data.data)
+        {
+            foreach(Resource ir in i.resources) 
+            {
+                //download a Resources
+            }
+            if (i.answers.Count > 0)
+            {
+                foreach(Answer a in i.answers)
                 {
-                    Debug.Log(www2.error);
-                    Debug.Log(www2.downloadHandler.text);
-                }
-                else
-                {
-                    Debug.Log(www2.downloadHandler.text);
+                    foreach (Resource ar in a.resources)
+                    {
+                        //download a Resources
+                    }
                 }
             }
         }
+
+        processServerAnswer();
+
+        // para que no falle
+        yield return true;
+    }
+
+    void processServerAnswer()
+    {
+        TextAsset inkAsset = Resources.Load<TextAsset>("Languages/" + LanguageSelection.chosenLanguage + "/main");
+        inkText = inkAsset.text;
+
+        //inkText = inkText.Replace("\"^WELCOME TO OUR GAME\"", "\"^chao\",\"#\",\"^image:image2\",\"/#\"");
+
+        //for (int i = 0; i < serverAnswer.data.data.Count; ++i)
+        //{
+        //    // hacer un diccionario o alguna equivalencia o cambiar lo del server a los idiomas de aqui
+        //    if (serverAnswer.data.data[i].country == LanguageSelection.chosenLanguage.ToString())
+        //    {
+        //        foreach (Resource r in serverAnswer.data.data[i].resources)
+        //        {
+        //            //if (r.type == "PHOTO") 
+        //            //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^image:image1","/#" */);
+        //            //else if (r.type == "AUDIO") 
+        //            //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^audio:audio","/#" */);
+        //            //else if (r.type == "VIDEO") 
+        //            //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^video:video","/#" */);
+        //        }
+        //        foreach(Answer a in serverAnswer.data.data[i].answers)
+        //        {
+        //            foreach (Resource r in a.resources)
+        //            {
+        //                //if (r.type == "PHOTO") 
+        //                //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^image:image1","/#" */);
+        //                //else if (r.type == "AUDIO") 
+        //                //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^audio:audio","/#" */);
+        //                //else if (r.type == "VIDEO") 
+        //                //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^video:video","/#" */);
+        //            }
+        //        }
+        //        // Replace cada uno de los campos: headline, sources, body, Theme, verified
+        //        //inkString = inkString.Replace(/*campo que sea*/, /*serverAnswer.data.data[i].campo que sea*/);
+        //    }
+        //}
     }
 }
 
