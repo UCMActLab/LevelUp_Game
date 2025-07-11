@@ -36,6 +36,12 @@ VAR news_fake = 0 // this is the number of fake news that have been forwarded
 VAR news_checked = 0 // this is the number of fact checked news that have been forwarded
 VAR article_sent = false // this keeps track of whether an article has been sent already or not. It's a patch to be able to change the option 
 
+//The variables below keep track of how many articles the player has sent to them. 
+VAR article_forwarded_group1 = 0
+VAR article_forwarded_group2 = 0
+VAR article_forwarded_group3 = 0
+
+
 
 // Variables to help keep track of how much different groups like what we send them or say to them.
 
@@ -46,7 +52,9 @@ VAR group_3 = 0 // this is the variable to keep track of the number of news the 
 
 // Variables according to topic
 
-INCLUDE database.ink
+INCLUDE database_hardcoded.ink
+INCLUDE database_dynamic.ink
+INCLUDE database_feedback.ink
 INCLUDE Introduction.ink
 INCLUDE scene_1.ink
 INCLUDE scene_2.ink
@@ -55,8 +63,47 @@ INCLUDE scene_3.ink
 INCLUDE scene_4.ink
 INCLUDE interlude_2.ink
 INCLUDE scene_5.ink
+INCLUDE scene_0.ink
+INCLUDE ending.ink
+INCLUDE scene_1b.ink
+INCLUDE scene_3b.ink
 
 
+
+
+
+// The lists and variables below all set up the database strucutres for the article databases. 
+
+LIST Data = headline, sources, body, Theme, verified // these are the fields of each database item
+
+LIST source = blog, newspaper, social // these are the list of labels to mark the source.
+
+LIST themes = news, science, conspiracy, computers, scam // these are the labels to mark the topics that news can be about
+
+~ temp print_article = LIST_RANDOM(LIST_ALL(articles))
+
+// These are the functions that set up and contain the data
+
+=== function data (what, headline_data, source_data, body_data, theme_data, verified_data) // this function sets up the database entry fields
+{ what:
+    - headline: ~ return headline_data
+    - sources: ~ return source_data
+    - body: ~ return body_data
+    - Theme: ~ return theme_data
+    - verified: ~ return verified_data
+}
+
+// The function below is to print out the source of the article, to facilitate both the labels in the database and localization. 
+
+=== function display_source()
+{ 
+    - comes_from == blog:
+        ~ return ("This is a blog post.")
+    - comes_from == newspaper:
+        ~ return ("This is a newspaper article.")
+  - else:
+        ~ return ("This is a social media post.")
+}
 
 
 // HERE I DEFINE MY FUNCTIONS SO WE HAVE A WAY TO CHECK EACH NEWS PIECE AND WE DON'T HAVE TO REPEAT THIS EVERY SINGLE TIME
@@ -67,24 +114,36 @@ INCLUDE scene_5.ink
     { 
     - topic == news && veracity == false: 
         ~ group_1++
+        ~ feedback_group1_positive()
+
     - topic == news && veracity == true: 
         ~group_1--
+        ~feedback_group1_negative()
     - topic == science && veracity == false: 
         ~group_1++
+        ~feedback_group1_positive()
     - topic == science && veracity == true: 
         ~group_1--
+        ~feedback_group1_negative()
     - topic == conspiracy && veracity == false: 
         ~group_1++
+        ~feedback_group1_positive()
     - topic  == conspiracy && veracity == true: 
         ~group_1--
+        ~feedback_group1_negative()
     - topic == computers && veracity == false: 
         ~group_1++
+        ~feedback_group1_positive()
     - topic == computers && veracity == true: 
         ~group_1--
+        ~feedback_group1_negative()
     - topic == scam && veracity == false: 
         ~group_1++
+        ~feedback_group1_positive()
     - topic == scam && veracity == true: 
         ~group_1--
+        ~feedback_group1_negative()
+
         }
 
 
@@ -92,88 +151,103 @@ INCLUDE scene_5.ink
     {  
     - topic == news && veracity == false: 
         ~group_2--
+        ~feedback_group2_negative()
     - topic == news && veracity == true: 
         ~group_2++
+        ~feedback_group2_positive()
     - topic == science && veracity == false: 
         ~group_2--
+        ~feedback_group2_negative()
     - topic == science && veracity == true: 
         ~group_2++
+        ~feedback_group2_positive()
     - topic == conspiracy && veracity == false: 
         ~group_2--
+        ~feedback_group2_negative()
     - topic  == conspiracy && veracity == true: 
         ~group_2--
+        ~feedback_group2_negative()
     - topic == computers && veracity == false: 
         ~group_2--
+        ~feedback_group2_negative()
     - topic == computers && veracity == true: 
         ~group_2++
+        ~feedback_group2_positive()
     - topic == scam && veracity == false: 
         ~group_2--
+        ~feedback_group2_negative()
     - topic == scam && veracity == true: 
         ~group_2--
+        ~feedback_group2_negative()
         }
 
 === function group_3_opinion (topic, veracity)
     {
     - topic == news && veracity == false: 
         ~group_3++
+        ~feedback_group3_positive()
     - topic == news && veracity == true: 
         ~group_3--
+        ~feedback_group3_negative()
     - topic == science && veracity == false: 
         ~group_3++
+        ~feedback_group3_positive()
     - topic == science && veracity == true: 
         ~group_3++
+        ~feedback_group3_positive()
     - topic == conspiracy && veracity == false: 
         ~group_3++ 
+        ~feedback_group3_positive()
         TODO this value above should really increase or decrease at random, but I'll figure out the formula later
     - topic  == conspiracy && veracity == true: 
         ~group_3--
+        ~feedback_group3_negative()
         TODO this should really increase or decrease at random, but I'll figure out the formula later
     - topic == computers && veracity == false: 
         ~group_3--
+        ~feedback_group3_negative()
     - topic == computers && veracity == true: 
         ~group_3--
+        ~feedback_group3_negative()
     - topic == scam && veracity == false: 
         ~group_3++
+        ~feedback_group3_positive()
     - topic == scam && veracity == true: 
         ~group_3++
+        ~feedback_group3_positive()
         }
-
     
-TODO: Each group is going to react to trends differently. The functions below are basic examples
+TODO: Each group is going to react to trends differently - there needs to be a separate function per group, similar to the ones that give feedback.  The functions below are basic examples
 
 
+// The functions below are for the family to tell off the player. 
 
-TODO The variable names don't work right now. I'm including the list directly, but it's a bit of a mess. Will try to fix later. 
-//The variables below selects the name of a person in a specific group at random. This will be used to generate dynamic responses to the articles. 
-
-VAR group1_names = ""
-VAR group2_names = ""
-VAR group3_names = ""
-~ group1_names = "{~Mariah|Mark|Manny}"
-~ group2_names = "{~Fred (son)|Alfie (grandson)|Felicia (granddaughter)}"
-~ group3_names = "{~Paula|Omar|Emma}"
-
-// This is a function to tell players off when they don't read the news.
- === function scold1()
-{ 
+ === function scold1_group2()
+ ~ temp group2_speaker = LIST_RANDOM(LIST_ALL(group2_members))
+   {
     - checked == false && this_news_read == false: 
-    : Did you read this before sending it?
+    {group2_speaker}: Did you read this before sending it?
     - checked == true && this_news_read == false:
-    : Do you really believe this?
+    {group2_speaker}:: Do you really believe this?
     - else:
-    : That's interesting. 
+    {group2_speaker}:: That's interesting. 
     }
+
     
     
 // This is a function to tell players off when they send more fake news than read them
 
-=== function scold2()
+=== function scold2_group2()
+ ~ temp group2_speaker = LIST_RANDOM(LIST_ALL(group2_members))
 { 
     - news_read < news_fake:
-    You're not really reading the news you're sending, are you. 
+    {group2_speaker}: You're not really reading the news you're sending, are you. 
     - else:
-    Okay, thanks for sharing. 
+    {group2_speaker}: Okay, thanks for sharing. 
     }
+
+
+
 
 
 
