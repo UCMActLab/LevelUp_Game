@@ -63,7 +63,8 @@ public class ServerManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(serverLogin());
+        processServerAnswer();
+        //StartCoroutine(serverLogin());
     }
 
     IEnumerator serverLogin()
@@ -86,7 +87,7 @@ public class ServerManager : MonoBehaviour
                 Debug.Log(www.downloadHandler.text);
                 Debug.Log("Register complete!");
 
-                StartCoroutine(serverRequest());
+                //StartCoroutine(serverRequest());
             }
         }
     }
