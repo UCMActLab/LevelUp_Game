@@ -53,6 +53,14 @@ public class ServerManager : MonoBehaviour
     [SerializeField]
     string userPassword = "j8$K2!";
 
+
+    [SerializeField]
+    private string urihttps = "https://159.69.190.201";
+    [SerializeField]
+    private string urihttp = "http://159.69.190.201:8079";
+    [SerializeField]
+    bool isHttps= false;
+
     LoginData serverLoginInfo;
     [HideInInspector]
     public RootObject serverAnswer;
@@ -64,14 +72,20 @@ public class ServerManager : MonoBehaviour
     void Start()
     {
         processServerAnswer();
-        //StartCoroutine(serverLogin());
+        StartCoroutine(serverLogin());
     }
 
     IEnumerator serverLogin()
     {
         string message = "{\n\"user\": \"" + userID + "\",\n\"password\":\"" + userPassword + "\"\n}";
 
-        using (UnityWebRequest www = UnityWebRequest.Post("http://159.69.190.201:8080/login", message, "application/json"))
+        string uri = urihttp;
+        if (isHttps)
+        {
+            uri = urihttps;
+        }
+        Debug.Log(uri + "/login/" ) ;
+        using (UnityWebRequest www = UnityWebRequest.Post(uri + "/login/", message, "application/json"))
         {
             yield return www.SendWebRequest();
 
@@ -87,14 +101,19 @@ public class ServerManager : MonoBehaviour
                 Debug.Log(www.downloadHandler.text);
                 Debug.Log("Register complete!");
 
-                //StartCoroutine(serverRequest());
+                StartCoroutine(serverRequest());
             }
         }
     }
 
     IEnumerator serverRequest()
     {
-        UnityWebRequest www = UnityWebRequest.Get("http://159.69.190.201:8080/resources/");
+        string uri = urihttp;
+        if (isHttps)
+        {
+            uri = urihttps;
+        }
+        UnityWebRequest www = UnityWebRequest.Get(uri + "/resources/");
 
         www.SetRequestHeader("Authorization", serverLoginInfo.data.token);
 
@@ -111,7 +130,7 @@ public class ServerManager : MonoBehaviour
 
             Debug.Log(www.downloadHandler.text);
 
-            //StartCoroutine(downloadResources());
+            StartCoroutine(downloadResources());
             processServerAnswer();
         }
 
@@ -147,39 +166,39 @@ public class ServerManager : MonoBehaviour
     {
         TextAsset inkAsset = Resources.Load<TextAsset>("Languages/" + LanguageSelection.chosenLanguage + "/main");
         inkText = inkAsset.text;
-
-        //inkText = inkText.Replace("\"^WELCOME TO OUR GAME\"", "\"^chao\",\"#\",\"^image:image2\",\"/#\"");
-
-        //for (int i = 0; i < serverAnswer.data.data.Count; ++i)
-        //{
-        //    // hacer un diccionario o alguna equivalencia o cambiar lo del server a los idiomas de aqui
-        //    if (serverAnswer.data.data[i].country == LanguageSelection.chosenLanguage.ToString())
-        //    {
-        //        foreach (Resource r in serverAnswer.data.data[i].resources)
-        //        {
-        //            //if (r.type == "PHOTO") 
-        //            //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^image:image1","/#" */);
-        //            //else if (r.type == "AUDIO") 
-        //            //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^audio:audio","/#" */);
-        //            //else if (r.type == "VIDEO") 
-        //            //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^video:video","/#" */);
-        //        }
-        //        foreach(Answer a in serverAnswer.data.data[i].answers)
-        //        {
-        //            foreach (Resource r in a.resources)
-        //            {
-        //                //if (r.type == "PHOTO") 
-        //                //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^image:image1","/#" */);
-        //                //else if (r.type == "AUDIO") 
-        //                //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^audio:audio","/#" */);
-        //                //else if (r.type == "VIDEO") 
-        //                //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^video:video","/#" */);
-        //            }
-        //        }
-        //        // Replace cada uno de los campos: headline, sources, body, Theme, verified
-        //        //inkString = inkString.Replace(/*campo que sea*/, /*serverAnswer.data.data[i].campo que sea*/);
-        //    }
-        //}
+                                                                          
+        inkText = inkText.Replace("\"^WELCOME TO OUR GAME\"", "\"^chao "+ serverAnswer.data.data.Count +"\",\"#\",\"^image:image2\",\"/#\"");
+        Debug.Log("Server conected" + serverAnswer.data.data.Count);
+        for (int i = 0; i < serverAnswer.data.data.Count; ++i)
+        {
+            // hacer un diccionario o alguna equivalencia o cambiar lo del server a los idiomas de aqui
+            if (serverAnswer.data.data[i].country == LanguageSelection.chosenLanguage.ToString())
+            {
+                foreach (Resource r in serverAnswer.data.data[i].resources)
+                {
+                    //if (r.type == "PHOTO") 
+                    //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^image:image1","/#" */);
+                    //else if (r.type == "AUDIO") 
+                    //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^audio:audio","/#" */);
+                    //else if (r.type == "VIDEO") 
+                    //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^video:video","/#" */);
+                }
+                foreach (Answer a in serverAnswer.data.data[i].answers)
+                {
+                    foreach (Resource r in a.resources)
+                    {
+                        //if (r.type == "PHOTO") 
+                        //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^image:image1","/#" */);
+                        //else if (r.type == "AUDIO") 
+                        //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^audio:audio","/#" */);
+                        //else if (r.type == "VIDEO") 
+                        //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^video:video","/#" */);
+                    }
+                }
+                // Replace cada uno de los campos: headline, sources, body, Theme, verified
+                //inkString = inkString.Replace(/*campo que sea*/, /*serverAnswer.data.data[i].campo que sea*/);
+            }
+        }
     }
 }
 
