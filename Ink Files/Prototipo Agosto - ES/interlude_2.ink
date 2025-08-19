@@ -3,9 +3,9 @@
 ~ temp group2_speaker = LIST_RANDOM(LIST_ALL(group2_members))
 ~ temp group3_speaker = LIST_RANDOM(LIST_ALL(group3_members))
 
-{article_forwarded_group1 == 0: {group1_speaker}: You're a bit quiet.}
-{article_forwarded_group2 == 0: {group2_speaker}: Are you okay?}
-{article_forwarded_group3 == 0: {group3_speaker}: Haven't seen you in a bit. }
+{article_forwarded_group1 == 0: {group1_speaker}: No nos cuentas nada, ¿eh?}
+{article_forwarded_group2 == 0: {group2_speaker}: ¿Estás bien?}
+{article_forwarded_group3 == 0: {group3_speaker}: Hace rato que no te vemos por el chat. }
 
 
 El grupo de amigos <>{
