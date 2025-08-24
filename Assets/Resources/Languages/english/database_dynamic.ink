@@ -38,15 +38,15 @@ TODO THE FUNCTION BELOW IS JUST FOR THE PURPOSES OF THE PROTOTYPE, IN THE UNITY 
     - art11:
         ~return data (what, "Casos de miocarditis y pericarditis con la vacuna contra la COVID-19 de Pfizer", "social", "La OMS estudia posibles problemas de corazón tras recibir la vacuna de Pfizer COVID - 19.", science, false)
     - art12:
-        ~return data (what, "No, este correo electrónico que te avisa de 'irregularidades en su declaración de la renta' no es de la Agencia Tributaria: es phishing.", "social", "Paragraph 12", scam, true)
+        ~return data (what, "No, este correo electrónico que te avisa de 'irregularidades en su declaración de la renta' no es de la Agencia Tributaria: es phishing.", "social", "Paragraph 12", scams, true)
     - art13:
-        ~return data (what, "HEADLINE 13", "social", "Paragraph 13", scam, true)
+        ~return data (what, "HEADLINE 13", "social", "Paragraph 13", scams, true)
     - art14:
-        ~return data (what, "HEADLINE 14", "social", "Paragraph 14", scam, true)
+        ~return data (what, "HEADLINE 14", "social", "Paragraph 14", scams, true)
     - art15:
-        ~return data (what, "Lidl está regalando cupones de 180 euros", "social", "Paragraph 15", scam, true)
+        ~return data (what, "Lidl está regalando cupones de 180 euros", "social", "Paragraph 15", scams, true)
     - art16:
-        ~return data (what, "Banco Santander: Usuario deshabilitado por razones de seguridad", "social", "Paragraph 16", scam, false)
+        ~return data (what, "Banco Santander: Usuario deshabilitado por razones de seguridad", "social", "Paragraph 16", scams, false)
     - art17:
         ~return data (what, "Valencia ha sido producto de un ataque meteorológico HAARP", "social", "Paragraph 17", conspiracy, false)
     - art18:

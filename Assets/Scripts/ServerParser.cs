@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Temas de ejemplo
-public enum ID_Temas { CienciaSalud = 001, CatastrofeNatural = 002, TimosEstafas = 003, Conspiraciones = 004, Inmigracion = 005}
+public enum ID_Temas { GeneralMisinformation = 001, ScienceClimateHealth = 002, ScamsOnlineSecurity = 003, ConspiracyTheories = 004, ArtificialIntelligence = 005}
 
 #region Login
 
@@ -53,7 +53,11 @@ public class ItemData
     public string createdAt;
     public string description;
     public List<Resource> resources;
-    public string title;
+    public string headline;
+    public string sources;
+    public string body;
+    public string theme;
+    public string verified;
     public string updatedAt;
     public List<Answer> answers;
     public string conversationRef;
@@ -71,6 +75,7 @@ public class Answer
 public class Resource
 {
     public string type;
+    public string name;
     public string resourceLocator;
 }
 

@@ -34,10 +34,4 @@ Your neighbours <>{
     are not happy with you. 
 }
 
-{s3_g3: Omar: I want to thank you for sending that article about immigration the other day. It helped my friend get an appointment so she can work legally. She's very relieved.}
-
-TODO Fix the conditional below, so the story reflects whether the mask articles have been sent or not. 
-{ s4_g1: Mariah: Mark is in the hospital now. He took the medicine in the article you sent because he wanted to feel better fast, but he took too much and got a terrible rash. Doctors hare keeping him in tonight.}
-
-
 -> scene_5_intro

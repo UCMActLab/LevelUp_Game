@@ -16,8 +16,6 @@ TODO IF THE PLAYER HAS NOT FORWARDED ANY NEWS, THE FAMILY SHOULD BE CHECKING ON 
 {article_forwarded_group3 == 0: {group3_speaker}: Haven't heard from you in a bit. }
 
 
-
-
 {   
     - group_1 <= -2:
     {group1_speaker}: I don't think we see eye to eye on things. I don't trust your judgement. 

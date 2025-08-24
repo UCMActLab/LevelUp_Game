@@ -1,14 +1,16 @@
+using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.Data;
+using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
+using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils;
+using Ink.Runtime;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.Data;
-using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
-using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils;
-using Ink.Runtime;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.Video;
+using static UnityEngine.Rendering.DebugUI;
 //using static System.Net.WebRequestMethods;
 
 namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
@@ -82,20 +84,35 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 _currentMessage = new MessageSolution();
 
                 string[] splitTag = tag.Split(':');
-                string key = splitTag[0].Trim();
-                string value = splitTag[1].Trim();
+                string key = "";
+                string value = "";
 
-                if (key == "image")
-                    _currentMessage.Texture2D = Resources.Load(value) as Texture2D;
-                else if (key == "video")
+                if (splitTag.Length > 1)
                 {
-                    Debug.Log(value);
-                    _currentMessage.VideoURL = "https://drive.google.com/uc?export=download&id=" + value;
+                    key = splitTag[0].Trim();
+                    value = splitTag[1].Trim();
                 }
-                else if (key == "audio")
-                    _currentMessage.AudioClip = Resources.Load(value) as AudioClip;
 
-                DisplayNextMessage();
+                if(key != null && value != null)
+                {
+                    if (key == "image")
+                    {
+                        StartCoroutine(DownloadImage("https://drive.google.com/uc?export=download&id=" + value));
+                    }
+                    else if (key == "video")
+                    {
+                        Debug.Log(value);
+                        _currentMessage.VideoURL = "https://drive.google.com/uc?export=download&id=" + value;
+                        DisplayNextMessage();
+                    }
+                    else if (key == "audio")
+                    {
+                        _currentMessage.AudioClip = Resources.Load(value) as AudioClip;
+                        DisplayNextMessage();
+                    }
+                    else
+                        _currentMessage = null;
+                }
             }
         }
 
@@ -131,7 +148,6 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         {
             _messageContainer.AddMessage(SenderType.Player, answerChoice.text);
             story.ChooseChoiceIndex(answerChoice.index);
-            //story.Continue();
             StartCoroutine(UpdateDialogueView());
         }
 
@@ -140,6 +156,20 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             _messageWritingAnimator.Enable();
             yield return new WaitForSeconds(_responseTimeInSeconds);
             _messageWritingAnimator.Disable();
+        }
+
+        IEnumerator DownloadImage(string url)
+        {
+            UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                _currentMessage.Texture2D = ((DownloadHandlerTexture)request.downloadHandler).texture;
+                DisplayNextMessage();
+            }
+            else Debug.LogError("No se ha podido cargar la textura");
         }
 
         private Sprite GetSprite(MessageSolution messageSolution)

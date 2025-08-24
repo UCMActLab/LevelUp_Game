@@ -73,7 +73,7 @@ LIST fb_lines_g2_pos = fb1_g2_pos, fb2_g2_pos, fb3_g2_pos, fb4_g2_pos, fb5_g2_po
 
 === function feedback_output_group2_positive (feedback_lines_g2) // this is the feedback database that has the positive responses for group 2
 {feedback_lines_g2:
-    - fb1_g2_pos: Yes, thank you. 
+    - fb1_g2_pos: Yes, thank you.
     - fb2_g2_pos: Good to see you're keeping up with the news. 
     - fb3_g2_pos: I've seen it before, but thanks for sharing with all of us. 
     - fb4_g2_pos: Yes, I've seen a similar article, thanks for sharing. 

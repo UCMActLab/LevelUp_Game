@@ -3,7 +3,7 @@
 ~ temp group2_speaker = LIST_RANDOM(LIST_ALL(group2_members))
 ~ temp group3_speaker = LIST_RANDOM(LIST_ALL(group3_members))
 
-{article_forwarded_group1 == 0: {group1_speaker}: ^You're a bit quiet.}
+{article_forwarded_group1 == 0: {group1_speaker}: You're a bit quiet.}
 {article_forwarded_group2 == 0: {group2_speaker}: Are you okay?}
 {article_forwarded_group3 == 0: {group3_speaker}: Haven't seen you in a bit. }
 
@@ -39,11 +39,5 @@ Your neighbours <>{
     - else:
     are not happy with you. 
 }
-
-//The text below are the consequence for sending specific news to specific teams. This is hardcoded, so it can only be done with certain pieces of news. 
-{s1_g3: Paula (neighbours): I'm on the phone with my bank. I used the link you send us to get compensation for the blackout, and someone stole my information. Don't use it, it's a scam! }
-{s2_g1:
-Mark (neighbours): I am not going to be able to join you for dinner tonight. I think I got covid when I went to the match a few days ago.
-} 
 
 -> scene_3_intro
