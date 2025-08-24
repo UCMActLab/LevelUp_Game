@@ -14,7 +14,7 @@ WELCOME TO OUR GAME
 
 // If the article is key for the story 
 VAR art0_key = true
-VAR art01_key = false
+VAR art01_key = true
 VAR art02_key = true
 VAR art03_key = true
 VAR art04_key = true

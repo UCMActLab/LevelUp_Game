@@ -53,14 +53,6 @@ public class ServerManager : MonoBehaviour
     [SerializeField]
     string userPassword = "j8$K2!";
 
-
-    [SerializeField]
-    private string urihttps = "https://159.69.190.201";
-    [SerializeField]
-    private string urihttp = "http://159.69.190.201:8079";
-    [SerializeField]
-    bool isHttps= false;
-
     LoginData serverLoginInfo;
     [HideInInspector]
     public RootObject serverAnswer;
@@ -71,22 +63,30 @@ public class ServerManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SceneManager.activeSceneChanged += ChangedActiveScene;
+
+        Debug.Log("hola");
         processServerAnswer();
-        StartCoroutine(serverLogin());
+        //StartCoroutine(serverLogin());
     }
+
+    private void ChangedActiveScene(Scene current, Scene next)
+    {
+        if (next == SceneManager.GetSceneByName("LoadingScene"))
+        {
+            processServerAnswer();
+        }
+    }
+
 
     IEnumerator serverLogin()
     {
+        Debug.Log("hola2");
         string message = "{\n\"user\": \"" + userID + "\",\n\"password\":\"" + userPassword + "\"\n}";
 
-        string uri = urihttp;
-        if (isHttps)
+        using (UnityWebRequest www = UnityWebRequest.Post("https://levelup.fundacionmaldita.es/api/login", message, "application/json"))
         {
-            uri = urihttps;
-        }
-        Debug.Log(uri + "/login/" ) ;
-        using (UnityWebRequest www = UnityWebRequest.Post(uri + "/login/", message, "application/json"))
-        {
+            Debug.Log("hola3");
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)
@@ -94,7 +94,7 @@ public class ServerManager : MonoBehaviour
                 Debug.Log(www.error);
                 Debug.Log(www.downloadHandler.text);
             }
-            else 
+            else
             {
                 serverLoginInfo = JsonUtility.FromJson<LoginData>(www.downloadHandler.text);
 
@@ -108,12 +108,7 @@ public class ServerManager : MonoBehaviour
 
     IEnumerator serverRequest()
     {
-        string uri = urihttp;
-        if (isHttps)
-        {
-            uri = urihttps;
-        }
-        UnityWebRequest www = UnityWebRequest.Get(uri + "/resources/");
+        UnityWebRequest www = UnityWebRequest.Get("https://levelup.fundacionmaldita.es/api/resources/");
 
         www.SetRequestHeader("Authorization", serverLoginInfo.data.token);
 
@@ -130,75 +125,45 @@ public class ServerManager : MonoBehaviour
 
             Debug.Log(www.downloadHandler.text);
 
-            StartCoroutine(downloadResources());
             processServerAnswer();
         }
 
     }
 
-    IEnumerator downloadResources()
-    {
-        foreach (ItemData i in serverAnswer.data.data)
-        {
-            foreach(Resource ir in i.resources) 
-            {
-                //download a Resources
-            }
-            if (i.answers.Count > 0)
-            {
-                foreach(Answer a in i.answers)
-                {
-                    foreach (Resource ar in a.resources)
-                    {
-                        //download a Resources
-                    }
-                }
-            }
-        }
-
-        processServerAnswer();
-
-        // para que no falle
-        yield return true;
-    }
-
     void processServerAnswer()
     {
+        Debug.Log("no he explotado del todo");
+
+        TextAsset jsonAsset = Resources.Load<TextAsset>("FakeNewsVideogame");
+        serverAnswer = JsonUtility.FromJson<RootObject>(jsonAsset.text);
+
         TextAsset inkAsset = Resources.Load<TextAsset>("Languages/" + LanguageSelection.chosenLanguage + "/main");
         inkText = inkAsset.text;
-                                                                          
-        inkText = inkText.Replace("\"^WELCOME TO OUR GAME\"", "\"^chao "+ serverAnswer.data.data.Count +"\",\"#\",\"^image:image2\",\"/#\"");
-        Debug.Log("Server conected" + serverAnswer.data.data.Count);
-        for (int i = 0; i < serverAnswer.data.data.Count; ++i)
-        {
-            // hacer un diccionario o alguna equivalencia o cambiar lo del server a los idiomas de aqui
-            if (serverAnswer.data.data[i].country == LanguageSelection.chosenLanguage.ToString())
-            {
-                foreach (Resource r in serverAnswer.data.data[i].resources)
-                {
-                    //if (r.type == "PHOTO") 
-                    //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^image:image1","/#" */);
-                    //else if (r.type == "AUDIO") 
-                    //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^audio:audio","/#" */);
-                    //else if (r.type == "VIDEO") 
-                    //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^video:video","/#" */);
-                }
-                foreach (Answer a in serverAnswer.data.data[i].answers)
-                {
-                    foreach (Resource r in a.resources)
-                    {
-                        //if (r.type == "PHOTO") 
-                        //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^image:image1","/#" */);
-                        //else if (r.type == "AUDIO") 
-                        //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^audio:audio","/#" */);
-                        //else if (r.type == "VIDEO") 
-                        //    inkString = inkString.Replace(/*el codigo de la noticia en formato "^XXX"*/, /*"^XXX","#","^video:video","/#" */);
-                    }
-                }
-                // Replace cada uno de los campos: headline, sources, body, Theme, verified
-                //inkString = inkString.Replace(/*campo que sea*/, /*serverAnswer.data.data[i].campo que sea*/);
-            }
+
+        for (int i = 0; i < serverAnswer.Articles.Count; ++i)
+        {            
+            var art = serverAnswer.Articles[i];
+            // Replace de los campos que son independientes al idioma escogido
+            inkText = inkText.Replace("{\"VAR?\":\"news\"},{ \"VAR =\":\"" + art.ConversationRef + "_theme\"}", "{\"VAR?\":\"" + art.Themes + "\"},{ \"VAR =\":\"" + art.ConversationRef + "_theme\"}");
+            inkText = inkText.Replace("true,{\"VAR=\":\"" + art.ConversationRef + "_key\"}", art.Key.ToString().ToLower() + ",{\"VAR=\":\"" + art.ConversationRef + "_key\"}");
+            inkText = inkText.Replace("true,{\"VAR=\":\"" + art.ConversationRef + "_true\"}", art.Fakeornot.ToString().ToLower() + ",{\"VAR=\":\"" + art.ConversationRef + "_true\"}");
+
+            var lang = serverAnswer.Articles[i].ES;
+            // Depende del idioma escogido en el menú se sustituye la informacion correspondiente
+            if (LanguageSelection.chosenLanguage == Language.croatian) lang = serverAnswer.Articles[i].CR;
+            else if (LanguageSelection.chosenLanguage == Language.bulgarian) lang = serverAnswer.Articles[i].B;
+
+            // Replace cada uno de los campos: headline, multimedia, source, body, reactions
+            inkText = inkText.Replace(art.ConversationRef + "_headline", lang.Headline);
+            inkText = inkText.Replace(art.ConversationRef + "_multimedia", lang.Multimedia);
+            inkText = inkText.Replace(art.ConversationRef + "_source", lang.Source);
+            inkText = inkText.Replace(art.ConversationRef + "_body", lang.Body);
+            inkText = inkText.Replace(art.ConversationRef + "_ReactionG1", lang.Reaction_G1);
+            inkText = inkText.Replace(art.ConversationRef + "_ReactionG2", lang.Reaction_G2);
+            inkText = inkText.Replace(art.ConversationRef + "_ReactionG3", lang.Reaction_G3);
         }
+        Debug.Log("hecho :)");
+        SceneManager.LoadScene("ChatDemo");
     }
 }
 

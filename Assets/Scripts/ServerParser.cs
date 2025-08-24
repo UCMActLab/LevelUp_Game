@@ -35,58 +35,34 @@ public class User
 [Serializable]
 public class RootObject
 {
-    public RootData data;
+    public List<Article> Articles;
 }
 
 [Serializable]
-public class RootData
+public class Article
 {
-    public List<ItemData> data;
-    public Pagination pagination;
+    public string Themes;
+    public bool Key;
+    public bool Fakeornot;
+    public string ConversationRef;
+
+    public LanguageBlock ES;
+    public LanguageBlock CR;
+    public LanguageBlock B;
 }
 
 [Serializable]
-public class ItemData
+public class LanguageBlock
 {
-    public string _id;
-    public string country;
-    public string createdAt;
-    public string description;
-    public List<Resource> resources;
-    public string headline;
-    public string sources;
-    public string body;
-    public string theme;
-    public string verified;
-    public string updatedAt;
-    public List<Answer> answers;
-    public string conversationRef;
-}
+    public string Headline;
+    public string Body;
+    public string Multimedia;
+    public string Links;
+    public string Source;
 
-[Serializable]
-public class Answer
-{
-    public string title;
-    public string explanation;
-    public List<Resource> resources;
+    public string Reaction_G1;
+    public string Reaction_G2;
+    public string Reaction_G3;
 }
-
-[Serializable]
-public class Resource
-{
-    public string type;
-    public string name;
-    public string resourceLocator;
-}
-
-[Serializable]
-public class Pagination
-{
-    public int currentPage;
-    public int totalPages;
-    public int totalItems;
-    public int itemsPerPage;
-}
-
 
 #endregion

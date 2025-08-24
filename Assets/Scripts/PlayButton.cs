@@ -3,22 +3,22 @@ using UnityEngine.SceneManagement;
 
 public class PlayButton : MonoBehaviour
 {
-    public void goGameSceneEnglish()
-    {
-        LanguageSelection.chosenLanguage = Language.english;
-        SceneManager.LoadScene("ChatDemo");
-    }
-
     public void goGameSceneSpanish()
     {
         LanguageSelection.chosenLanguage = Language.spanish;
-        SceneManager.LoadScene("ChatDemo");
+        SceneManager.LoadScene("LoadingScene");
     }
 
-    public void goGameSceneOther()
+    public void goGameSceneCroatian()
     {
-        LanguageSelection.chosenLanguage = Language.other;
-        SceneManager.LoadScene("ChatDemo");
+        LanguageSelection.chosenLanguage = Language.croatian;
+        SceneManager.LoadScene("LoadingScene");
+    }
+
+    public void goGameSceneBulgarian()
+    {
+        LanguageSelection.chosenLanguage = Language.bulgarian;
+        SceneManager.LoadScene("LoadingScene");
     }
 
     public void goLanguageScene()

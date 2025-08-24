@@ -169,7 +169,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 _currentMessage.Texture2D = ((DownloadHandlerTexture)request.downloadHandler).texture;
                 DisplayNextMessage();
             }
-            else Debug.LogError("No se ha podido cargar la textura");
+            else Debug.LogError("No se ha podido cargar la textura: " + request.downloadHandler.error );
         }
 
         private Sprite GetSprite(MessageSolution messageSolution)
