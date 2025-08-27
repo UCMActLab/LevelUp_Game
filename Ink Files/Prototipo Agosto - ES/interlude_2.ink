@@ -7,7 +7,6 @@
 {article_forwarded_group2 == 0: {group2_speaker}: ¿Estás bien?}
 {article_forwarded_group3 == 0: {group3_speaker}: Hace rato que no te vemos por el chat. }
 
-
 El grupo de amigos <>{
     - group_1 >= 1:
      está a gusto contigo.
