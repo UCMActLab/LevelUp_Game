@@ -35,9 +35,9 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             _messageViews.Add(messageView);
         }
 
-        public void AddArticle(ArticleData data)
+        public void AddArticle(ArticleDataSetter art)
         {
-            _messageSpawner.SpawnArticle(data);
+            _messageSpawner.SpawnArticle(art);
         }
     }
 }

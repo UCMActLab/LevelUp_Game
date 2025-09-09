@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Video;
@@ -22,6 +23,9 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         [SerializeField] private MessageWritingAnimator _messageWritingAnimator;
         [SerializeField] private MessageContainer _messageContainer;
+        [SerializeField] private GameObject _articlePrefab;
+
+        [SerializeField] private Transform _articleParent;
 
         // ink
         [SerializeField] public TextAsset inkJSONAsset;
@@ -61,6 +65,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         IEnumerator UpdateDialogueView()
         {
+            bool article = false;
             while (story.canContinue)
             {
                 string text = GetNextStoryText();
@@ -68,6 +73,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 if (text == ARTICLE_RECEIVED_FLAG)
                 {
                     HandleArticleReceived();
+                    article = true;
                 }
                 else
                 {
@@ -80,11 +86,13 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                     DisplayNextMessage();
 
                     handleTags();
+
+                    article = false;
                 }
             }
 
             // Display all the choices, if there are any!
-            if (story.currentChoices.Count > 0)
+            if (!article && story.currentChoices.Count > 0)
             {
                 DisplayAnswers(story.currentChoices);
             }
@@ -99,10 +107,19 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         {
             ArticleData articleData = new ArticleData();
             articleData.articleTitle = GetNextStoryText().Replace("Article headline: ", string.Empty);
+
+            ArticleDataSetter art = Instantiate(_articlePrefab, _articleParent).GetComponent<ArticleDataSetter>();
+            // Aquí se presenta la decisión de si se quiere leer o no el artículo
+            if(story.currentChoices.Count > 0)
+            {
+                _answerOptionController.ArticleReadOptions(story.currentChoices, art);
+            }
             //articleData.companyName = GetNextStoryText().Replace("This article comes from ", string.Empty);
             //articleData.articleBody = GetNextStoryText();
 
-            _messageContainer.AddArticle(articleData);
+            art.SetArticleData(articleData);
+
+            _messageContainer.AddArticle(art);
         }
 
         void handleTags()

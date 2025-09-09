@@ -4,6 +4,7 @@ using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.Data;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
 using Ink.Runtime;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 {
@@ -22,6 +23,17 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             {
                 SpawnDialogueAnswerButton(info);
             }
+        }
+
+        public void ArticleReadOptions(List<Choice> answers, ArticleDataSetter article)
+        {
+            Choice read = answers[0];
+            Choice skip = answers[1];
+
+            article.OnRead += OnAnswerClicked;
+            article.OnSkip += OnAnswerClicked;
+
+            article.SetUpReadSkipButtons(read, skip);
         }
 
         private void SpawnDialogueAnswerButton(Choice answerChoice)

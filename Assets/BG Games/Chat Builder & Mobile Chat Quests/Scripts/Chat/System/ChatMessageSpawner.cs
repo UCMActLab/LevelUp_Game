@@ -1,7 +1,6 @@
 using System;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
 using UnityEngine;
-using UnityEngine.Video;
 
 namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 {
@@ -77,11 +76,10 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             return null;
         }
 
-        public ArticleDataSetter SpawnArticle(ArticleData data)
+        public ArticleDataSetter SpawnArticle(ArticleDataSetter art)
         {
-            ArticleDataSetter art = Instantiate(_articlePrefab, _parent).GetComponent<ArticleDataSetter>();
-
-            art.SetArticleData(data);
+            art.transform.parent = _parent;
+            art.transform.localPosition = Vector3.zero;
             
             return art;
         }
