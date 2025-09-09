@@ -34,7 +34,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 364, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1362680144807067266
 GameObject:
@@ -71,7 +71,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 273.725, y: -62.1}
+  m_AnchoredPosition: {x: 455.725, y: -62.1}
   m_SizeDelta: {x: 507.45, y: 104.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5832696311641298198
@@ -200,7 +200,6 @@ GameObject:
   - component: {fileID: 8512976550453321639}
   - component: {fileID: 7462856742154727765}
   - component: {fileID: 1184094919349742776}
-  - component: {fileID: 5586059279260210703}
   - component: {fileID: 3219862936776840855}
   m_Layer: 5
   m_Name: Background
@@ -227,7 +226,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 547.45, y: 124.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9036374603331682405
 MonoBehaviour:
@@ -343,20 +342,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &5586059279260210703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3948356315878095291}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 1
-  m_VerticalFit: 1
 --- !u!114 &3219862936776840855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -421,7 +406,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 850, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &173011870797731771
 CanvasRenderer:

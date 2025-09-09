@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System;
 
 public class ArticleDataSetter : MonoBehaviour
 {
@@ -28,6 +29,13 @@ public class ArticleDataSetter : MonoBehaviour
     public event Action<Choice> OnSkip;
     public event Action<Choice> AnswerClicked;
 
+    ConversationManager _convManager = null;
+
+    private void Start()
+    {
+        _convManager = FindAnyObjectByType<ConversationManager>();
+    }
+
     public void SetArticleData(ArticleData data)
     {
         if (data == null) return;
@@ -47,5 +55,15 @@ public class ArticleDataSetter : MonoBehaviour
     {
         _readButton.onClick.AddListener(() => OnRead?.Invoke(read));
         _skipButton.onClick.AddListener(() => OnSkip?.Invoke(skip));
+        _shareButton.onClick.AddListener(() => Skip(skip));
+    }
+
+    private void Skip(Choice skip)
+    {
+        OnSkip?.Invoke(skip);
+        if(_convManager.story.canContinue)
+        {
+            Debug.Log("can continue!!");
+        }
     }
 }
