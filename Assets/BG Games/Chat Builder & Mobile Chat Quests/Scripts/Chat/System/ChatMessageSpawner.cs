@@ -9,6 +9,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
     {
         [SerializeField] private MessageView _messagePlayerViewPrefab;
         [SerializeField] private MessageView _messageInterlocutorViewPrefab;
+        [SerializeField] private GameObject _articlePrefab;
         [SerializeField] private Transform _parent;
 
         public event Action SpawnedMessage;
@@ -21,7 +22,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 if(message.Length > 0)
                 {
                     var newMessage = Instantiate(prefab, _parent);
-                    newMessage.Setup(message);
+                    newMessage.Setup("name (relation)", message);
             
                     SpawnedMessage?.Invoke();
             
@@ -74,6 +75,15 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 return newMessage;
             }
             return null;
+        }
+
+        public ArticleDataSetter SpawnArticle(ArticleData data)
+        {
+            ArticleDataSetter art = Instantiate(_articlePrefab, _parent).GetComponent<ArticleDataSetter>();
+
+            art.SetArticleData(data);
+            
+            return art;
         }
     }
 

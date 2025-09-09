@@ -43,7 +43,7 @@ public class Article
 {
     public string Themes;
     public bool Key;
-    public bool Fakeornot;
+    public bool IsFake;
     public string ConversationRef;
 
     public LanguageBlock ES;

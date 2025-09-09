@@ -22,7 +22,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         [SerializeField] private MessageWritingAnimator _messageWritingAnimator;
         [SerializeField] private MessageContainer _messageContainer;
-        
+
         // ink
         [SerializeField] public TextAsset inkJSONAsset;
         public Story story;
@@ -31,6 +31,9 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         private float _responseTimeInSeconds;
 
         private MessageSolution _currentMessage;
+
+        // Llega este texto por Ink cuando se va a recibir un artículo
+        private const string ARTICLE_RECEIVED_FLAG = "ARTICLE RECEIVED";
 
         private void OnDisable() => _answerOptionController.SelectedAnswer -= SubmitAnswer;
 
@@ -47,22 +50,37 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             StartCoroutine(UpdateDialogueView());
         }
 
+        private string GetNextStoryText()
+        {
+            if (story.canContinue)
+                // Continue gets the next line of the story
+                // This removes any white space from the text.
+                return story.Continue().Trim();
+            else return null;
+        }
+
         IEnumerator UpdateDialogueView()
         {
             while (story.canContinue)
             {
-                // Continue gets the next line of the story
-                string text = story.Continue();
-                // This removes any white space from the text.
-                text = text.Trim();
-                // Display the text on screen!
-                _currentMessage = new MessageSolution();
-                _currentMessage.text = text;
+                string text = GetNextStoryText();
 
-                yield return StartCoroutine(StartPrintingSimulation());
-                DisplayNextMessage();
+                if (text == ARTICLE_RECEIVED_FLAG)
+                {
+                    HandleArticleReceived();
+                }
+                else
+                {
+                    // Display the text on screen!
+                    _currentMessage = new MessageSolution();
+                    _currentMessage.text = text;
 
-                handleTags();
+                    yield return StartCoroutine(StartPrintingSimulation());
+
+                    DisplayNextMessage();
+
+                    handleTags();
+                }
             }
 
             // Display all the choices, if there are any!
@@ -75,6 +93,16 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             {
                 Debug.Log("FIN");
             }
+        }
+
+        private void HandleArticleReceived()
+        {
+            ArticleData articleData = new ArticleData();
+            articleData.articleTitle = GetNextStoryText().Replace("Article headline: ", string.Empty);
+            //articleData.companyName = GetNextStoryText().Replace("This article comes from ", string.Empty);
+            //articleData.articleBody = GetNextStoryText();
+
+            _messageContainer.AddArticle(articleData);
         }
 
         void handleTags()

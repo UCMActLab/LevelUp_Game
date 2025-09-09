@@ -1,15 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Unity.Burst.CompilerServices;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -146,7 +135,7 @@ public class ServerManager : MonoBehaviour
             // Replace de los campos que son independientes al idioma escogido
             inkText = inkText.Replace("{\"VAR?\":\"news\"},{ \"VAR =\":\"" + art.ConversationRef + "_theme\"}", "{\"VAR?\":\"" + art.Themes + "\"},{ \"VAR =\":\"" + art.ConversationRef + "_theme\"}");
             inkText = inkText.Replace("true,{\"VAR=\":\"" + art.ConversationRef + "_key\"}", art.Key.ToString().ToLower() + ",{\"VAR=\":\"" + art.ConversationRef + "_key\"}");
-            inkText = inkText.Replace("true,{\"VAR=\":\"" + art.ConversationRef + "_true\"}", art.Fakeornot.ToString().ToLower() + ",{\"VAR=\":\"" + art.ConversationRef + "_true\"}");
+            inkText = inkText.Replace("true,{\"VAR=\":\"" + art.ConversationRef + "_true\"}", art.IsFake.ToString().ToLower() + ",{\"VAR=\":\"" + art.ConversationRef + "_true\"}");
 
             var lang = serverAnswer.Articles[i].ES;
             // Depende del idioma escogido en el menú se sustituye la informacion correspondiente

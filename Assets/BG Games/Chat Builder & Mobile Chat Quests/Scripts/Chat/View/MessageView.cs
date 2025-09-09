@@ -14,6 +14,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         [Space]
         [SerializeField] private Image _background;
         [SerializeField] private HorizontalOrVerticalLayoutGroup _messageLayout;
+        [SerializeField] private TMP_Text _nameText = null;
         [SerializeField] private TMP_Text _messageText;
         [SerializeField] private GameObject _imageHolder;
         [SerializeField] private GameObject _videoHolder;
@@ -25,8 +26,9 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         [SerializeField] private ImageOnFullScreenAdjuster _adjuster;
         
 
-        public void Setup(string message)
+        public void Setup(string name, string message)
         {
+            if(_nameText != null) _nameText.text = name;
             _messageText.text = message;
         }
 
