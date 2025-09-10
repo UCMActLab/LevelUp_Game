@@ -35,9 +35,6 @@ public class ArticleDataSetter : MonoBehaviour
     [SerializeField] Button _shareButton = null;
     [SerializeField] Button _skipButton = null;
 
-    private Choice read;
-    private Choice skip;
-
     public ArticleData Data = null;
     public ArticleAction Action;
 
@@ -59,16 +56,19 @@ public class ArticleDataSetter : MonoBehaviour
 
         if(_convManager.story.currentChoices.Count > 0)
         {
-            Choice sendGroup0 = _convManager.story.currentChoices[0];
-            Choice sendGroup1 = _convManager.story.currentChoices[1];
-            Choice sendGroup2 = _convManager.story.currentChoices[2];
             Choice skip = _convManager.story.currentChoices[3];
 
             _skipButton.onClick.RemoveAllListeners();
+            _shareButton.onClick.RemoveAllListeners();
 
             _skipButton.onClick.AddListener(() =>
+                SkipArticle(skip)
+            );
+            _shareButton.onClick.AddListener(() =>
             {
-                SkipArticle(skip);
+                ShareButton(_convManager.story.currentChoices);
+                _shareButton.interactable = false;
+                Action = ArticleAction.Share;
             }
             );
         }
@@ -87,9 +87,28 @@ public class ArticleDataSetter : MonoBehaviour
         OnSkip?.Invoke(skip);
     }
 
-    private void ShareButton(Choice group0, Choice group1, Choice group2)
+    public void ShareButton(System.Collections.Generic.List<Choice> choices)
     {
-        
+        if(choices.Count == 1)
+        {
+            // escogemos automáticamente no enviar más artículos si no quedan grupos
+            Action = ArticleAction.None;
+            OnShare.Invoke(choices[0]);
+        }
+        else
+        {
+            GameObject share = _convManager.SpawnShareButtons();
+            int i = 0;
+            Button[] buttons = share.GetComponentsInChildren<Button>();
+            buttons[0].onClick.AddListener(() => { OnShare.Invoke(choices[choices.Count - 1]); Destroy(share); Action = ArticleAction.None; });
+            buttons[1].onClick.AddListener(() => { OnShare.Invoke(choices[0]); Destroy(share); });
+
+            if (choices.Count > 2) buttons[2].onClick.AddListener(() => { OnShare.Invoke(choices[1]); Destroy(share); });
+            else buttons[2].transform.parent.gameObject.SetActive(false);
+
+            if (choices.Count > 3) buttons[3].onClick.AddListener(() => { OnShare.Invoke(choices[2]); Destroy(share); });
+            else buttons[3].transform.parent.gameObject.SetActive(false);
+        }
     }
 
     public void SetArticleData(ArticleData data)

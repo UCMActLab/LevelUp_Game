@@ -11,6 +11,7 @@ using TMPro;
 using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 using UnityEngine.Video;
 using static UnityEngine.Rendering.DebugUI;
 //using static System.Net.WebRequestMethods;
@@ -25,8 +26,10 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         [SerializeField] private MessageWritingAnimator _messageWritingAnimator;
         [SerializeField] private MessageContainer _messageContainer;
         [SerializeField] private GameObject _articlePrefab;
+        [SerializeField] private GameObject _shareButtonsPrefab;
 
         [SerializeField] private Transform _articleParent;
+        [SerializeField] private Transform _shareButtonsParent;
 
         // ink
         [SerializeField] public TextAsset inkJSONAsset;
@@ -85,7 +88,15 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                         }
                         break;
                     case ArticleAction.Share:
-                        ShareArticle();
+                        // handle group reaction: cambiar el chat y eso
+                        if(story.currentChoices.Count > 0)
+                        {
+                            _currentArticle.ShareButton(story.currentChoices);
+                        }
+                        else
+                        {
+                            return true;
+                        }
                         break;
                     case ArticleAction.None:
                         _currentArticle = null;
@@ -135,18 +146,32 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                     else { article = true; }
                 }
 
+                _alreadyUpdatingDialogues = false;
                 // Display all the choices, if there are any!
                 if (!article && story.currentChoices.Count > 0)
                 {
-                    DisplayAnswers(story.currentChoices);
+                    if(_currentArticle && _currentArticle.Action == ArticleAction.Share)
+                    {
+                        _currentArticle.ShareButton(story.currentChoices);
+                    }
+                    else DisplayAnswers(story.currentChoices);
                 }
                 // If we've read all the content and there's no choices, the story is finished!
                 else
                 {
                     Debug.Log("FIN");
                 }
-                _alreadyUpdatingDialogues = false;
             }
+        }
+
+        public GameObject SpawnShareButtons()
+        {
+            GameObject gO = Instantiate(_shareButtonsPrefab, _shareButtonsParent);
+            foreach(RectTransform rect in gO.GetComponentsInChildren<RectTransform>())
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
+            }
+            return gO;
         }
 
         private void HandleArticleReceived()
@@ -175,11 +200,6 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 _currentArticle.ChangeButtonsOnArticleRead();
 
             }
-        }
-
-        private void ShareArticle()
-        {
-
         }
 
         void handleTags()
