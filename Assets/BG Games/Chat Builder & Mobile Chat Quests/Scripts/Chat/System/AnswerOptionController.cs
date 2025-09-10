@@ -48,7 +48,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             }
         }
 
-        private void OnAnswerClicked(Choice answer)
+        public void OnAnswerClicked(Choice answer)
         {
             SelectedAnswer?.Invoke(answer);
             DestroyAnswers();

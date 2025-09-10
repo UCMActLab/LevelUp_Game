@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
+using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Video;
@@ -36,6 +37,8 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         private MessageSolution _currentMessage;
 
+        private ArticleDataSetter _currentArticle;
+
         // Llega este texto por Ink cuando se va a recibir un artículo
         private const string ARTICLE_RECEIVED_FLAG = "ARTICLE RECEIVED";
 
@@ -54,7 +57,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             StartCoroutine(UpdateDialogueView());
         }
 
-        private string GetNextStoryText()
+        public string GetNextStoryText()
         {
             if (story.canContinue)
                 // Continue gets the next line of the story
@@ -63,43 +66,86 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             else return null;
         }
 
+        private bool DoArticle()
+        {
+            if(_currentArticle != null)
+            {
+                switch (_currentArticle.Action)
+                {
+                    case ArticleAction.Read:
+                        ReadArticle();
+                        break;
+                    case ArticleAction.Skip:
+                        _currentArticle.Action = ArticleAction.None;
+                        string text = GetNextStoryText();
+                        if(story.currentChoices.Count > 0)
+                        {
+                            // escogemos saltarnos el artículo
+                            _answerOptionController.OnAnswerClicked(story.currentChoices[3]);
+                        }
+                        break;
+                    case ArticleAction.Share:
+                        ShareArticle();
+                        break;
+                    case ArticleAction.None:
+                        _currentArticle = null;
+                        break;
+                }
+            }
+
+            // devuelve true si ya no queremos hacer nada con el artículo
+            return _currentArticle == null;
+        }
+
+        bool _alreadyUpdatingDialogues = false;
         IEnumerator UpdateDialogueView()
         {
-            bool article = false;
-            while (story.canContinue)
+            if (!_alreadyUpdatingDialogues)
             {
-                string text = GetNextStoryText();
-
-                if (text == ARTICLE_RECEIVED_FLAG)
+                _alreadyUpdatingDialogues = true;
+                bool article = false;
+                while (story.canContinue)
                 {
-                    HandleArticleReceived();
-                    article = true;
+                    // si ya no queremos el artículo que tenemos a mano, hacemos el flujo normal de la historia
+                    if (DoArticle())
+                    {
+                        string text = GetNextStoryText();
+
+                        if (text == ARTICLE_RECEIVED_FLAG)
+                        {
+                            HandleArticleReceived();
+                            article = true;
+                        }
+
+                        else
+                        {
+                            // Display the text on screen!
+                            _currentMessage = new MessageSolution();
+                            _currentMessage.text = text;
+
+                            yield return StartCoroutine(StartPrintingSimulation());
+
+                            DisplayNextMessage();
+
+                            handleTags();
+
+                            article = false;
+                        }
+                    }
+                    else { article = true; }
                 }
+
+                // Display all the choices, if there are any!
+                if (!article && story.currentChoices.Count > 0)
+                {
+                    DisplayAnswers(story.currentChoices);
+                }
+                // If we've read all the content and there's no choices, the story is finished!
                 else
                 {
-                    // Display the text on screen!
-                    _currentMessage = new MessageSolution();
-                    _currentMessage.text = text;
-
-                    yield return StartCoroutine(StartPrintingSimulation());
-
-                    DisplayNextMessage();
-
-                    handleTags();
-
-                    article = false;
+                    Debug.Log("FIN");
                 }
-            }
-
-            // Display all the choices, if there are any!
-            if (!article && story.currentChoices.Count > 0)
-            {
-                DisplayAnswers(story.currentChoices);
-            }
-            // If we've read all the content and there's no choices, the story is finished!
-            else
-            {
-                Debug.Log("FIN");
+                _alreadyUpdatingDialogues = false;
             }
         }
 
@@ -108,18 +154,32 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             ArticleData articleData = new ArticleData();
             articleData.articleTitle = GetNextStoryText().Replace("Article headline: ", string.Empty);
 
-            ArticleDataSetter art = Instantiate(_articlePrefab, _articleParent).GetComponent<ArticleDataSetter>();
+            _currentArticle = Instantiate(_articlePrefab, _articleParent).GetComponent<ArticleDataSetter>();
             // Aquí se presenta la decisión de si se quiere leer o no el artículo
             if(story.currentChoices.Count > 0)
             {
-                _answerOptionController.ArticleReadOptions(story.currentChoices, art);
+                _answerOptionController.ArticleReadOptions(story.currentChoices, _currentArticle);
             }
             //articleData.companyName = GetNextStoryText().Replace("This article comes from ", string.Empty);
             //articleData.articleBody = GetNextStoryText();
 
-            art.SetArticleData(articleData);
+            _currentArticle.SetArticleData(articleData);
+        }
 
-            _messageContainer.AddArticle(art);
+        private void ReadArticle()
+        {
+            if(story.canContinue) {
+                _currentArticle.Data.companyName = GetNextStoryText().Replace("This article comes from ", string.Empty);
+                _currentArticle.Data.articleBody = GetNextStoryText();
+                _currentArticle.SetArticleData(_currentArticle.Data);
+                _currentArticle.ChangeButtonsOnArticleRead();
+
+            }
+        }
+
+        private void ShareArticle()
+        {
+
         }
 
         void handleTags()
@@ -191,7 +251,8 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         private void SubmitAnswer(Choice answerChoice)
         {
-            _messageContainer.AddMessage(SenderType.Player, answerChoice.text);
+            if(_currentArticle == null) 
+                _messageContainer.AddMessage(SenderType.Player, answerChoice.text);
             story.ChooseChoiceIndex(answerChoice.index);
             StartCoroutine(UpdateDialogueView());
         }

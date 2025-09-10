@@ -75,14 +75,6 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             }
             return null;
         }
-
-        public ArticleDataSetter SpawnArticle(ArticleDataSetter art)
-        {
-            art.transform.parent = _parent;
-            art.transform.localPosition = Vector3.zero;
-            
-            return art;
-        }
     }
 
     public enum SenderType
