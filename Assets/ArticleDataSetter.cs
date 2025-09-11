@@ -32,7 +32,7 @@ public class ArticleDataSetter : MonoBehaviour
     [SerializeField] TextMeshProUGUI _bodyText = null;
 
     [Header("Buttons")]
-    [SerializeField] Button _readButton = null;
+    public Button _readButton = null;
     [SerializeField] Button _shareButton = null;
     [SerializeField] Button _skipButton = null;
 
@@ -157,11 +157,18 @@ public class ArticleDataSetter : MonoBehaviour
         }
     }
 
-    public void DeactivateButtons()
+    public void DestroyButtons()
     {
         Destroy(_readButton.gameObject);
         Destroy(_skipButton.gameObject);
         Destroy(_shareButton.gameObject);
+    }
+
+    public void DeactivateButtons()
+    {
+        _readButton.gameObject.SetActive(false);
+        _skipButton.gameObject.SetActive(false);
+        _shareButton.gameObject.SetActive(false);
     }
 
     public void SetArticleData(ArticleData data)

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[CreateAssetMenu(fileName ="ArticleData", menuName ="ScriptableObjects/ArticleData")]
 public class ArticleData : ScriptableObject
 {
     public Sprite companyLogo;

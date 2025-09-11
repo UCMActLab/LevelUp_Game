@@ -85,7 +85,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 GameObject article = Instantiate(_articlePrefab, newMessage.transform);
                 ArticleDataSetter setter = article.GetComponent<ArticleDataSetter>();
                 setter.SetArticleData(articleData);
-                setter.DeactivateButtons();
+                setter.DestroyButtons();
 
                 newMessage.Setup("","Have you seen this article?");
 

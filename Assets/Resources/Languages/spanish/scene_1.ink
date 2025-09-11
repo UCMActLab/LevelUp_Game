@@ -23,7 +23,7 @@ art01_body -> s1_choice
 == s1_choice == 
 TODO:  Still need to fix the last option so the game moves to the next knot when all options have been exhausted. I fixed the last option, so it checks whether the article has been sent already or not and displays the right text, but this may have issues when translating the game to other languages -- it's not good practice for localization. 
 
-* [Send it your friends.] 
+* [Send it to your friends.] 
     ~ article_forwarded_group1++
     ~ article_sent = true
    -> s1_g1

@@ -33,7 +33,7 @@ art0_body -> s0_choice
 ~ article_sent = true
 
 -> s0_g3
-* Don't send it to anyone{article_sent: else}. -> s0_results
+* Don't send it to anyone {article_sent: else}. -> s0_results
 
 == s0_g1 ==
 Sent to Friends Group.
