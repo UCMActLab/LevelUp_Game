@@ -6,7 +6,7 @@ public class PlayButton : MonoBehaviour
     public void goGameSceneSpanish()
     {
         LanguageSelection.chosenLanguage = Language.spanish;
-        SceneManager.LoadScene("LoadingScene");
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void goGameSceneCroatian()
@@ -21,8 +21,14 @@ public class PlayButton : MonoBehaviour
         SceneManager.LoadScene("LoadingScene");
     }
 
+    public void goGeneralScene(string Scene)
+    {
+        SceneManager.LoadScene(Scene);
+    }
+
     public void goLanguageScene()
     {
         SceneManager.LoadScene("LanguageMenu");
     }
+
 }

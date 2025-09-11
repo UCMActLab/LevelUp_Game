@@ -1090,8 +1090,32 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1055399658171308423, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1055399658171308423, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.77827084
+      objectReference: {fileID: 0}
+    - target: {fileID: 1055399658171308423, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.23272918
+      objectReference: {fileID: 0}
+    - target: {fileID: 1055399658171308423, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -24.099976
+      objectReference: {fileID: 0}
+    - target: {fileID: 1055399658171308423, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1055399658171308423, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 12.049988
+      objectReference: {fileID: 0}
+    - target: {fileID: 1055399658171308423, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1.734314
       objectReference: {fileID: 0}
     - target: {fileID: 1166390718433217308, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1113,6 +1137,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Intro
       objectReference: {fileID: 0}
+    - target: {fileID: 1870695508099369249, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
+      propertyPath: m_text
+      value: "\xA1Esto es Level up!"
+      objectReference: {fileID: 0}
     - target: {fileID: 3728432727845439035, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -1128,6 +1156,13 @@ PrefabInstance:
     - target: {fileID: 3728432727845439035, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -360.2816
+      objectReference: {fileID: 0}
+    - target: {fileID: 6305003490935882637, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
+      propertyPath: m_text
+      value: "En este juego, interactuar\xE1s con diferentes grupos que te enviar\xE1n
+        noticias, blogs y publicaciones en redes sociales. Puedes interactuar con
+        ellos reenvi\xE1ndoles noticias (\xA1o no!) y ver c\xF3mo reaccionan a lo
+        que les env\xEDas.\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 7014596051455734611, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1224,6 +1259,18 @@ PrefabInstance:
     - target: {fileID: 7877926813654698171, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8111050786272932633, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8111050786272932633, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: goGeneralScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 8111050786272932633, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Immersion
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

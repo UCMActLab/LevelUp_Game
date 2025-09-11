@@ -152,7 +152,7 @@ public class ServerManager : MonoBehaviour
             inkText = inkText.Replace(art.ConversationRef + "_ReactionG3", lang.Reaction_G3);
         }
         Debug.Log("hecho :)");
-        SceneManager.LoadScene("ChatDemo");
+        //SceneManager.LoadScene("ChatDemo");
     }
 }
 
