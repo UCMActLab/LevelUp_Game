@@ -4,6 +4,10 @@ using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils;
 using Ink.Runtime;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -41,7 +45,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         private GameObject _currentChat;
 
-        // Llega este texto por Ink cuando se va a recibir un artículo
+        // Llega este texto por Ink cuando se va a recibir un artï¿½culo
         private const string ARTICLE_RECEIVED_FLAG = "ARTICLE RECEIVED";
 
         private void OnDisable() => _answerOptionController.SelectedAnswer -= SubmitAnswer;
@@ -97,7 +101,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                         string text = GetNextStoryText();
                         if(story.currentChoices.Count > 0)
                         {
-                            // escogemos saltarnos el artículo
+                            // escogemos saltarnos el artï¿½culo
                             _answerOptionController.OnAnswerClicked(story.currentChoices[3]);
                         }
                         break;
@@ -118,7 +122,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 }
             }
 
-            // devuelve true si ya no queremos hacer nada con el artículo
+            // devuelve true si ya no queremos hacer nada con el artï¿½culo
             return _currentArticle == null;
         }
 
@@ -131,7 +135,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 bool article = false;
                 while (story.canContinue)
                 {
-                    // si ya no queremos el artículo que tenemos a mano, hacemos el flujo normal de la historia
+                    // si ya no queremos el artï¿½culo que tenemos a mano, hacemos el flujo normal de la historia
                     if (DoArticle())
                     {
                         string text = GetNextStoryText();
@@ -193,7 +197,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             articleData.articleTitle = GetNextStoryText().Replace("Article headline: ", string.Empty);
 
             _currentArticle = Instantiate(_articlePrefab, _articleParent).GetComponent<ArticleDataSetter>();
-            // Aquí se presenta la decisión de si se quiere leer o no el artículo
+            // Aquï¿½ se presenta la decisiï¿½n de si se quiere leer o no el artï¿½culo
             if(story.currentChoices.Count > 0)
             {
                 _answerOptionController.ArticleReadOptions(story.currentChoices, _currentArticle);
@@ -228,7 +232,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             group.SetActive(true);
             _currentChat = group;
             _scrollRect.content = _currentChat.transform as RectTransform;
-            // hacer los grupos como tal (? o probarlo, creo que ya está todo hecho
+            // hacer los grupos como tal (? o probarlo, creo que ya estï¿½ todo hecho
         }
 
         public void SendArticle(ArticleData articleData)
