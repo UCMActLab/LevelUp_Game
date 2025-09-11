@@ -32,19 +32,21 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
             _messageText.text = message;
         }
 
-        public void Setup(Sprite spite)
+        public void Setup(string name, Sprite spite)
         {
             if (spite == null) return;
 
+            if (_nameText != null) _nameText.text = name;
             _imageHolder.SetActive(true);
             _image.sprite = spite;
             _adjuster.SetupProportions();
         }
 
-        public void SetupV(string video)
+        public void SetupV(string name, string video)
         {
             if (video == null) return;
 
+            if (_nameText != null) _nameText.text = name;
             _videoHolder.SetActive(true);
             RenderTexture tex = new RenderTexture(1080, 1080, 32);
 
@@ -54,10 +56,11 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
             _videoPlayer.url = video;
         }
 
-        public void Setup(AudioClip audio)
+        public void Setup(string name, AudioClip audio)
         {
             if (audio == null) return;
 
+            if (_nameText != null) _nameText.text = name;
             _audioHolder.SetActive(true);
 
             _audioSource.clip = audio;

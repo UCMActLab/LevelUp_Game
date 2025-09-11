@@ -11,28 +11,33 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         private List<MessageView> _messageViews = new();
 
-        public void AddMessage(SenderType interlocutor, string messageText)
+        public void AddMessage(SenderType interlocutor, string name, string messageText, Transform chat)
         {
-            var messageView = _messageSpawner.SpawnMessage(interlocutor, messageText);
+            var messageView = _messageSpawner.SpawnMessage(interlocutor, name, messageText, chat);
             _messageViews.Add(messageView);
         }
     
-        public void AddMessage(SenderType interlocutor, Sprite messageSprite)
+        public void AddMessage(SenderType interlocutor, string name, Sprite messageSprite, Transform chat)
         {
-            var messageView = _messageSpawner.SpawnMessage(interlocutor, messageSprite);
+            var messageView = _messageSpawner.SpawnMessage(interlocutor, name, messageSprite, chat);
             _messageViews.Add(messageView);
         }
 
-        public void AddMessageV(SenderType interlocutor, string messageVideo)
+        public void AddMessageV(SenderType interlocutor, string name, string messageVideo, Transform chat)
         {
-            var messageView = _messageSpawner.SpawnMessageV(interlocutor, messageVideo);
+            var messageView = _messageSpawner.SpawnMessageV(interlocutor, name, messageVideo, chat);
             _messageViews.Add(messageView);
         }
 
-        public void AddMessage(SenderType interlocutor, AudioClip messageAudio)
+        public void AddMessage(SenderType interlocutor, string name, AudioClip messageAudio, Transform chat)
         {
-            var messageView = _messageSpawner.SpawnMessage(interlocutor, messageAudio);
+            var messageView = _messageSpawner.SpawnMessage(interlocutor, name, messageAudio, chat);
             _messageViews.Add(messageView);
+        }
+
+        public void SendArticle(ArticleData articleData, Transform chat)
+        {
+            _messageSpawner.SpawnMessage(SenderType.Player, articleData, chat);
         }
     }
 }

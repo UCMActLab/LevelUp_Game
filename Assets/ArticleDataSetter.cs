@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System;
+using DA_Assets.Extensions;
 
 public enum ArticleAction
 {
@@ -92,23 +93,75 @@ public class ArticleDataSetter : MonoBehaviour
         if(choices.Count == 1)
         {
             // escogemos automáticamente no enviar más artículos si no quedan grupos
-            Action = ArticleAction.None;
-            OnShare.Invoke(choices[0]);
+            GameObject share = _convManager.SpawnShareButtons();
+            int i = 0;
+            Button[] buttons = share.GetComponentsInChildren<Button>();
+            foreach(Button bt in buttons)
+            {
+                bt.transform.parent.gameObject.SetActive(false);
+            }
+            buttons[0].transform.parent.gameObject.SetActive(true);
+            buttons[0].onClick.AddListener(() =>
+            {
+                _convManager.ChangeGroup(null);
+                OnShare.Invoke(choices[0]);
+                Destroy(share); 
+                Action = ArticleAction.None;
+            });
         }
         else
         {
             GameObject share = _convManager.SpawnShareButtons();
             int i = 0;
             Button[] buttons = share.GetComponentsInChildren<Button>();
-            buttons[0].onClick.AddListener(() => { OnShare.Invoke(choices[choices.Count - 1]); Destroy(share); Action = ArticleAction.None; });
-            buttons[1].onClick.AddListener(() => { OnShare.Invoke(choices[0]); Destroy(share); });
 
-            if (choices.Count > 2) buttons[2].onClick.AddListener(() => { OnShare.Invoke(choices[1]); Destroy(share); });
+            buttons[0].onClick.AddListener(() => {
+                _convManager.ChangeGroup(null);
+                OnShare.Invoke(choices[choices.Count - 1]); 
+                Destroy(share); 
+                Action = ArticleAction.None; 
+            });
+
+            string text = choices[0].text.Replace("Send it to your ", string.Empty).Trim('.').ToUpper();
+            buttons[1].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
+            buttons[1].onClick.AddListener(() => {
+                _convManager.ChangeGroup(choices[0]);
+                _convManager.SendArticle(Data);
+                OnShare.Invoke(choices[0]); 
+                Destroy(share); 
+            });
+
+            if (choices.Count > 2) {
+                text = choices[1].text.Replace("Send it to your ", string.Empty).Trim('.').ToUpper();
+                buttons[2].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
+                buttons[2].onClick.AddListener(() => {
+                    _convManager.ChangeGroup(choices[1]);
+                    _convManager.SendArticle(Data);
+                    OnShare.Invoke(choices[1]); 
+                    Destroy(share); 
+                });
+            } 
             else buttons[2].transform.parent.gameObject.SetActive(false);
 
-            if (choices.Count > 3) buttons[3].onClick.AddListener(() => { OnShare.Invoke(choices[2]); Destroy(share); });
+            if (choices.Count > 3) {
+                text = choices[2].text.Replace("Send it to your ", string.Empty).Trim('.').ToUpper();
+                buttons[3].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
+                buttons[3].onClick.AddListener(() => { 
+                    _convManager.ChangeGroup(choices[2]);
+                    _convManager.SendArticle(Data);
+                    OnShare.Invoke(choices[2]);
+                    Destroy(share); 
+                });
+            } 
             else buttons[3].transform.parent.gameObject.SetActive(false);
         }
+    }
+
+    public void DeactivateButtons()
+    {
+        Destroy(_readButton.gameObject);
+        Destroy(_skipButton.gameObject);
+        Destroy(_shareButton.gameObject);
     }
 
     public void SetArticleData(ArticleData data)
@@ -137,7 +190,7 @@ public class ArticleDataSetter : MonoBehaviour
         }
     }
 
-    public void SetUpReadSkipButtons(Choice read, Choice skip)
+    public void SetUpButtons(Choice read, Choice skip)
     {
         _readButton.onClick.AddListener(() =>
         {

@@ -4,17 +4,9 @@ using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils;
 using Ink.Runtime;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using TMPro;
-using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using UnityEngine.Video;
-using static UnityEngine.Rendering.DebugUI;
-//using static System.Net.WebRequestMethods;
 
 namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 {
@@ -31,6 +23,11 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         [SerializeField] private Transform _articleParent;
         [SerializeField] private Transform _shareButtonsParent;
 
+        [SerializeField] private ScrollRect _scrollRect;
+
+        [SerializeField] private GameObject _groupChats;
+        [SerializeField] private GameObject _mainFeedChat;
+
         // ink
         [SerializeField] public TextAsset inkJSONAsset;
         public Story story;
@@ -42,6 +39,8 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         private ArticleDataSetter _currentArticle;
 
+        private GameObject _currentChat;
+
         // Llega este texto por Ink cuando se va a recibir un artículo
         private const string ARTICLE_RECEIVED_FLAG = "ARTICLE RECEIVED";
 
@@ -50,7 +49,22 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         private void Start()
         {
             inkJSONAsset = new TextAsset(ServerManager.Instance.inkText);
+
+            InitializeChats();
+
             StartConversation();
+        }
+
+        private void InitializeChats()
+        {
+            for (int i = 0; i < _groupChats.transform.childCount; ++i)
+            {
+                _groupChats.transform.GetChild(i).gameObject.SetActive(false);
+            }
+
+            _currentChat = _mainFeedChat;
+            _currentChat.SetActive(true);
+            _scrollRect.content = _currentChat.transform as RectTransform;
         }
 
         private void StartConversation()
@@ -127,8 +141,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                             HandleArticleReceived();
                             article = true;
                         }
-
-                        else
+                        else if(!text.Contains("Sent to "))
                         {
                             // Display the text on screen!
                             _currentMessage = new MessageSolution();
@@ -166,7 +179,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         public GameObject SpawnShareButtons()
         {
-            GameObject gO = Instantiate(_shareButtonsPrefab, _shareButtonsParent);
+            GameObject gO = Instantiate(_shareButtonsPrefab, _currentChat.transform);
             foreach(RectTransform rect in gO.GetComponentsInChildren<RectTransform>())
             {
                 LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
@@ -191,6 +204,38 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             _currentArticle.SetArticleData(articleData);
         }
 
+        public void ChangeGroup(Choice groupToSend)
+        {
+            if(groupToSend == null)
+            {
+                _currentChat.SetActive(false);
+
+                _currentChat = _mainFeedChat;
+                _currentChat.SetActive(true);
+                _scrollRect.content = _currentChat.transform as RectTransform;
+
+                return;
+            }
+
+            string whichGroup = groupToSend.text.Replace("Send it to your ", string.Empty).Trim('.');
+            _currentChat.SetActive(false);
+
+            GameObject group = null;
+            if (whichGroup == "family") group = _groupChats.transform.GetChild(0).gameObject;
+            else if (whichGroup == "friends") group = _groupChats.transform.GetChild(1).gameObject;
+            else if (whichGroup == "neighbours") group = _groupChats.transform.GetChild(2).gameObject;
+
+            group.SetActive(true);
+            _currentChat = group;
+            _scrollRect.content = _currentChat.transform as RectTransform;
+            // hacer los grupos como tal (? o probarlo, creo que ya está todo hecho
+        }
+
+        public void SendArticle(ArticleData articleData)
+        {
+            _messageContainer.SendArticle(articleData, _currentChat.transform);
+        }
+
         private void ReadArticle()
         {
             if(story.canContinue) {
@@ -198,7 +243,6 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 _currentArticle.Data.articleBody = GetNextStoryText();
                 _currentArticle.SetArticleData(_currentArticle.Data);
                 _currentArticle.ChangeButtonsOnArticleRead();
-
             }
         }
 
@@ -244,22 +288,24 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         private void DisplayNextMessage()
         {
             if (_currentMessage != null)
-            { 
+            {
+                string name = _currentChat.GetComponent<GroupSettings>().GetRandomName();
+
                 if(_currentMessage.VideoURL != null)
                 {
-                    _messageContainer.AddMessageV(SenderType.Interlocutor, _currentMessage.VideoURL);
+                    _messageContainer.AddMessageV(SenderType.Interlocutor, name, _currentMessage.VideoURL, _currentChat.transform);
                 }
                 else if (_currentMessage.AudioClip != null)
                 {
-                    _messageContainer.AddMessage(SenderType.Interlocutor, _currentMessage.AudioClip);
+                    _messageContainer.AddMessage(SenderType.Interlocutor, name, _currentMessage.AudioClip, _currentChat.transform);
                 }
                 else if (_currentMessage.Texture2D != null)
                 {
-                    _messageContainer.AddMessage(SenderType.Interlocutor, GetSprite(_currentMessage));
+                    _messageContainer.AddMessage(SenderType.Interlocutor, name, GetSprite(_currentMessage), _currentChat.transform);
                 }
                 else
                 {
-                    _messageContainer.AddMessage(SenderType.Interlocutor, _currentMessage.text);
+                    _messageContainer.AddMessage(SenderType.Interlocutor, name, _currentMessage.text, _currentChat.transform);
                 }
             }
         }
@@ -272,14 +318,16 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         private void SubmitAnswer(Choice answerChoice)
         {
             if(_currentArticle == null) 
-                _messageContainer.AddMessage(SenderType.Player, answerChoice.text);
+                _messageContainer.AddMessage(SenderType.Player, "", answerChoice.text, _currentChat.transform);
             story.ChooseChoiceIndex(answerChoice.index);
             StartCoroutine(UpdateDialogueView());
         }
 
         IEnumerator StartPrintingSimulation()
         {
+            _messageWritingAnimator = _currentChat.GetComponent<GroupSettings>().GetWritingAnimator();
             _messageWritingAnimator.Enable();
+            _scrollRect.normalizedPosition = new Vector2(_scrollRect.normalizedPosition.x, 0.0f);
             yield return new WaitForSeconds(_responseTimeInSeconds);
             _messageWritingAnimator.Disable();
         }
