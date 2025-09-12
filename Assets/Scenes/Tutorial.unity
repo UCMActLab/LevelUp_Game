@@ -392,6 +392,7 @@ GameObject:
   m_Component:
   - component: {fileID: 326032683}
   - component: {fileID: 326032684}
+  - component: {fileID: 326032685}
   m_Layer: 0
   m_Name: TutorialController
   m_TagString: Untagged
@@ -473,8 +474,32 @@ MonoBehaviour:
   _buttonHolder: {fileID: 1300433340}
   OnTutorialEnd:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 326032685}
+        m_TargetAssemblyTypeName: PlayButton, Assembly-CSharp
+        m_MethodName: goGeneralScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ChatDemo
+          m_BoolArgument: 0
+        m_CallState: 2
   _timeBetweenMessages: 1.8
+--- !u!114 &326032685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326032682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbaa21da6ee1fd94995e08d6fe1a7c50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &340672473
 GameObject:
   m_ObjectHideFlags: 0
@@ -1957,7 +1982,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6479405160634348187, guid: e20b7f0013f9d2a478c3203314854b78, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 631.47
       objectReference: {fileID: 0}
     - target: {fileID: 6479405160634348187, guid: e20b7f0013f9d2a478c3203314854b78, type: 3}
       propertyPath: m_AnchoredPosition.x
