@@ -105,7 +105,9 @@ public class ArticleDataSetter : MonoBehaviour
             {
                 _convManager.ChangeGroup(null);
                 OnShare.Invoke(choices[0]);
-                Destroy(share); 
+                Destroy(share);
+                _readButton.interactable = false;
+                _skipButton.interactable = false;
                 Action = ArticleAction.None;
             });
         }
@@ -118,7 +120,9 @@ public class ArticleDataSetter : MonoBehaviour
             buttons[0].onClick.AddListener(() => {
                 _convManager.ChangeGroup(null);
                 OnShare.Invoke(choices[choices.Count - 1]); 
-                Destroy(share); 
+                Destroy(share);
+                _readButton.interactable = false;
+                _skipButton.interactable = false;
                 Action = ArticleAction.None; 
             });
 
@@ -129,7 +133,9 @@ public class ArticleDataSetter : MonoBehaviour
                 _convManager.ChangeGroup(choices[0]);
                 _convManager.SendArticle(Data);
                 OnShare.Invoke(choices[0]); 
-                Destroy(share); 
+                Destroy(share);
+                _readButton.interactable = false;
+                _skipButton.interactable = false;
             });
 
             if (choices.Count > 2) {
@@ -140,7 +146,9 @@ public class ArticleDataSetter : MonoBehaviour
                     _convManager.ChangeGroup(choices[1]);
                     _convManager.SendArticle(Data);
                     OnShare.Invoke(choices[1]); 
-                    Destroy(share); 
+                    Destroy(share);
+                    _readButton.interactable = false;
+                    _skipButton.interactable = false;
                 });
             } 
             else buttons[2].transform.parent.gameObject.SetActive(false);
@@ -153,7 +161,9 @@ public class ArticleDataSetter : MonoBehaviour
                     _convManager.ChangeGroup(choices[2]);
                     _convManager.SendArticle(Data);
                     OnShare.Invoke(choices[2]);
-                    Destroy(share); 
+                    Destroy(share);
+                    _readButton.interactable = false;
+                    _skipButton.interactable = false;
                 });
             } 
             else buttons[3].transform.parent.gameObject.SetActive(false);

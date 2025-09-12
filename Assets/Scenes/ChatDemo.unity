@@ -1232,13 +1232,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _messageWritingAnimator: {fileID: 1671761823}
-  _name: Family
-  _image: {fileID: 0}
+  _name: Familia
+  _image: {fileID: 21300000, guid: e9fd0c6ae1c7117428c49585ffeba1c0, type: 3}
   _people:
-  - Pedro (son)
-  - Carla (grandaughter)
-  - Teresa (wife)
-  - "Tob\xEDas (grandson)"
+  - Pedro
+  - Carla
+  - Teresa
+  - "Tob\xEDas"
   _groupInfo: {fileID: 48462493}
 --- !u!1 &1030984720
 GameObject:
@@ -1452,6 +1452,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7166129947580059151}
     m_Modifications:
+    - target: {fileID: 873638342186976400, guid: 0731b14d45e4eb844b3c7d7d664a7538, type: 3}
+      propertyPath: m_PreserveAspect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3588566292659761623, guid: 0731b14d45e4eb844b3c7d7d664a7538, type: 3}
       propertyPath: m_Name
       value: ChatWritingAnimation
@@ -1877,7 +1881,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2151,8 +2155,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _messageWritingAnimator: {fileID: 426104392}
-  _name: Friends
-  _image: {fileID: 0}
+  _name: Amigos
+  _image: {fileID: 21300000, guid: 66fee75a51e444144b6040e525f45868, type: 3}
   _people:
   - Carlos
   - Pedro
@@ -2314,8 +2318,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _messageWritingAnimator: {fileID: 1373853872}
-  _name: Neighbours
-  _image: {fileID: 0}
+  _name: Vecinos
+  _image: {fileID: 21300000, guid: b985c1f5db1404745b32352348e0d712, type: 3}
   _people:
   - "Ra\xFAl"
   - Alberto
@@ -2936,20 +2940,21 @@ MonoBehaviour:
   _scrollRect: {fileID: 3405964300395074841}
   _groupChats: {fileID: 3022021389488740545}
   _mainFeedChat: {fileID: 423702919950541310}
+  _speakerSprite: {fileID: 21300000, guid: 7358ccfd92689764a99d054ea486a9c1, type: 3}
   inkJSONAsset: {fileID: 4900000, guid: ace6fb435fd5e234983857054495d5b1, type: 3}
   OnGameEnd:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2063202182}
         m_TargetAssemblyTypeName: PlayButton, Assembly-CSharp
-        m_MethodName: goLanguageScene
-        m_Mode: 1
+        m_MethodName: goGeneralScene
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: EndGame
           m_BoolArgument: 0
         m_CallState: 2
   _responseTimeInSeconds: 1.5
@@ -4055,7 +4060,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _messageWritingAnimator: {fileID: 1164502863}
   _name: Feed
-  _image: {fileID: 0}
+  _image: {fileID: 21300000, guid: 6804958dc8fbb714fb4669f96d5f2f7a, type: 3}
   _people:
   - Feed
   _groupInfo: {fileID: 48462493}

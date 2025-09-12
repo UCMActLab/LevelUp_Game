@@ -34,6 +34,8 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         [SerializeField] private GameObject _groupChats;
         [SerializeField] private GameObject _mainFeedChat;
 
+        [SerializeField] private Sprite _speakerSprite;
+
         // ink
         [SerializeField] public TextAsset inkJSONAsset;
         public Story story;
@@ -341,10 +343,14 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 string[] message = _currentMessage.text.Split(':');
                 string name;
                 string text;
+
+                Sprite sprite = null;
+
                 if(message.Length > 1)
                 {
                     name = _currentMessage.text.Split(':')[0];
                     text = _currentMessage.text.Substring(name.Length + 2);
+                    sprite = _speakerSprite;
                 }
                 else
                 {
@@ -353,19 +359,19 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 }
                 if (_currentMessage.VideoURL != null)
                 {
-                    _messageContainer.AddMessageV(SenderType.Interlocutor, name, _currentMessage.VideoURL, _currentChat.transform);
+                    _messageContainer.AddMessageV(SenderType.Interlocutor, name, _currentMessage.VideoURL, _currentChat.transform, _speakerSprite);
                 }
                 else if (_currentMessage.AudioClip != null)
                 {
-                    _messageContainer.AddMessage(SenderType.Interlocutor, name, _currentMessage.AudioClip, _currentChat.transform);
+                    _messageContainer.AddMessage(SenderType.Interlocutor, name, _currentMessage.AudioClip, _currentChat.transform, _speakerSprite);
                 }
                 else if (_currentMessage.Texture2D != null)
                 {
-                    _messageContainer.AddMessage(SenderType.Interlocutor, name, GetSprite(_currentMessage), _currentChat.transform);
+                    _messageContainer.AddMessage(SenderType.Interlocutor, name, GetSprite(_currentMessage), _currentChat.transform, _speakerSprite);
                 }
                 else
                 {
-                    _messageContainer.AddMessage(SenderType.Interlocutor, name, text, _currentChat.transform);
+                    _messageContainer.AddMessage(SenderType.Interlocutor, name, text, _currentChat.transform, _speakerSprite);
                 }
             }
         }

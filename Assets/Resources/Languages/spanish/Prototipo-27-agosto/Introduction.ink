@@ -1,6 +1,9 @@
 // This is an example of how the game would start 
 
+
+
 == tutorial_check == 
+-> scene_0_intro // esto lo pongo aquí para saltarme el tutorial
 ¿Quieres hacer el tutorial? 
 * [Sí.] -> Introduction
 * [No.] -> scene_0_intro
