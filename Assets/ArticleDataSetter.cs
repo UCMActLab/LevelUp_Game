@@ -122,7 +122,8 @@ public class ArticleDataSetter : MonoBehaviour
                 Action = ArticleAction.None; 
             });
 
-            string text = choices[0].text.Replace("Send it to your ", string.Empty).Trim('.').ToUpper();
+            string[] words = choices[0].text.Split(' ');
+            string text = words[words.Length - 1].Trim('.').ToUpper();
             buttons[1].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
             buttons[1].onClick.AddListener(() => {
                 _convManager.ChangeGroup(choices[0]);
@@ -132,7 +133,8 @@ public class ArticleDataSetter : MonoBehaviour
             });
 
             if (choices.Count > 2) {
-                text = choices[1].text.Replace("Send it to your ", string.Empty).Trim('.').ToUpper();
+                words = choices[1].text.Split(' ');
+                text = words[words.Length - 1].Trim('.').ToUpper();
                 buttons[2].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
                 buttons[2].onClick.AddListener(() => {
                     _convManager.ChangeGroup(choices[1]);
@@ -144,7 +146,8 @@ public class ArticleDataSetter : MonoBehaviour
             else buttons[2].transform.parent.gameObject.SetActive(false);
 
             if (choices.Count > 3) {
-                text = choices[2].text.Replace("Send it to your ", string.Empty).Trim('.').ToUpper();
+                words = choices[2].text.Split(' ');
+                text = words[words.Length - 1].Trim('.').ToUpper();
                 buttons[3].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
                 buttons[3].onClick.AddListener(() => { 
                     _convManager.ChangeGroup(choices[2]);

@@ -1,5 +1,6 @@
-using System;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
@@ -10,6 +11,16 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         [SerializeField] private MessageView _messageInterlocutorViewPrefab;
         [SerializeField] private GameObject _articlePrefab;
         // [SerializeField] private Transform _parent;
+
+        private Dictionary<Language, string> HAVEYOUSEENTHIS_KEYWORD;
+
+        private void Start()
+        {
+            HAVEYOUSEENTHIS_KEYWORD = new Dictionary<Language, string>();
+            HAVEYOUSEENTHIS_KEYWORD.Add(Language.spanish, "¿Habéis visto esto?");
+            HAVEYOUSEENTHIS_KEYWORD.Add(Language.english, "Have you seen this?");
+        }
+
 
         public event Action SpawnedMessage;
         
@@ -82,12 +93,13 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             if (chat != null)
             {
                 var newMessage = Instantiate(prefab, chat);
+                newMessage.Setup("", HAVEYOUSEENTHIS_KEYWORD[LanguageSelection.chosenLanguage]);
+
                 GameObject article = Instantiate(_articlePrefab, newMessage.transform);
                 ArticleDataSetter setter = article.GetComponent<ArticleDataSetter>();
+                articleData.articleBody = string.Empty;
                 setter.SetArticleData(articleData);
                 setter.DestroyButtons();
-
-                newMessage.Setup("","Have you seen this article?");
 
                 SpawnedMessage?.Invoke();
 

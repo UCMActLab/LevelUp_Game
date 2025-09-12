@@ -2906,6 +2906,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2063202181}
   - component: {fileID: 2063202180}
+  - component: {fileID: 2063202182}
   m_Layer: 0
   m_Name: ConversationManager
   m_TagString: Untagged
@@ -2935,7 +2936,22 @@ MonoBehaviour:
   _scrollRect: {fileID: 3405964300395074841}
   _groupChats: {fileID: 3022021389488740545}
   _mainFeedChat: {fileID: 423702919950541310}
-  inkJSONAsset: {fileID: 4900000, guid: f52b0226f71ce394eab881f27adc5489, type: 3}
+  inkJSONAsset: {fileID: 4900000, guid: ace6fb435fd5e234983857054495d5b1, type: 3}
+  OnGameEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2063202182}
+        m_TargetAssemblyTypeName: PlayButton, Assembly-CSharp
+        m_MethodName: goLanguageScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _responseTimeInSeconds: 1.5
 --- !u!4 &2063202181
 Transform:
@@ -2952,6 +2968,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 341609177}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2063202182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2063202179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbaa21da6ee1fd94995e08d6fe1a7c50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &310700826767647481
 MonoBehaviour:
   m_ObjectHideFlags: 0

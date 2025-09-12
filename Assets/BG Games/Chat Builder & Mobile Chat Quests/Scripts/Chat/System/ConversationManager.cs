@@ -1,6 +1,7 @@
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.Data;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils;
+using DA_Assets.Extensions;
 using Ink.Runtime;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
@@ -36,6 +38,8 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         [SerializeField] public TextAsset inkJSONAsset;
         public Story story;
 
+        public UnityEvent OnGameEnd = new UnityEvent();
+
         [Space] [Range(0.2f, 10f)] [SerializeField]
         private float _responseTimeInSeconds;
 
@@ -46,7 +50,13 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         private GameObject _currentChat;
 
         // Llega este texto por Ink cuando se va a recibir un art�culo
-        private const string ARTICLE_RECEIVED_FLAG = "ARTICLE RECEIVED";
+        private Dictionary<Language, string> ARTICLE_RECEIVED_FLAG;
+        private Dictionary<Language, string> ARTICLE_HEADLINE_TEXT;
+        private Dictionary<Language, string> SENT_TO_TEXT;
+        private Dictionary<Language, string> FAMILY_KEYWORD;
+        private Dictionary<Language, string> FRIENDS_KEYWORD;
+        private Dictionary<Language, string> NEIGHBOURS_KEYWORD;
+        private Dictionary<Language, string> SOURCE_KEYWORD;
 
         private void OnDisable() => _answerOptionController.SelectedAnswer -= SubmitAnswer;
 
@@ -54,9 +64,42 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         {
             inkJSONAsset = new TextAsset(ServerManager.Instance.inkText);
 
+            SetUpLanguageKeyWord();
+
             InitializeChats();
 
             StartConversation();
+        }
+
+        private void SetUpLanguageKeyWord()
+        {
+            ARTICLE_RECEIVED_FLAG = new Dictionary<Language, string>();
+            ARTICLE_RECEIVED_FLAG.Add(Language.spanish, "ARTÍCULO RECIBIDO");
+            ARTICLE_RECEIVED_FLAG.Add(Language.english, "ARTICLE RECEIVED");
+
+            ARTICLE_HEADLINE_TEXT = new Dictionary<Language, string>();
+            ARTICLE_HEADLINE_TEXT.Add(Language.english, "Article headline: ");
+            ARTICLE_HEADLINE_TEXT.Add(Language.spanish, "Titular: ");
+
+            SENT_TO_TEXT = new Dictionary<Language, string>();
+            SENT_TO_TEXT.Add(Language.english, "Sent to ");
+            SENT_TO_TEXT.Add(Language.spanish, "Enviado a ");
+
+            FAMILY_KEYWORD = new Dictionary<Language, string> ();
+            FAMILY_KEYWORD.Add(Language.english, "family");
+            FAMILY_KEYWORD.Add(Language.spanish, "familia");
+
+            FRIENDS_KEYWORD = new Dictionary<Language, string>();
+            FRIENDS_KEYWORD.Add(Language.english, "friends");
+            FRIENDS_KEYWORD.Add(Language.spanish, "amigos");
+
+            NEIGHBOURS_KEYWORD = new Dictionary<Language, string>();
+            NEIGHBOURS_KEYWORD.Add(Language.english, "neighbours");
+            NEIGHBOURS_KEYWORD.Add(Language.spanish, "vecinos");
+
+            SOURCE_KEYWORD = new Dictionary<Language, string>();
+            SOURCE_KEYWORD.Add(Language.english, "This article comes from: ");
+            SOURCE_KEYWORD.Add(Language.spanish, "Fuente: ");
         }
 
         private void InitializeChats()
@@ -140,12 +183,12 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                     {
                         string text = GetNextStoryText();
 
-                        if (text == ARTICLE_RECEIVED_FLAG)
+                        if (text == ARTICLE_RECEIVED_FLAG[LanguageSelection.chosenLanguage])
                         {
                             HandleArticleReceived();
                             article = true;
                         }
-                        else if(!text.Contains("Sent to "))
+                        else if (!text.Contains(SENT_TO_TEXT[LanguageSelection.chosenLanguage]))
                         {
                             // Display the text on screen!
                             _currentMessage = new MessageSolution();
@@ -174,9 +217,10 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                     else DisplayAnswers(story.currentChoices);
                 }
                 // If we've read all the content and there's no choices, the story is finished!
-                else
+                else if(story.currentChoices.Count == 0)
                 {
-                    Debug.Log("FIN");
+                    yield return new WaitForSeconds(3.0f);
+                    OnGameEnd.Invoke();
                 }
             }
         }
@@ -194,7 +238,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         private void HandleArticleReceived()
         {
             ArticleData articleData = new ArticleData();
-            articleData.articleTitle = GetNextStoryText().Replace("Article headline: ", string.Empty);
+            articleData.articleTitle = GetNextStoryText().Replace(ARTICLE_HEADLINE_TEXT[LanguageSelection.chosenLanguage], string.Empty);
 
             _currentArticle = Instantiate(_articlePrefab, _articleParent).GetComponent<ArticleDataSetter>();
             // Aqu� se presenta la decisi�n de si se quiere leer o no el art�culo
@@ -221,13 +265,14 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 return;
             }
 
-            string whichGroup = groupToSend.text.Replace("Send it to your ", string.Empty).Trim('.');
+            string[] words = groupToSend.text.Split(' ');
+            string whichGroup = words[words.Length - 1].Trim('.');
             _currentChat.SetActive(false);
 
             GameObject group = null;
-            if (whichGroup == "family") group = _groupChats.transform.GetChild(0).gameObject;
-            else if (whichGroup == "friends") group = _groupChats.transform.GetChild(1).gameObject;
-            else if (whichGroup == "neighbours") group = _groupChats.transform.GetChild(2).gameObject;
+            if (whichGroup == FAMILY_KEYWORD[LanguageSelection.chosenLanguage]) group = _groupChats.transform.GetChild(0).gameObject;
+            else if (whichGroup == FRIENDS_KEYWORD[LanguageSelection.chosenLanguage]) group = _groupChats.transform.GetChild(1).gameObject;
+            else if (whichGroup == NEIGHBOURS_KEYWORD[LanguageSelection.chosenLanguage]) group = _groupChats.transform.GetChild(2).gameObject;
 
             group.SetActive(true);
             _currentChat = group;
@@ -243,7 +288,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         private void ReadArticle()
         {
             if(story.canContinue) {
-                _currentArticle.Data.companyName = GetNextStoryText().Replace("This article comes from ", string.Empty);
+                _currentArticle.Data.companyName = GetNextStoryText().Replace(SOURCE_KEYWORD[LanguageSelection.chosenLanguage], string.Empty);
                 _currentArticle.Data.articleBody = GetNextStoryText();
                 _currentArticle.SetArticleData(_currentArticle.Data);
                 _currentArticle.ChangeButtonsOnArticleRead();
@@ -293,9 +338,20 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         {
             if (_currentMessage != null)
             {
-                string name = _currentChat.GetComponent<GroupSettings>().GetRandomName();
-
-                if(_currentMessage.VideoURL != null)
+                string[] message = _currentMessage.text.Split(':');
+                string name;
+                string text;
+                if(message.Length > 1)
+                {
+                    name = _currentMessage.text.Split(':')[0];
+                    text = _currentMessage.text.Substring(name.Length + 2);
+                }
+                else
+                {
+                    name = _currentChat.GetComponent<GroupSettings>().GetRandomName();
+                    text = _currentMessage.text;
+                }
+                if (_currentMessage.VideoURL != null)
                 {
                     _messageContainer.AddMessageV(SenderType.Interlocutor, name, _currentMessage.VideoURL, _currentChat.transform);
                 }
@@ -309,7 +365,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 }
                 else
                 {
-                    _messageContainer.AddMessage(SenderType.Interlocutor, name, _currentMessage.text, _currentChat.transform);
+                    _messageContainer.AddMessage(SenderType.Interlocutor, name, text, _currentChat.transform);
                 }
             }
         }

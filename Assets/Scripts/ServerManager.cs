@@ -46,6 +46,9 @@ public class ServerManager : MonoBehaviour
     [HideInInspector]
     public RootObject serverAnswer;
 
+    [SerializeField]
+    public string inkPath = "/Prototipo-27-agosto/Prototipo Agosto";
+
     [HideInInspector]
     public string inkText = "";
 
@@ -126,7 +129,7 @@ public class ServerManager : MonoBehaviour
         TextAsset jsonAsset = Resources.Load<TextAsset>("FakeNewsVideogame");
         serverAnswer = JsonUtility.FromJson<RootObject>(jsonAsset.text);
 
-        TextAsset inkAsset = Resources.Load<TextAsset>("Languages/" + LanguageSelection.chosenLanguage + "/main");
+        TextAsset inkAsset = Resources.Load<TextAsset>("Languages/" + LanguageSelection.chosenLanguage + inkPath);
         inkText = inkAsset.text;
 
         for (int i = 0; i < serverAnswer.Articles.Count; ++i)
