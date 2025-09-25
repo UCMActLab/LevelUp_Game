@@ -10,6 +10,4 @@ public class ArticleData : ScriptableObject
     public Sprite articleImage;
     public string articleTitle;
     public string articleBody;
-    public int likes;
-    public int reposts;
 }

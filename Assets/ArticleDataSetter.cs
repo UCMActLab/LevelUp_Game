@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System;
-using DA_Assets.Extensions;
 
 public enum ArticleAction
 {
@@ -21,11 +20,8 @@ public class ArticleDataSetter : MonoBehaviour
     [Header("General Info")]
     [SerializeField] Image _companyLogo = null;
     [SerializeField] TextMeshProUGUI _companyText = null;
-    [SerializeField] TextMeshProUGUI _postedHoursAgo = null;
     [SerializeField] Image _articleImage = null;
     [SerializeField] TextMeshProUGUI _articleTitle = null;
-    [SerializeField] TextMeshProUGUI _likes = null;
-    [SerializeField] TextMeshProUGUI _reposts = null;
 
     [Header("Body")]
     [SerializeField] GameObject _articleBody = null;
@@ -40,15 +36,20 @@ public class ArticleDataSetter : MonoBehaviour
     public ArticleAction Action;
 
     public event Action<Choice> OnRead;
-    public event Action<Choice> OnSkip;
+    public event Action<Choice> OnSkipChoice;
     public event Action<Choice> OnShare;
     public event Action<Choice> AnswerClicked;
+
+    public event Action OnSkip;
 
     ConversationManager _convManager = null;
 
     private void Start()
     {
         _convManager = FindAnyObjectByType<ConversationManager>();
+
+        _articleBody.SetActive(false);
+        SetArticleData(Data);
     }
 
     public void ChangeButtonsOnArticleRead()
@@ -85,7 +86,7 @@ public class ArticleDataSetter : MonoBehaviour
         _shareButton.interactable = false;
         _shareButton.onClick.RemoveAllListeners();
 
-        OnSkip?.Invoke(skip);
+        OnSkipChoice?.Invoke(skip);
     }
 
     public void ShareButton(System.Collections.Generic.List<Choice> choices)
@@ -170,6 +171,7 @@ public class ArticleDataSetter : MonoBehaviour
         }
     }
 
+    #region Activate or Destroy Buttons
     public void DestroyButtons()
     {
         Destroy(_readButton.gameObject);
@@ -177,11 +179,74 @@ public class ArticleDataSetter : MonoBehaviour
         Destroy(_shareButton.gameObject);
     }
 
-    public void DeactivateButtons()
+    public void ActivateButtons(bool active)
     {
-        _readButton.gameObject.SetActive(false);
-        _skipButton.gameObject.SetActive(false);
-        _shareButton.gameObject.SetActive(false);
+        _readButton.gameObject.SetActive(active);
+        _skipButton.gameObject.SetActive(active);
+        _shareButton.gameObject.SetActive(active);
+
+        RebuildAllLayouts();
+    }
+    #endregion
+
+    #region Button Interaction 
+    public void EnableButtonsInteraction(bool active)
+    {
+        EnableSkipButton(active);
+        EnableReadButton(active);
+        EnableShareButton(active);
+    }
+
+    public void EnableReadButton(bool active)
+    {
+        EnableButtonInteraction(_readButton, active);
+    }
+    public void EnableShareButton(bool active)
+    {
+        EnableButtonInteraction(_shareButton, active);
+    }
+    public void EnableSkipButton(bool active)
+    {
+        EnableButtonInteraction(_skipButton, active);
+    }
+
+    private void EnableButtonInteraction(Button bt, bool active)
+    {
+        bt.interactable = active;
+    }
+    #endregion
+
+    #region Button Highlight
+    public void HighlightSkipButton(bool active)
+    {
+        HighlightButton(_skipButton, active);
+    }
+
+    public void HighlightReadButton(bool active)
+    {
+        HighlightButton(_readButton, active);
+    }
+
+    public void HighlightShareButton(bool active)
+    {
+        HighlightButton(_shareButton, active);
+    }
+
+    private void HighlightButton(Button bt, bool active)
+    {
+        bt.GetComponent<Animator>().SetBool("Highlighted", active);
+    }
+
+
+    #endregion
+
+    private void RebuildAllLayouts()
+    {
+        LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+        foreach (Transform tr in transform.GetComponentsInChildren<Transform>())
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(tr as RectTransform);
+        }
     }
 
     public void SetArticleData(ArticleData data)
@@ -192,22 +257,10 @@ public class ArticleDataSetter : MonoBehaviour
         
         _companyLogo.sprite = Data.companyLogo;
         _companyText.text = Data.companyName;
-        _postedHoursAgo.text = Data.hoursAgoPosted + "h";
         _articleImage.sprite = Data.articleImage;
-        _articleTitle.text = Data.articleTitle;
-        _likes.text = Data.likes.ToString();
-        _reposts.text = Data.reposts.ToString();
+        _articleImage.gameObject.SetActive(_articleImage.sprite != null);
 
-        if(data.articleBody != null && data.articleTitle != string.Empty)
-        {
-            _articleBody.SetActive(true);
-            _bodyText.text = data.articleBody;
-        }
-        else
-        {
-            _articleBody.SetActive(false);
-            _bodyText.text = string.Empty;
-        }
+        _articleTitle.text = Data.articleTitle;
     }
 
     public void SetUpButtons(Choice read, Choice skip)
@@ -220,12 +273,36 @@ public class ArticleDataSetter : MonoBehaviour
         _skipButton.onClick.AddListener(() =>
         {
             Action = ArticleAction.Skip;
-            OnSkip?.Invoke(skip);
+            OnSkipChoice?.Invoke(skip);
         });
         _shareButton.onClick.AddListener(() =>
         {
             Action = ArticleAction.Share;
             OnShare?.Invoke(skip);
         });
+    }
+
+    public void ReadArticleByButton()
+    {
+        _articleBody.SetActive(true);
+        _readButton.interactable = false;
+    }
+
+    /// <summary>
+    /// TODO: Skip article, changing points and general player score if skipped article was false or true
+    /// </summary>
+    bool _skipped = false;
+    public void SkipArticle()
+    {
+        if (_skipped) return;
+
+        OnSkip.Invoke();
+
+        GetComponent<Animator>().SetTrigger("Skip");
+    }
+
+    public void DestroyArticle()
+    {
+        Destroy(gameObject);
     }
 }
