@@ -11,14 +11,10 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
     public class MessageView : MonoBehaviour
     {
         [SerializeField] private string _freeImagText = "Free";
-        [Space] 
-        [SerializeField] private int _emojiTopPadding = -67;
-        [SerializeField] private int _emojiBottomPadding = -5;
-        [SerializeField] private float _emojiFontSize = 208.5f;
-        [SerializeField] private TextAlignmentOptions _emojiLayoutOptions;
         [Space]
         [SerializeField] private Image _background;
         [SerializeField] private HorizontalOrVerticalLayoutGroup _messageLayout;
+        [SerializeField] private TMP_Text _nameText = null;
         [SerializeField] private TMP_Text _messageText;
         [SerializeField] private GameObject _imageHolder;
         [SerializeField] private GameObject _videoHolder;
@@ -27,92 +23,47 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         [SerializeField] private RawImage _rawImage;
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private Image _image;
-        [SerializeField] private TMP_Text _imageCost;
-        [SerializeField] private GameObject _coinIcon;
-        
-        [SerializeField] private UIButton _openImageButton;
-        [SerializeField] private GameObject _frameBlur;
-        
         [SerializeField] private ImageOnFullScreenAdjuster _adjuster;
         
-        private CurrencyService _currencyService;
-        private int _imageCostValue;
 
-        public void Setup(string message, bool isBlur)
+        public void Setup(string name, string message)
         {
+            if(_nameText != null) _nameText.text = name;
             _messageText.text = message;
-
-            if (message.IsOneEmoji())
-            {
-                _messageLayout.padding.top = _emojiTopPadding;
-                _messageLayout.padding.bottom = _emojiBottomPadding;
-
-                _messageText.fontSize = _emojiFontSize;
-                _messageText.alignment = _emojiLayoutOptions;
-                _background.enabled = false;
-            }
         }
 
-        public void Setup(Sprite spite, CurrencyService currencyService, bool isBlur, int imagePrice)
+        public void Setup(string name, Sprite spite)
         {
             if (spite == null) return;
-            _currencyService = currencyService;
 
+            if (_nameText != null) _nameText.text = name;
             _imageHolder.SetActive(true);
             _image.sprite = spite;
             _adjuster.SetupProportions();
-
-            if (!isBlur)
-            {
-                _openImageButton.gameObject.SetActive(false);
-                _frameBlur.SetActive(false);
-            }
-            
-            _imageCostValue = imagePrice;
-            
-            if (imagePrice == 0)
-            {
-                _coinIcon.gameObject.SetActive(false);
-                _imageCost.text = _freeImagText;
-            }
-            else
-            {
-                _imageCost.text = _imageCostValue.ToString();
-            }
-
-            _openImageButton.AssignAction(OpenImageClickHandler);
         }
 
-        public void Setup(VideoClip video)
+        public void SetupV(string name, string video)
         {
             if (video == null) return;
 
+            if (_nameText != null) _nameText.text = name;
             _videoHolder.SetActive(true);
-            RenderTexture tex = new RenderTexture((int)video.width, (int)video.height, 32);
+            RenderTexture tex = new RenderTexture(1080, 1080, 32);
 
             _rawImage.texture = tex;
             _videoPlayer.targetTexture = tex;
 
-            _videoPlayer.clip = video;
+            _videoPlayer.url = video;
         }
 
-        public void Setup(AudioClip audio)
+        public void Setup(string name, AudioClip audio)
         {
             if (audio == null) return;
 
+            if (_nameText != null) _nameText.text = name;
             _audioHolder.SetActive(true);
 
             _audioSource.clip = audio;
-        }
-
-        private void OpenImageClickHandler()
-        {
-            if (_currencyService.Pay(_imageCostValue))
-            {
-                _openImageButton.gameObject.SetActive(false);
-                if(_frameBlur)
-                    _frameBlur.SetActive(false);
-            }
         }
     }
 }

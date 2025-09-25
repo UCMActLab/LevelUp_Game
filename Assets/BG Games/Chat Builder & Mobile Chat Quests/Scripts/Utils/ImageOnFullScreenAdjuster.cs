@@ -25,14 +25,15 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils
 
         public void SetupProportions()
         {
-
             if (!_image.sprite)
             {
-                Debug.LogError("Image dont have sprite");
+                Debug.LogError("Image doesn't have a sprite");
                 return;
             }
+
             float screenWidth = Screen.width;
             float screenHeight = Screen.height;
+
             if (_parentTransform)
             {
                 screenWidth = _parentTransform.rect.width;
@@ -47,31 +48,17 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils
 
             if (imageAspect > screenAspect)
             {
-                float inset = (1 / (screenAspect / imageAspect) - 1) / 2;
-                _imageTransform.anchorMin = new Vector2(-inset, 0);
-                _imageTransform.anchorMax = new Vector2((1 + inset), 1);
+                // La imagen es más ancha que la pantalla, se ajusta por el ancho
+                float scaleFactor = screenAspect / imageAspect;
+                _imageTransform.anchorMin = new Vector2(0, (1 - scaleFactor) / 2);
+                _imageTransform.anchorMax = new Vector2(1, (1 + scaleFactor) / 2);
             }
             else
             {
-                float inset = (1 / (imageAspect / screenAspect) - 1) / 2;
-                if (_anchorOnTop)
-                {
-                    _imageTransform.anchorMin = new Vector2(0, -2 * inset);
-                    _imageTransform.anchorMax = new Vector2(1, 1);
-                }
-                else if(_anchorOnBottom)
-                {
-                    _imageTransform.anchorMin = new Vector2(0, 0);
-                    _imageTransform.anchorMax = new Vector2(1, (1 +2* inset));
-                }
-                else
-                {
-                
-                
-                    _imageTransform.anchorMin = new Vector2(0, -inset);
-                    _imageTransform.anchorMax = new Vector2(1, (1 + inset));
-                
-                }
+                // La imagen es más alta que la pantalla, se ajusta por la altura
+                float scaleFactor = imageAspect / screenAspect;
+                _imageTransform.anchorMin = new Vector2((1 - scaleFactor) / 2, 0);
+                _imageTransform.anchorMax = new Vector2((1 + scaleFactor) / 2, 1);
             }
 
             _imageTransform.anchoredPosition = Vector2.zero;
