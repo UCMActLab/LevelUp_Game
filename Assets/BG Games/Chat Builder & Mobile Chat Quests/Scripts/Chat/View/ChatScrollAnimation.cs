@@ -18,26 +18,26 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
 
         private void Awake()
         {
-            _spawner.SpawnedMessage += PlayAnimation;
+            // _spawner.SpawnedMessage += PlayAnimation;
         }
 
         private void OnDestroy()
         {
-            _spawner.SpawnedMessage -= PlayAnimation;
+            // _spawner.SpawnedMessage -= PlayAnimation;
         }
 
         [ContextMenu("Play Animation")]
-        private void PlayAnimation()
+        public void PlayAnimation(float goal = 0.0f)
         {
             if (_animationCoroutine != null)
             {
                 StopCoroutine(_animationCoroutine);
             }
             
-            _animationCoroutine = StartCoroutine(AnimateScroll());
+            _animationCoroutine = StartCoroutine(AnimateScroll(goal));
         }
 
-        private IEnumerator AnimateScroll()
+        private IEnumerator AnimateScroll(float goal)
         {
             yield return null;
             
@@ -48,7 +48,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
             {
                 float t = EaseOutExpo(elapsedTime / _animationTime);
                 
-                float current = Mathf.Lerp(start, 0, t);
+                float current = Mathf.Lerp(start, goal, t);
                 _scroll.verticalNormalizedPosition = current;
 
                 elapsedTime += Time.deltaTime;
@@ -61,7 +61,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
                 yield return null;
             }
 
-            _scroll.verticalNormalizedPosition = 0;
+            _scroll.verticalNormalizedPosition = goal;
         }
         
         private float EaseOutExpo(float x)

@@ -1,4 +1,5 @@
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
+using DA_Assets.Extensions;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -14,12 +15,22 @@ public class GroupSettings : MonoBehaviour
 
     [SerializeField] private GameObject _groupInfo;
 
+    [SerializeField] private int _topOffset = 0;
+
     public MessageWritingAnimator GetWritingAnimator() { return _messageWritingAnimator; }
 
     private void OnEnable()
     {
         _groupInfo.GetComponentInChildren<TextMeshProUGUI>().text = _name;
         _groupInfo.GetComponentInChildren<Image>().sprite = _image;
+
+        transform.parent.GetComponent<RectTransform>().SetTop(_topOffset);
+    }
+
+    public void ActivateGroupInfo(bool active)
+    {
+        _groupInfo.SetActive(active);
+        _groupInfo.transform.parent.gameObject.SetActive(active);
     }
 
     public string GetRandomName()

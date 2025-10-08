@@ -30,9 +30,9 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             Choice read = answers[0];
             Choice skip = answers[1];
 
-            article.OnRead += OnAnswerClicked;
+            article.OnReadChoice += OnAnswerClicked;
             article.OnSkipChoice += OnAnswerClicked;
-            article.OnShare += OnAnswerClicked;
+            article.OnShareChoice += OnAnswerClicked;
 
             article.SetUpButtons(read, skip);
         }

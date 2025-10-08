@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System;
+using UnityEngine.Events;
 
 public enum ArticleAction
 {
@@ -35,141 +36,108 @@ public class ArticleDataSetter : MonoBehaviour
     public ArticleData Data = null;
     public ArticleAction Action;
 
-    public event Action<Choice> OnRead;
+    public event Action<Choice> OnReadChoice;
     public event Action<Choice> OnSkipChoice;
-    public event Action<Choice> OnShare;
+    public event Action<Choice> OnShareChoice;
     public event Action<Choice> AnswerClicked;
 
-    public event Action OnSkip;
+    [HideInInspector]
+    public UnityEvent OnSkip;
+    [HideInInspector]
+    public UnityEvent OnRead;
+    [HideInInspector]
+    public UnityEvent OnShare;
 
-    ConversationManager _convManager = null;
+    InkConversationManager _inkConvManager = null;
+    ChatManager _convManager = null;
+
+    ArticleFeed _articleFeed = null;
+
+    bool[] _sharedWithGroups;
 
     private void Start()
     {
-        _convManager = FindAnyObjectByType<ConversationManager>();
+        _articleFeed = GetComponentInParent<ArticleFeed>();
+
+        _sharedWithGroups = new bool[3] { false, false, false };
+
+        _inkConvManager = FindAnyObjectByType<InkConversationManager>();
+        _convManager = FindAnyObjectByType<ChatManager>();
 
         _articleBody.SetActive(false);
-        SetArticleData(Data);
+        SetArticleData(Instantiate(Data));
     }
 
-    public void ChangeButtonsOnArticleRead()
+    public string GetBodyString()
     {
+        return _articleBody.GetComponentInChildren<TextMeshProUGUI>().text;
+    }
+
+    #region Article Actions
+    public void ShareButtonsSetUp()
+    {
+        GameObject share = _convManager.SpawnShareButtons();
+        Button[] buttons = share.GetComponentsInChildren<Button>();
+
+        buttons[0].onClick.AddListener(() =>
+        {
+            _convManager.ChangeToMainChat();
+            LevelManager.Instance.ShowNextArticle();
+            // EnableButtonsInteraction(false);
+            
+            Destroy(share);
+        });
+
+        for (int i = 1; i <  buttons.Length; i++) {
+            Button bt = buttons[i];
+            
+            bt.transform.parent.gameObject.SetActive(!_sharedWithGroups[i - 1]);
+
+            int tempInt = i;
+            bt.onClick.AddListener(() => ShareArticle(tempInt, share, Data.conversation));
+        }
+
+        OnShare.Invoke();
+    }
+
+    /// <summary>
+    /// TODO: Skip article, changing points and general player score if skipped article was false or true
+    /// </summary>
+    bool _skipped = false;
+    public void SkipArticle()
+    {
+        if (_skipped) return;
+
+        OnSkip.Invoke();
+
+        GetComponent<Animator>().SetTrigger("Skip");
+    }
+
+    private void ShareArticle(int groupID, GameObject shareButtons, Conversation conv = null)
+    {
+        _convManager.ChangeGroup(groupID);
+        // Data should be an instance
+        _convManager.SendArticle(Data);
+
+        if(conv == null)
+        {
+            conv = ConversationCompendium.Instance.GetConversation(Data.convType);
+        }
+        _convManager.SetConversation(conv, true);
+
+        Destroy(shareButtons);
+
+        _sharedWithGroups[groupID - 1] = true;
+    }
+
+    public void ReadArticle()
+    {
+        _articleBody.SetActive(true);
         _readButton.interactable = false;
 
-        if(_convManager.story.currentChoices.Count > 0)
-        {
-            Choice skip = _convManager.story.currentChoices[3];
-
-            _skipButton.onClick.RemoveAllListeners();
-            _shareButton.onClick.RemoveAllListeners();
-
-            _skipButton.onClick.AddListener(() =>
-                SkipArticle(skip)
-            );
-            _shareButton.onClick.AddListener(() =>
-            {
-                ShareButton(_convManager.story.currentChoices);
-                _shareButton.interactable = false;
-                Action = ArticleAction.Share;
-            }
-            );
-        }
+        OnRead.Invoke();
     }
-
-    private void SkipArticle(Choice skip)
-    {
-        this.Action = ArticleAction.None;
-        _skipButton.interactable = false;
-        _skipButton.onClick.RemoveAllListeners();
-        _readButton.interactable = false;
-        _readButton.onClick.RemoveAllListeners();
-        _shareButton.interactable = false;
-        _shareButton.onClick.RemoveAllListeners();
-
-        OnSkipChoice?.Invoke(skip);
-    }
-
-    public void ShareButton(System.Collections.Generic.List<Choice> choices)
-    {
-        if(choices.Count == 1)
-        {
-            // escogemos automáticamente no enviar más artículos si no quedan grupos
-            GameObject share = _convManager.SpawnShareButtons();
-            int i = 0;
-            Button[] buttons = share.GetComponentsInChildren<Button>();
-            foreach(Button bt in buttons)
-            {
-                bt.transform.parent.gameObject.SetActive(false);
-            }
-            buttons[0].transform.parent.gameObject.SetActive(true);
-            buttons[0].onClick.AddListener(() =>
-            {
-                _convManager.ChangeGroup(null);
-                OnShare.Invoke(choices[0]);
-                Destroy(share);
-                _readButton.interactable = false;
-                _skipButton.interactable = false;
-                Action = ArticleAction.None;
-            });
-        }
-        else
-        {
-            GameObject share = _convManager.SpawnShareButtons();
-            int i = 0;
-            Button[] buttons = share.GetComponentsInChildren<Button>();
-
-            buttons[0].onClick.AddListener(() => {
-                _convManager.ChangeGroup(null);
-                OnShare.Invoke(choices[choices.Count - 1]); 
-                Destroy(share);
-                _readButton.interactable = false;
-                _skipButton.interactable = false;
-                Action = ArticleAction.None; 
-            });
-
-            string[] words = choices[0].text.Split(' ');
-            string text = words[words.Length - 1].Trim('.').ToUpper();
-            buttons[1].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
-            buttons[1].onClick.AddListener(() => {
-                _convManager.ChangeGroup(choices[0]);
-                _convManager.SendArticle(Data);
-                OnShare.Invoke(choices[0]); 
-                Destroy(share);
-                _readButton.interactable = false;
-                _skipButton.interactable = false;
-            });
-
-            if (choices.Count > 2) {
-                words = choices[1].text.Split(' ');
-                text = words[words.Length - 1].Trim('.').ToUpper();
-                buttons[2].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
-                buttons[2].onClick.AddListener(() => {
-                    _convManager.ChangeGroup(choices[1]);
-                    _convManager.SendArticle(Data);
-                    OnShare.Invoke(choices[1]); 
-                    Destroy(share);
-                    _readButton.interactable = false;
-                    _skipButton.interactable = false;
-                });
-            } 
-            else buttons[2].transform.parent.gameObject.SetActive(false);
-
-            if (choices.Count > 3) {
-                words = choices[2].text.Split(' ');
-                text = words[words.Length - 1].Trim('.').ToUpper();
-                buttons[3].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
-                buttons[3].onClick.AddListener(() => { 
-                    _convManager.ChangeGroup(choices[2]);
-                    _convManager.SendArticle(Data);
-                    OnShare.Invoke(choices[2]);
-                    Destroy(share);
-                    _readButton.interactable = false;
-                    _skipButton.interactable = false;
-                });
-            } 
-            else buttons[3].transform.parent.gameObject.SetActive(false);
-        }
-    }
+    #endregion
 
     #region Activate or Destroy Buttons
     public void DestroyButtons()
@@ -249,6 +217,13 @@ public class ArticleDataSetter : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the ArticleData and changes the Article's title, image, etc.
+    /// 
+    /// WARNING: The ArticleData received by this method SHOULD BE AN INSTANCE, not the original ScriptableObject,
+    /// because it may be modified by other methods.
+    /// </summary>
+    /// <param name="data"></param>
     public void SetArticleData(ArticleData data)
     {
         if (data == null) return;
@@ -261,14 +236,159 @@ public class ArticleDataSetter : MonoBehaviour
         _articleImage.gameObject.SetActive(_articleImage.sprite != null);
 
         _articleTitle.text = Data.articleTitle;
+        _bodyText.text = Data.articleBody;
     }
 
+    public void DestroyArticle()
+    {
+        Destroy(gameObject);
+    }
+
+    #region Tutorial
+    public void RemoveListenersFromButtons()
+    {
+        _skipButton.onClick.RemoveAllListeners();
+        _skipButton.onClick.AddListener(() => OnSkip.Invoke());
+
+        _readButton.onClick.RemoveAllListeners();
+        _readButton.onClick.AddListener(() => OnRead.Invoke());
+
+        _shareButton.onClick.RemoveAllListeners();
+        _shareButton.onClick.AddListener(() => OnShare.Invoke());
+    }
+
+    public void SetUpButtons()
+    {
+        _skipButton.onClick.AddListener(() => _articleFeed.SkipArticle(this));
+        _readButton.onClick.AddListener(ReadArticle);
+        _shareButton.onClick.AddListener(ShareButtonsSetUp);
+    }
+    #endregion
+    #region INK
+    public void ChangeButtonsOnArticleRead()
+    {
+        _readButton.interactable = false;
+
+        if (_inkConvManager.story.currentChoices.Count > 0)
+        {
+            Choice skip = _inkConvManager.story.currentChoices[3];
+
+            _skipButton.onClick.RemoveAllListeners();
+            _shareButton.onClick.RemoveAllListeners();
+
+            _skipButton.onClick.AddListener(() =>
+                SkipArticle(skip)
+            );
+            _shareButton.onClick.AddListener(() =>
+            {
+                ShareButton(_inkConvManager.story.currentChoices);
+                _shareButton.interactable = false;
+                Action = ArticleAction.Share;
+            }
+            );
+        }
+    }
+    private void SkipArticle(Choice skip)
+    {
+        this.Action = ArticleAction.None;
+        _skipButton.interactable = false;
+        _skipButton.onClick.RemoveAllListeners();
+        _readButton.interactable = false;
+        _readButton.onClick.RemoveAllListeners();
+        _shareButton.interactable = false;
+        _shareButton.onClick.RemoveAllListeners();
+
+        OnSkipChoice?.Invoke(skip);
+    }
+    public void ShareButton(System.Collections.Generic.List<Choice> choices)
+    {
+        if (choices.Count == 1)
+        {
+            // escogemos automáticamente no enviar más artículos si no quedan grupos
+            GameObject share = _inkConvManager.SpawnShareButtons();
+            int i = 0;
+            Button[] buttons = share.GetComponentsInChildren<Button>();
+            foreach (Button bt in buttons)
+            {
+                bt.transform.parent.gameObject.SetActive(false);
+            }
+            buttons[0].transform.parent.gameObject.SetActive(true);
+            buttons[0].onClick.AddListener(() =>
+            {
+                _inkConvManager.ChangeGroup(null);
+                OnShareChoice.Invoke(choices[0]);
+                Destroy(share);
+                _readButton.interactable = false;
+                _skipButton.interactable = false;
+                Action = ArticleAction.None;
+            });
+        }
+        else
+        {
+            GameObject share = _inkConvManager.SpawnShareButtons();
+            int i = 0;
+            Button[] buttons = share.GetComponentsInChildren<Button>();
+
+            buttons[0].onClick.AddListener(() => {
+                _inkConvManager.ChangeGroup(null);
+                OnShareChoice.Invoke(choices[choices.Count - 1]);
+                Destroy(share);
+                _readButton.interactable = false;
+                _skipButton.interactable = false;
+                Action = ArticleAction.None;
+            });
+
+            string[] words = choices[0].text.Split(' ');
+            string text = words[words.Length - 1].Trim('.').ToUpper();
+            buttons[1].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
+            buttons[1].onClick.AddListener(() => {
+                _inkConvManager.ChangeGroup(choices[0]);
+                _inkConvManager.SendArticle(Data);
+                OnShareChoice.Invoke(choices[0]);
+                Destroy(share);
+                _readButton.interactable = false;
+                _skipButton.interactable = false;
+            });
+
+            if (choices.Count > 2)
+            {
+                words = choices[1].text.Split(' ');
+                text = words[words.Length - 1].Trim('.').ToUpper();
+                buttons[2].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
+                buttons[2].onClick.AddListener(() => {
+                    _inkConvManager.ChangeGroup(choices[1]);
+                    _inkConvManager.SendArticle(Data);
+                    OnShareChoice.Invoke(choices[1]);
+                    Destroy(share);
+                    _readButton.interactable = false;
+                    _skipButton.interactable = false;
+                });
+            }
+            else buttons[2].transform.parent.gameObject.SetActive(false);
+
+            if (choices.Count > 3)
+            {
+                words = choices[2].text.Split(' ');
+                text = words[words.Length - 1].Trim('.').ToUpper();
+                buttons[3].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
+                buttons[3].onClick.AddListener(() => {
+                    _inkConvManager.ChangeGroup(choices[2]);
+                    _inkConvManager.SendArticle(Data);
+                    OnShareChoice.Invoke(choices[2]);
+                    Destroy(share);
+                    _readButton.interactable = false;
+                    _skipButton.interactable = false;
+                });
+            }
+            else buttons[3].transform.parent.gameObject.SetActive(false);
+        }
+    }
     public void SetUpButtons(Choice read, Choice skip)
     {
         _readButton.onClick.AddListener(() =>
         {
             Action = ArticleAction.Read;
-            OnRead?.Invoke(read);
+            OnReadChoice?.Invoke(read);
         });
         _skipButton.onClick.AddListener(() =>
         {
@@ -278,31 +398,9 @@ public class ArticleDataSetter : MonoBehaviour
         _shareButton.onClick.AddListener(() =>
         {
             Action = ArticleAction.Share;
-            OnShare?.Invoke(skip);
+            OnShareChoice?.Invoke(skip);
         });
     }
 
-    public void ReadArticleByButton()
-    {
-        _articleBody.SetActive(true);
-        _readButton.interactable = false;
-    }
-
-    /// <summary>
-    /// TODO: Skip article, changing points and general player score if skipped article was false or true
-    /// </summary>
-    bool _skipped = false;
-    public void SkipArticle()
-    {
-        if (_skipped) return;
-
-        OnSkip.Invoke();
-
-        GetComponent<Animator>().SetTrigger("Skip");
-    }
-
-    public void DestroyArticle()
-    {
-        Destroy(gameObject);
-    }
+    #endregion
 }
