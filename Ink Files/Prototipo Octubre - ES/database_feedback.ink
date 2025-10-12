@@ -36,7 +36,6 @@ LIST fb_lines_g1_pos = fb1_g1_pos, fb2_g1_pos, fb3_g1_pos, fb4_g1_pos, fb5_g1_po
     - fb9_g1_pos: Gracias por mantenernos informados, da gusto contigo. 
     - fb10_g1_pos: Bien, me gusta que hay más gente que ve las cosas como yo. 
     - else: [No se encuentran {feedback_lines_g1} positivas para el grupo 1.]
-
     }
 
 === function feedback_group1_negative()
@@ -116,7 +115,6 @@ LIST fb_lines_g2_neg = fb1_g2_neg, fb2_g2_neg, fb3_g2_neg, fb4_g2_neg, fb5_g2_ne
 ~ temp print_feedback = LIST_RANDOM(LIST_ALL(fb_lines_g3_pos))
 ~ temp group3_speaker = LIST_RANDOM(LIST_ALL(group3_members))
 {group3_speaker}: {feedback_output_group3_positive(print_feedback)}
-
 
 LIST fb_lines_g3_pos = fb1_g3_pos, fb2_g3_pos, fb3_g3_pos, fb4_g3_pos, fb5_g3_pos, fb6_g3_pos, fb7_g3_pos, fb8_g3_pos, fb9_g3_pos, fb10_g3_pos //this list is the number of items in the database. New entry in the database means adding an item here. 
 

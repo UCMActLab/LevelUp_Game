@@ -11,13 +11,8 @@ TODO These variables are just for the prototype. We need a function to calculate
 TODO IF THE PLAYER HAS NOT FORWARDED ANY NEWS, THE FAMILY SHOULD BE CHECKING ON THEM - AND OTHER GROUPS SHOULD NOTE THAT THE PLAYER HAS BEEN VERY QUIET.
 
 
-{article_forwarded_group1 == 0: {group1_speaker}: You're a bit quiet.}
-{article_forwarded_group2 == 0: {group2_speaker}: Are you okay?}
-{article_forwarded_group3 == 0: {group3_speaker}: Haven't heard from you in a bit. }
-
-
-
-
+Has leído {news_read} noticias de las {news_count} que has recibido. {news_read == news_count: Está genial que prestes tanta atención.} {news_read == 0: Ya se vé que pasas un poco del asunto.} #parrafo
+Has enviado {news_fake} noticias falsas a otros. {news_fake == news_count: No solo te lo crees todo, sino que lo extiendes a otros. Probablemente estés causando problemas a los tuyos con esa conducta.} #parrafo
 {   
     - group_1 <= -2:
     {group1_speaker}: Creo que no ves las cosas como son. No me fío de ti.  
@@ -48,32 +43,5 @@ TODO IF THE PLAYER HAS NOT FORWARDED ANY NEWS, THE FAMILY SHOULD BE CHECKING ON 
     {group3_speaker}: ¡Qué bueno hace hoy! Deberíamos guardar los teléfonos y dar un paseo. 
     }
 
-El grupo de amigos <>{
-    - group_1 >= 1:
-     está a gusto contigo.
-    - group_1 == 0:
-     son indiferentes a lo que digas.  
-    - else:
-    recelan de lo que les mandas.  
-}
-Tu familia <>{
-    - group_2 >= 1:
-     está tranquila por ti.
-    - group_2 == 0:
-     ni se preocupan ni se despreocupan por ti.
-    - else:
-     está preocupada por ti. 
-}
-
-Tus vecinos <>{
-    - group_3 >= 1:
-     están contentos de tenerte en el grupo. 
-    - group_3 == 0:
-     no tiene mucha opinión de tu participación en el grupo. 
-    - else:
-     están un poco incómodos contigo.  
-}
-
-
-Has llegado al final de la historia. 
-GRACIAS POR JUGAR -> END
+Has llegado al final. #parrafo
+GRACIAS POR JUGAR #parrafo -> END

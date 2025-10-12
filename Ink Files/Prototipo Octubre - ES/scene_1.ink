@@ -2,7 +2,6 @@ TODO TEACH PLAYERS THAT SENDING FAKE NEWS HAS CONSEQUENCES
 
 === scene_1_intro ===
 TODO: DO WE WANT TO INCLUDE WHO IS SENDING THE ARTICLE
-
 ~ news_count++
 ~ article_sent = false
 
@@ -12,8 +11,6 @@ TODO The line is the line that selects the article from the database. This shoul
 ~ theme = article_data_HC (print_article, Theme)
 ~ checked = article_data_HC (print_article, verified)
 ~ comes_from = article_data_HC (print_article, sources)
-
-Artículo número {news_count} 
 
 ARTÍCULO RECIBIDO
 Titular: {article_data_HC (print_article, headline)}
@@ -30,6 +27,7 @@ TODO: These values need to be taken from the database - this will be tags for ea
 
 == s1_choice == 
 TODO:  Still need to fix the last option so the game moves to the next knot when all options have been exhausted. I fixed the last option, so it checks whether the article has been sent already or not and displays the right text, but this may have issues when translating the game to other languages -- it's not good practice for localization. 
+
 ¿Qué quieres hacer con esta noticia? #parrafo
 
 * [Compartir con el grupo de amigos.] 
@@ -53,13 +51,14 @@ TODO:  Still need to fix the last option so the game moves to the next knot when
 == s1_g1 ==
 Enviado a grupo de amigos 
 ~ group_1_opinion(theme, checked)
-María: Ya lo había visto, me lo había mandado Juan. Es indignante que quieran quitarnos la pensión que tanto nos ha costado ganar. 
+María: Ya me lo había mandado Juan. Creo que vamos a pedir algo, a ver si cuela. 
+
     -> s1_choice
     
 == s1_g2 ==
 Enviado a familia 
     ~ group_2_opinion(theme, checked)
-Alfredo: ¿Pero tú te crees esto? Esto es un timo, por favor no caigas en ello. Sólo quieren tus dados. El gobierno no ofrece subvenciones así. {scold1_group2()}
+Alfredo: Esto es un timo, por favor no caigas en ello. Sólo quieren tus datos. El gobierno no ofrece subvenciones así. 
      -> s1_choice
 
 == s1_g3 == 
@@ -69,11 +68,6 @@ Paula: ¡Gracias! Se nos echó a perder la comida del congelador del bar, este d
     -> s1_choice
 
 == s1_results == 
-
-
-
-Relación con amigos: {group_1}
-Relación con familia: {group_2}
-Relación con vecinos: {group_3}
+Has recibido una noticia falsa {article_sent == true: y la has compartido. Probablemente tendrá consecuencias después.}{article_sent == false: pero no la has compartido. Está bien ser prudente.} #parrafo
 
 -> scene_1b_intro

@@ -7,7 +7,6 @@ TODO: REINFORCE CORE POINTS (READ NEWS, CHECK SOURCES, CONSEQUENCES)
 ~ temp print_article = LIST_RANDOM(LIST_ALL(articles)) // This lines selects an article at random
 ~ theme = article_data (print_article, Theme)
 ~ checked = article_data(print_article, verified)
-Artículo número {news_count} 
 
 TODO: WHO IS SENDING THE ARTICLE?
 
@@ -24,6 +23,7 @@ Titular: {article_data (print_article, headline)}
 {article_data (print_article, body)} -> s3b_choice
 
 == s3b_choice == 
+
 ¿Qué quieres hacer con esta noticia? #parrafo
 
 * [Compartir con el grupo de amigos.] 
@@ -50,21 +50,19 @@ Titular: {article_data (print_article, headline)}
 
 == s3b_g1 ==
 Enviado a grupo de amigos
+~ group_1_opinion(theme, checked)
 
-TODO FRIENDS REACTIONS NEEDED
 -> s3b_choice
     
 == s3b_g2 ==
 Enviado a familia -> s3b_choice
-{scold1_group2()}
+
 == s3b_g3 == 
 Enviado a grupo de vecinos 
-TODO NEIGHBOR REACTIONS NEEDED
+~ group_3_opinion(theme, checked)
+
 -> s3b_choice
     
 == s3b_results == 
-Relación con amigos: {group_1}
-Relación con familia: {group_2}
-Relación con vecinos: {group_3}
-
+Has recibido una noticia verdadera proveniente de {comes_from == "social": redes sociales}{comes_from == "blog": un blog}{comes_from == "news": un periódico}, {article_sent == true && s3b_article: y la has compartido después de leerla. Está bien que ayudes a otros a estar al día después de informarte tú.}{article_sent == true && not s3b_article: y la has compartido sin leerla. Vale que quieras ayudar a los demás a estar al día, pero hay que leer las noticias también.}{article_sent == false && not s3b_article: No enviar noticias es una manera de no extender la desinformación, pero también hay que prestar algo de interés por lo que pasa en el día a día.}#parrafo 
 -> scene_4_intro

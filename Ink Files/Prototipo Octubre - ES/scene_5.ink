@@ -8,8 +8,6 @@ TODO Reinfoce all the points.
 ~ temp print_article = HC_art5
 ~ theme = article_data_HC (print_article, Theme)
 ~ checked = article_data_HC (print_article, verified)
-Artículo número {news_count} 
-
 TODO: WHO IS SENDING THE ARTICLE?
 
 ARTÍCULO RECIBIDO
@@ -25,6 +23,7 @@ Titular: {article_data_HC (print_article, headline)}
 {article_data_HC (print_article, body)}-> s5_choice
 
 == s5_choice == 
+
 ¿Qué quieres hacer con esta noticia? #parrafo
 * [Compartir con el grupo de amigos.] 
 ~ article_forwarded_group1++
@@ -66,9 +65,5 @@ Emma: ¡Mira tú que cosas!
 -> s5_choice
 
 == s5_results == 
-Relación con amigos: {group_1}
-Relación con familia: {group_2}
-Relación con vecinos: {group_3}
-
-
+Has recibido una noticia verdadera proveniente de {comes_from == "social": redes sociales}{comes_from == "blog": un blog}{comes_from == "news": un periódico}, {article_sent == true && s5_article: y la has compartido después de leerla. Está bien que ayudes a otros a estar al día después de informarte tú.}{article_sent == true && not s5_article: y la has compartido sin leerla. Vale que quieras ayudar a los demás a estar al día, pero hay que leer las noticias también.}{article_sent == false && not s5_article: No enviar noticias es una manera de no extender la desinformación, pero también hay que prestar algo de interés por lo que pasa en el día a día.} #parrafo 
 -> game_ending

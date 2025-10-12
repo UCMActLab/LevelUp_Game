@@ -3,10 +3,7 @@
 TODO Add date to the list of data that players need to check (if we consider it relevant) 
 
 
-LIST articles = art1, art2, art3, art4, art5, art6, art7, art8, art9, art10, art11, art12, art13, art14, art15, art16, art17, art18, art19, art20, art21, art22, art23,  art24, art25,  art26,  art27, art28,  art29,  art30,  art31,  art32,  art33,  art34,  art35,  art36,  art37,  art38,  art39,  art40,  art41,  art42,  art43,  art44,  art45,  art46,  art47 //this list is the number of items in the database. New entry in the database means adding an item here. 
-
-
-
+LIST articles = art1, art2, art3, art4, art5, art6, art7, art8, art9, art10, art11, art12, art13, art14, art15, art16, art17, art18, art19, art20, art21, art22, art23,  art24, art25,  art26,  art27, art28,  art29,  art30,  art31,  art32,  art33,  art34,  art35,  art36,  art37,  art38,  art39,  art40,  art41,  art42,  art43,  art44,  art45,  art46,  art47 //this list is the number of items in the database. New entry in the database means adding an item here.
 
 // The function below is to print out the source of the article, to facilitate both the labels in the database and localization. 
 

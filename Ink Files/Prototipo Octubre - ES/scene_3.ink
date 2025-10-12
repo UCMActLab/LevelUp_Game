@@ -7,7 +7,6 @@ TODO REINFORCE THAT PLAYERS NEED TO CHECK THE SOURCE
 ~ temp print_article = HC_art3
 ~ theme = article_data_HC (print_article, Theme)
 ~ checked = article_data_HC (print_article, verified)
-Artículo número {news_count} 
 
 TODO: WHO IS SENDING THE ARTICLE?
 
@@ -24,6 +23,7 @@ Titular: {article_data_HC (print_article, headline)}
 {article_data_HC (print_article, body)}-> s3_choice
 
 == s3_choice == 
+
 ¿Qué quieres hacer con esta noticia? #parrafo
 * [Compartir con el grupo de amigos.] 
 ~ article_forwarded_group1++
@@ -39,7 +39,6 @@ Titular: {article_data_HC (print_article, headline)}
     
 * [Compartir con el grupo de vecinos.] 
 ~ article_sent = true
-
     -> s3_g3
     
 * [No compartir con nadie {article_sent: más}.] -> s3_results
@@ -66,10 +65,6 @@ Enviado a grupo de vecinos
  -> s3_choice
 
 == s3_results == 
-
-Relación con amigos: {group_1}
-Relación con familia: {group_2}
-Relación con vecinos: {group_3}
-
+Has recibido una noticia verdadera proveniente de {comes_from == "social": redes sociales}{comes_from == "blog": un blog}{comes_from == "news": un periódico}, {article_sent == true && s3_article: y la has compartido después de leerla. Está bien que ayudes a otros a estar al día después de informarte tú.}{article_sent == true && not s3_article: y la has compartido sin leerla. Vale que quieras ayudar a los demás a estar al día, pero hay que leer las noticias también.}{article_sent == false && not s3_article: No enviar noticias es una manera de no extender la desinformación, pero también hay que prestar algo de interés por lo que pasa en el día a día.} #parrafo 
 
 -> scene_3b_intro

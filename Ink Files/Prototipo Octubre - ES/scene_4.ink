@@ -9,7 +9,6 @@ TODO TEACH PLAYERS TO LOOK FOR FURTHER INFORMATION
 ~ temp print_article = HC_art4
 ~ theme = article_data_HC (print_article, Theme)
 ~ checked = article_data_HC (print_article, verified)
-Artículo número {news_count} 
 
 TODO: WHO IS SENDING THE ARTICLE?
 
@@ -26,6 +25,7 @@ Titular: {article_data_HC (print_article, headline)}
 {article_data_HC (print_article, body)}-> s4_choice
 
 == s4_choice == 
+
 ¿Qué quieres hacer con esta noticia? #parrafo
 * [Compartir con el grupo de amigos.] 
 ~ article_forwarded_group1++
@@ -57,7 +57,6 @@ Enviado a familia
 ~ group_2_opinion(theme, checked)
 Felisa: ¡Esto no es verdad! Por favor, no compartas estos bulos, que pueden hacer daño a alguien. 
 Alfredo: El Ivermectin es peligroso tomarlo sin receta médica.   
-{scold1_group2()}
 -> s4_choice
 
 == s4_g3 == 
@@ -65,14 +64,11 @@ Enviado a grupo de vecinos
 ~ group_3_opinion(theme, checked)
 Paula : ¿Pero esto lo tienen en la farmacia?
 Emma: No, esto es para animales, no para personas. Ni se te ocurra. 
- {scold4_group3()}
 -> s4_choice
 
 
 
 == s4_results == 
-Relación con amigos: {group_1}
-Relación con familia: {group_2}
-Relación con vecinos: {group_3}
+Has recibido una noticia verdadera proveniente de {comes_from == "social": redes sociales}{comes_from == "blog": un blog}{comes_from == "news": un periódico}, {article_sent == true && s4_article: y la has compartido después de leerla. Está bien que ayudes a otros a estar al día después de informarte tú.}{article_sent == true && not s4_article: y la has compartido sin leerla. Vale que quieras ayudar a los demás a estar al día, pero hay que leer las noticias también.}{article_sent == false && not s4_article: No enviar noticias es una manera de no extender la desinformación, pero también hay que prestar algo de interés por lo que pasa en el día a día.} #parrafo 
 
 -> checkin_2

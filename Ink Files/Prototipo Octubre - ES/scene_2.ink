@@ -1,6 +1,7 @@
 TODO TEACH USERS TO CHECK THE SOURCE
 
 === scene_2_intro ===
+Vamos a aprender otra cosa. 
 Una manera de detectar si un artículo es una noticia está sin contrastar o no es comprobar la fuente. #parrafo
 Las noticias que te llegan pueden ser artículos periodísticos, publicaciones de blogs y de redes sociales. #parrafo
 Las noticias que provienen de periódicos suelen tener más rigor, mientras que muchos de los bulos, timos y teorías de la conspiración se extienden a través de blogs e imágenes en redes sociales. #parrafo
@@ -12,7 +13,6 @@ Las noticias que provienen de periódicos suelen tener más rigor, mientras que 
 ~ temp print_article = HC_art2
 ~ theme = article_data_HC (print_article, Theme)
 ~ checked = article_data_HC(print_article, verified)
-Artículo número {news_count} 
 
 TODO: WHO IS SENDING THE ARTICLE?
 
@@ -48,6 +48,7 @@ Esta noticia viene de un periódico, donde se suelen contrastar las fuentes y se
 -> s2_choice
 
 == s2_choice == 
+
 ¿Qué quieres hacer con esta noticia? #parrafo
 * [Compartir con el grupo de amigos.] 
 ~ article_sent = true
@@ -77,8 +78,9 @@ María: No me fío de estos de la OMS. A saber qué quieren hacer.
 Enviado a familia 
 ~ group_2_opinion(theme, checked)
 Fede: Esto hay que tomárselo en serio. La OMS fue la primera organización que alertó del riesgo de pandemia en 2020. 
-Alfredo: Muy preocupante. Por favor, no te olvides de llevar la mascarilla. -> s2_choice
-{scold2_group2()}
+Alfredo: Muy preocupante. Por favor, no te olvides de llevar la mascarilla. 
+-> s2_choice
+
 == s2_g3 == 
 Enviado a grupo de vecinos 
 ~ group_3_opinion(theme, checked)
@@ -87,9 +89,6 @@ Omar: Todavía me quedan máscarillas en casa. Avisad si os hacen falta.
 -> s2_choice
     
 == s2_results == 
-
-Relación con amigos: {group_1}
-Relación con familia: {group_2}
-Relación con vecinos: {group_3}
+Has recibido una noticia verdadera proveniente de {comes_from == "social": redes sociales}{comes_from == "blog": un blog}{comes_from == "news": un periódico}, {article_sent == true && s2_article: y la has compartido después de leerla. Está bien que ayudes a otros a estar al día después de informarte tú.}{article_sent == true && not s2_article: y la has compartido sin leerla. Vale que quieras ayudar a los demás a estar al día, pero hay que leer las noticias también.}{article_sent == false && not s2_article: No enviar noticias es una manera de no extender la desinformación, pero también hay que prestar algo de interés por lo que pasa en el día a día.}#parrafo 
 
 -> checkin_1
