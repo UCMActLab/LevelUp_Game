@@ -1,14 +1,9 @@
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.Data;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils;
-using DA_Assets.Extensions;
 using Ink.Runtime;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
@@ -16,7 +11,7 @@ using UnityEngine.UI;
 
 namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 {
-    public class ConversationManager : MonoBehaviour
+    public class InkConversationManager : MonoBehaviour
     {
         [Header("Entry point class")] [Space] [SerializeField]
         private AnswerOptionController _answerOptionController;
@@ -27,7 +22,6 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
         [SerializeField] private GameObject _shareButtonsPrefab;
 
         [SerializeField] private Transform _articleParent;
-        [SerializeField] private Transform _shareButtonsParent;
 
         [SerializeField] private ScrollRect _scrollRect;
 
@@ -38,6 +32,9 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         // ink
         [SerializeField] public TextAsset inkJSONAsset;
+
+        [SerializeField] private bool _startOnAwake = false;
+
         public Story story;
 
         public UnityEvent OnGameEnd = new UnityEvent();
@@ -64,13 +61,14 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         private void Start()
         {
-            inkJSONAsset = new TextAsset(ServerManager.Instance.inkText);
-
-            SetUpLanguageKeyWord();
-
+            if(_startOnAwake) 
+            {
+                inkJSONAsset = new TextAsset(ServerManager.Instance.inkText);
+                SetUpLanguageKeyWord();
+                StartConversation();
+            }
+            
             InitializeChats();
-
-            StartConversation();
         }
 
         private void SetUpLanguageKeyWord()
