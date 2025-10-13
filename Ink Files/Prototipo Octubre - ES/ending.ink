@@ -10,7 +10,6 @@ TODO These variables are just for the prototype. We need a function to calculate
 
 TODO IF THE PLAYER HAS NOT FORWARDED ANY NEWS, THE FAMILY SHOULD BE CHECKING ON THEM - AND OTHER GROUPS SHOULD NOTE THAT THE PLAYER HAS BEEN VERY QUIET.
 
-
 Has leído {news_read} noticias de las {news_count} que has recibido. {news_read == news_count: Está genial que prestes tanta atención.} {news_read == 0: Ya se vé que pasas un poco del asunto.} #parrafo
 Has enviado {news_fake} noticias falsas a otros. {news_fake == news_count: No solo te lo crees todo, sino que lo extiendes a otros. Probablemente estés causando problemas a los tuyos con esa conducta.} #parrafo
 {   

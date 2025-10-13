@@ -1,9 +1,9 @@
 TODO REWRITE TO REINFORCE THAT PLAYERS HAVE TO READ THE NEWS
+// This section uses the dynamic database
 
 === scene_0_intro ===
 ~ news_count++
 ~ article_sent = false
-
 ~ temp print_article = LIST_RANDOM(LIST_ALL(articles)) // This lines selects an article at random
 ~ theme = article_data (print_article, Theme)
 ~ checked = article_data(print_article, verified)
@@ -11,15 +11,15 @@ TODO REWRITE TO REINFORCE THAT PLAYERS HAVE TO READ THE NEWS
 Titular: {article_data (print_article, headline)}
 
 + [Leer el artículo.] -> s0_article
-+ [Saltarse el artículo.] -> s0_results
++ [Saltarse el artículo.] -> s0_overview
 
 == s0_article ==
 ~ news_read++
 {display_source()}
 // The body of the text goes below.
-{article_data (print_article, body)} -> s0_results
+{article_data (print_article, body)} -> s0_overview
 
-== s0_results == 
+== s0_overview == 
 {s0_article: Muy bien. Lo primero que tenemos que hacer para estar informados es leer la noticia, y entonces podemos empezar a evaluar si está contrastada o no. }{not s0_article:¿En qué habíamos quedado? No leer los artículos es la base de cómo se extiende la desinformación. } #parrafo
 Enviar artículos falsos o fake news puede tener consecuencias nefastas. #parrafo
 Cada vez que recibas un artículo, puedes compartirlo con diferentes grupos - ¡o no! - para no contribuir a que se extiendan artículos sin contrastar. #parrafo
@@ -51,6 +51,43 @@ Los vecinos son gente a la que conoces desde hace muchos, muchos años. Algunos 
 -> explanation_groups
 
 == moving_on ==
-Vamos a ver cómo compartir (o no) las noticias. 
+Vamos a ver cómo compartir (o no) las noticias. Puedes elegir si quieres mandarle la noticia a otros grupos.  #parrafo
+-> s0_choice
+
+== s0_choice == 
+¿Qué quieres hacer? #parrafo
+* [Compartir con el grupo de amigos.] 
+~ article_forwarded_group1++
+~ article_sent = true
+    -> s0_g1
+
+* [Compartir con familia.] 
+~ article_forwarded_group2++
+~ article_sent = true
+
+-> s0_g2
+* [Compartir con el grupo de vecinos.] 
+~ article_forwarded_group3++
+~ article_sent = true
+    -> s0_g3
+* [No compartir con nadie {article_sent: más}.]. -> s0_results
+
+== s0_g1 ==
+Enviado a grupo de amigos 
+~ group_1_opinion(theme, checked)
+    -> s0_choice
+    
+== s0_g2 ==
+Enviado a familia
+~ group_2_opinion(theme, checked)
+    -> s0_choice
+
+== s0_g3 == 
+Enviado a grupo de vecinos 
+~ group_3_opinion(theme, checked)
+    -> s0_choice
+    
+== s0_results == 
+Has recibido una noticia {checked == true: contrastada.}{checked == false: falsa.}{article_sent == true && s0_article: La has compartido después de leerla.}{article_sent == true && not s0_article: La has compartido sin leerla.} {article_sent == true && s0_article && checked == true: Bien por difundir información fiable.} {article_sent == true && not s0_article && checked == false: Estás contribuyendo a diseminar fake news.}{article_sent == true &&  s1b_article && checked == false: Estás contribuyendo a diseminar fake news, y parecería que lo haces a propósito.}{article_sent == false && not s0_article: No enviar noticias es una manera de no extender la desinformación, pero también hay que prestar algo de interés por lo que pasa en el día a día.} {article_sent == false && s0_article: Por lo menos intentas leer estar al día con la actualidad. ¿Te has dado cuenta de si la noticia estaba contrastada o no mientras leías?}
 
 -> scene_1_intro

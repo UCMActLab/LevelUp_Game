@@ -34,6 +34,7 @@ Antes de que sigamos, ¿cuál es la fuente del artículo? #parrafo
 + [Periódico] -> s2_feedback_good
 + [Blog] -> s2_feedback_bad
 + [Redes sociales] -> s2_feedback_bad
++ [No lo sé.] -> s2_feedback_bad
 
 == s2_feedback_good == 
 {s2_article: Sí, es una noticia de los periódicos. ¡Te has fijado!}{not s2_article: Has acertado de casualidad, porque te has saltado el artículo.}#parrafo
@@ -89,6 +90,6 @@ Omar: Todavía me quedan máscarillas en casa. Avisad si os hacen falta.
 -> s2_choice
     
 == s2_results == 
-Has recibido una noticia verdadera proveniente de {comes_from == "social": redes sociales}{comes_from == "blog": un blog}{comes_from == "news": un periódico}, {article_sent == true && s2_article: y la has compartido después de leerla. Está bien que ayudes a otros a estar al día después de informarte tú.}{article_sent == true && not s2_article: y la has compartido sin leerla. Vale que quieras ayudar a los demás a estar al día, pero hay que leer las noticias también.}{article_sent == false && not s2_article: No enviar noticias es una manera de no extender la desinformación, pero también hay que prestar algo de interés por lo que pasa en el día a día.}#parrafo 
+Has recibido una noticia verdadera proveniente de un periódico, {article_sent == true && s2_article: y la has compartido después de leerla. Así ayudas a los a estar al corriente después de informarte tú.}{article_sent == true && not s2_article: y la has compartido sin leerla. Reenviar artículos nos ayuda a conectar con otros, pero es importante el mirar la calidad de lo que mandamos.}{article_sent == false && not s2_article: Si no reenvias cosas evitas extender la desinformación, pero no te olvides de intentar seguir la actualidad.} {article_sent == false && s2_article: La noticia viene de una fuente fiable, así que al menos estás al día aunque no la hayas compartido. }#parrafo 
 
 -> checkin_1

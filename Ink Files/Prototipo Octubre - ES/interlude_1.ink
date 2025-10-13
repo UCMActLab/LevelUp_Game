@@ -17,9 +17,7 @@ Has enviado {news_fake} noticias falsas a otros. {news_fake == news_count: ¡Hay
 
 //The text below are the consequence for sending specific news to specific teams. This is hardcoded, so it can only be done with certain pieces of news. 
 {s1_g3: Paula: He tenido que ir al banco. Mandé mis datos para recibir compensación por las pérdidad del apagón y me han robado los dados. ¡No utiliceis el link, es un timo!}
-{s2_g1:
-Marcos: Me voy a quedar en casa. Creo que cogí el COVID cuando fui al partido el otro día.
-} 
+{s2_g1: Marcos: Me voy a quedar en casa. Creo que cogí el COVID cuando fui al partido el otro día.} 
 
 TODO Consequences of sending the mask recommendation to friends
 

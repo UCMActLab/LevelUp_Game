@@ -41,7 +41,7 @@ TODO THE FUNCTION BELOW IS JUST FOR THE PURPOSES OF THE PROTOTYPE, IN THE UNITY 
     - art14:
         ~return data (what, "HEADLINE 14", "social", "Paragraph 14", scam, true)
     - art15:
-        ~return data (what, "Fraude masivo suplantando a Lidl con falsos descuentos online", "blog", "Se puso en contacto con la Línea de Ayuda en Ciberseguridad de INCIBE, través del teléfono gratuito y confidencial 017, un usuario que señalaba que tras la búsqueda de un sofá en Internet, detectó que los primeros resultados del motor de búsqueda incluían enlaces a páginas web con ofertas a precios inusualmente bajos.", scam, true)
+        ~return data (what, "Fraude masivo suplantando a Lidl con falsos descuentos online", "newspaper", "Se puso en contacto con la Línea de Ayuda en Ciberseguridad de INCIBE, través del teléfono gratuito y confidencial 017, un usuario que señalaba que tras la búsqueda de un sofá en Internet, detectó que los primeros resultados del motor de búsqueda incluían enlaces a páginas web con ofertas a precios inusualmente bajos.", scam, true)
     - art16:
         ~return data (what, "Banco Santander: Usuario deshabilitado por razones de seguridad", "social", "Paragraph 16", scam, false)
     - art17:

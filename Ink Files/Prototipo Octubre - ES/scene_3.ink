@@ -8,8 +8,6 @@ TODO REINFORCE THAT PLAYERS NEED TO CHECK THE SOURCE
 ~ theme = article_data_HC (print_article, Theme)
 ~ checked = article_data_HC (print_article, verified)
 
-TODO: WHO IS SENDING THE ARTICLE?
-
 ARTÍCULO RECIBIDO
 Titular: {article_data_HC (print_article, headline)}
 
@@ -65,6 +63,6 @@ Enviado a grupo de vecinos
  -> s3_choice
 
 == s3_results == 
-Has recibido una noticia verdadera proveniente de {comes_from == "social": redes sociales}{comes_from == "blog": un blog}{comes_from == "news": un periódico}, {article_sent == true && s3_article: y la has compartido después de leerla. Está bien que ayudes a otros a estar al día después de informarte tú.}{article_sent == true && not s3_article: y la has compartido sin leerla. Vale que quieras ayudar a los demás a estar al día, pero hay que leer las noticias también.}{article_sent == false && not s3_article: No enviar noticias es una manera de no extender la desinformación, pero también hay que prestar algo de interés por lo que pasa en el día a día.} #parrafo 
+Has recibido una noticia contrastada proveniente de un periódico, {article_sent == true && s3_article: y la has compartido después de leerla. Has comprobado la noticia antes de enviarla, ¡muy bien!}{article_sent == true && not s3_article: y la has compartido sin leerla. Aunque en este caso es de una fuente fiable, es conveniente el echar un vistazo para mantenerse al día.}{article_sent == false && not s3_article: Abstenerse de enviar o leer nada puede prevenir que se extiendan las fake news, pero no conocer la actualidad es en cierta manera un tipo de desinformación.}{article_sent == false && s3_article: No tenemos por qué compartir todas las noticias contrastadas que leemos, aunque puede ser una manera de mantener nuestras relaciones sociales.} #parrafo 
 
 -> scene_3b_intro

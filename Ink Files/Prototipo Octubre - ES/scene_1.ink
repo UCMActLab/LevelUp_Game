@@ -1,7 +1,5 @@
-TODO TEACH PLAYERS THAT SENDING FAKE NEWS HAS CONSEQUENCES
 
 === scene_1_intro ===
-TODO: DO WE WANT TO INCLUDE WHO IS SENDING THE ARTICLE
 ~ news_count++
 ~ article_sent = false
 
@@ -68,6 +66,6 @@ Paula: ¡Gracias! Se nos echó a perder la comida del congelador del bar, este d
     -> s1_choice
 
 == s1_results == 
-Has recibido una noticia falsa {article_sent == true: y la has compartido. Probablemente tendrá consecuencias después.}{article_sent == false: pero no la has compartido. Está bien ser prudente.} #parrafo
+Has recibido una noticia falsa {article_sent == true: y la has compartido. Probablemente tendrá consecuencias después.}{article_sent == false: pero no la has compartido. Está bien ser prudente.} {article_sent == true && s1_article: Además la has leído antes de enviarla; recuerda que hay que prestar atención a cómo está escrito el texto para tener una idea de si la noticia está contrastada o no.}{article_sent == true && not s1_article: Compartir una noticia sin leerla es una de las razones por las que las fake news se extienden tan rápido.}{article_sent == false && not s1_article: En este caso has evitado extender información falsa, lo que no quiere decir que es mejor enviar noticias, sino que hay que leer lo que nos llega con cuidado.} {article_sent == false && s1_article: Has leído la noticia, así que probablemente hayas visto que era fake news y es mejor no compartirla. ¡Bien!}#parrafo
 
 -> scene_1b_intro
