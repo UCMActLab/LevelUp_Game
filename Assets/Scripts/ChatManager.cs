@@ -13,6 +13,7 @@ public class ChatManager : MonoBehaviour
     [SerializeField] private GameObject _messagePrefab = null;
     [SerializeField] private GameObject _playerMessagePrefab = null;
     [SerializeField] private GameObject _articlePrefab = null;
+    [SerializeField] private GameObject _tutorialArticlePrefab = null;
 
     [Header("Share References")]
     [SerializeField] private GameObject _shareButtonsPrefab = null;
@@ -43,9 +44,12 @@ public class ChatManager : MonoBehaviour
     {
         MessageView newMessage = Instantiate(_playerMessagePrefab, _currentChat.transform).GetComponent<MessageView>();
         // TRADUCCIÓN
-        newMessage.Setup("", "¿Habéis visto esto?");
+        newMessage.Setup("", "ARTICLE/PLAYER_MESSAGE");
 
-        GameObject article = Instantiate(_articlePrefab, _currentChat.transform);
+        GameObject prefabToUse = _articlePrefab;
+        if (articleData.convType == ConversationType.TUTORIAL) prefabToUse = _tutorialArticlePrefab;
+
+        GameObject article = Instantiate(prefabToUse, _currentChat.transform);
         ArticleDataSetter setter = article.GetComponent<ArticleDataSetter>();
         articleData.articleBody = string.Empty;
         setter.SetArticleData(articleData);

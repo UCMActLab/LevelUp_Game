@@ -1,8 +1,7 @@
-using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Buttons;
-using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -15,7 +14,9 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         [SerializeField] private Image _background;
         [SerializeField] private HorizontalOrVerticalLayoutGroup _messageLayout;
         [SerializeField] private TMP_Text _nameText = null;
+        [SerializeField] private LocalizeStringEvent _nameLocalized;
         [SerializeField] private TMP_Text _messageText;
+        [SerializeField] private LocalizeStringEvent _messageLocalized;
         [SerializeField] private GameObject _imageHolder;
         [SerializeField] private GameObject _videoHolder;
         [SerializeField] private GameObject _audioHolder;
@@ -24,12 +25,12 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         [SerializeField] private AudioSource _audioSource;
         [SerializeField] private Image _image;
         [SerializeField] private ImageOnFullScreenAdjuster _adjuster;
-        
 
         public void Setup(string name, string message)
         {
-            if(_nameText != null) _nameText.text = name;
-            _messageText.text = message;
+            if(_nameText != null) _nameLocalized.StringReference.SetReference("Translation", name);
+            _messageLocalized.StringReference.SetReference("Translation", message);
+            // _messageText.text = message;
         }
 
         public void Setup(string name, Sprite spite)

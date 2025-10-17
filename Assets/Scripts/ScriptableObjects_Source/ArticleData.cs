@@ -11,4 +11,6 @@ public class ArticleData : ScriptableObject
 
     public ConversationType convType = ConversationType.NONE;
     public Conversation conversation = null;
+
+    public bool isTrue = true;
 }

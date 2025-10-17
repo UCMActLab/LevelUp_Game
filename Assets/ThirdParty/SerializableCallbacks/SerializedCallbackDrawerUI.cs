@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Linq;
 using System.Reflection;
@@ -7,12 +8,14 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
+
 [CustomPropertyDrawer(typeof(SerializedCallback<>), true)]
 public class SerializedCallbackDrawerUI : PropertyDrawer {
     public override VisualElement CreatePropertyGUI(SerializedProperty property) {
         VisualElement root = new ();
 
         SerializedProperty targetProp = property.FindPropertyRelative("targetObject");
+        
         ObjectField targetField = new ("Target") {
             objectType = typeof(Object),
             bindingPath = targetProp.propertyPath
@@ -171,3 +174,4 @@ public class SerializedCallbackDrawerUI : PropertyDrawer {
         }
     }
 }
+#endif
