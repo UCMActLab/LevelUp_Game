@@ -1,8 +1,12 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MCLogic : MonoBehaviour
 {
+	[SerializeField]
+	private TMP_Text _questionText;
+
 	[SerializeField]
 	private int _numberOfOptions;
 
@@ -20,26 +24,25 @@ public class MCLogic : MonoBehaviour
 
 	private Toggle[] _optionToggles;
 
-	private bool changing = false;
+	private bool _changing = false;
 
-	private void Start()
+	public void SetUp(Question question)
 	{
-		SetUp();
-	}
+		_questionText.text = question.questionText;
 
-	public void SetUp()
-	{
+		_numberOfOptions = question.answerOptions.Length;
 		_optionToggles = new Toggle[_numberOfOptions];
+
 		for (int i = 0; i < _numberOfOptions; i++)
 		{
-			// TODO Instantiate Prefab with question (scriptable object or csv)
 			GameObject option = Instantiate(_optionPrefab, _optionsParent.transform);
 
 			option.transform.localPosition = new Vector3(0, -i * _optionSpacing, 0);
 
+			// TODO encontrar alternativa para evitar GetComponent
 			MCOptionValue mcVal = option.GetComponent<MCOptionValue>();
 			mcVal.SetMCLogic(this);
-			mcVal.SetValue(i);
+			mcVal.SetValue(i, question.answerOptions[i]);
 
 			_optionToggles[i] = option.GetComponent<Toggle>();
 		}
@@ -47,16 +50,16 @@ public class MCLogic : MonoBehaviour
 
 	public void SetSelectedOption(int optionID)
 	{
-		if (changing)
+		if (_changing)
 			return;
 
 		_selectedOptionID = optionID;
 
-		changing = true;
+		_changing = true;
 
 		ClearOptions();
 
-		changing = false;
+		_changing = false;
 	}
 
 	private void ClearOptions()

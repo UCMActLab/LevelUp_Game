@@ -366,7 +366,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8286979580229453333
 RectTransform:
   m_ObjectHideFlags: 0
@@ -400,9 +400,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b864e11fa8b8ca04093d6c54e5d336c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _minValue: 1
-  _maxValue: 5
+  _leftValue: 0
+  _rightValue: 0
+  _questionText: {fileID: 2301461008762819488}
   _sliderHandleText: {fileID: 3681325437852813272}
+  _leftText: {fileID: 4544349765659104702}
+  _rightText: {fileID: 6827166668444365188}
   _likertSlider: {fileID: 5558952449261515034}
 --- !u!1 &5141852148827398956
 GameObject:

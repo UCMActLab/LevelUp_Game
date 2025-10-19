@@ -36,7 +36,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4.5, y: -30.5}
+  m_AnchoredPosition: {x: -4.5, y: -10}
   m_SizeDelta: {x: 401, y: 111}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8845260793371145893
@@ -351,7 +351,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6696279091677903563
 RectTransform:
   m_ObjectHideFlags: 0
@@ -385,6 +385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2f7230b30b346546896ab74133eb6e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _questionText: {fileID: 6601552228981855079}
   _responseInputField: {fileID: 9216912061045189481}
 --- !u!1 &908258375985019908
 GameObject:
