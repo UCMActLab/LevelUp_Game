@@ -7,7 +7,7 @@ public class Question : ScriptableObject
 
 	public string questionText;
 
-	// TODO inheritance would be better here but Unity ScriptableObjects have limitations, find alternatives
+	// TODO inheritance would be better here but enums have problems with overriding (main focus for using inheritance), find alternatives
 
 	// For Multiple Choice questions
 

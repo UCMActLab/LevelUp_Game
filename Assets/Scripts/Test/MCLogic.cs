@@ -50,6 +50,7 @@ public class MCLogic : MonoBehaviour
 
 	public void SetSelectedOption(int optionID)
 	{
+		// added stop condition because of unity events -> the value ping pongs back and forth
 		if (_changing)
 			return;
 

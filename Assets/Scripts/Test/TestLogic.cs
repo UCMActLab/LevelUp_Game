@@ -86,7 +86,7 @@ public class TestLogic : MonoBehaviour
 			_currentQuestionIndex++;
 			questions[_currentQuestionIndex].SetActive(true);
 		}
-		// FINISH TEST
+		// TODO FINISH TEST
 	}
 
 	public void PreviousQuestion()
