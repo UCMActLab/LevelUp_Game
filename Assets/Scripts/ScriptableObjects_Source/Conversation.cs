@@ -7,6 +7,10 @@ public enum ConversationType
     REACTION_BAD_ARTICLE,
     TUTORIAL,
 
+    // -------------------------------------
+    // Añadir KEY_X para cada artículo clave
+    // -------------------------------------
+
     NONE = -1
 }
 
@@ -15,15 +19,14 @@ public class Conversation : ScriptableObject
 {
     public ConversationType Type = ConversationType.NONE;
 
-    [SerializeField]
-    List<Messages> _messages;
+    public List<Messages> Messages;
 
     private int _currentMessage = 0;
     
-    public bool CanContinue { get { return _currentMessage < _messages.Count; } }
+    public bool CanContinue { get { return _currentMessage < Messages.Count; } }
 
     public Messages GetNextMessages()
     {
-        return _messages[_currentMessage++];
+        return Messages[_currentMessage++];
     }
 }

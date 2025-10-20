@@ -10,7 +10,7 @@ public class ArticleData : ScriptableObject
     public string articleBody;
 
     public ConversationType convType = ConversationType.NONE;
-    public Conversation conversation = null;
+    public System.Collections.Generic.List<Conversation> conversation;
 
     public bool isTrue = true;
 }

@@ -117,7 +117,7 @@ public class TutorialController : MonoBehaviour
 
     private void ShowNewMessage(string text)
     {
-        _messageToUserLocalized.StringReference.SetReference("Translation", text);
+        _messageToUserLocalized.StringReference.SetReference("TUTORIAL_STEPS", text);
         _messageAnimator.SetTrigger("NewMessage");
         _messageAudioSource.Play();
     }

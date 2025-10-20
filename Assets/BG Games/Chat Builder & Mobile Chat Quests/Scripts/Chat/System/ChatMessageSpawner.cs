@@ -33,7 +33,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 if(message.Length > 0)
                 {
                     var newMessage = Instantiate(prefab, chat);
-                    newMessage.Setup(name, message);
+                    newMessage.Setup(name, "Translation", message);
                     if(sprite != null) newMessage.GetComponentInChildren<Image>().sprite = sprite;
 
                     SpawnedMessage?.Invoke();
@@ -98,7 +98,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             if (chat != null)
             {
                 var newMessage = Instantiate(prefab, chat);
-                newMessage.Setup("", HAVEYOUSEENTHIS_KEYWORD[LanguageSelection.chosenLanguage]);
+                newMessage.Setup("", "Translation", HAVEYOUSEENTHIS_KEYWORD[LanguageSelection.chosenLanguage]);
 
                 GameObject article = Instantiate(_articlePrefab, newMessage.transform);
                 ArticleDataSetter setter = article.GetComponent<ArticleDataSetter>();

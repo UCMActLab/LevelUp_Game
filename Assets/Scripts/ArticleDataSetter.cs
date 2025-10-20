@@ -111,7 +111,9 @@ public class ArticleDataSetter : MonoBehaviour
             bt.transform.parent.gameObject.SetActive(!_sharedWithGroups[i - 1]);
 
             int tempInt = i;
-            bt.onClick.AddListener(() => ShareArticle(tempInt, share, Data.conversation));
+            Conversation conversation = null;
+            if(Data.conversation != null && Data.conversation.Count > i - 1) { conversation = Data.conversation[i - 1]; }
+            bt.onClick.AddListener(() => ShareArticle(tempInt, share, conversation));
         }
 
         OnShare.Invoke();
@@ -138,7 +140,7 @@ public class ArticleDataSetter : MonoBehaviour
             {
                 ScoreManager.Instance.SharedFalseArticle(_hasReadArticle);
             }
-            else if(Data.isTrue && _hasReadArticle)
+            else if(Data.isTrue && !_hasReadArticle)
             {
                 ScoreManager.Instance.SharedUnreadArticle(Data.isTrue);
             }

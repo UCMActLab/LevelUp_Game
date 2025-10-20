@@ -91,14 +91,14 @@ public class ScoreManager : Singleton<ScoreManager>
         SubstractScore(_sharedFalseArticle);
 
         // feedback
-        AddToFeedback("Has compartido una noticia falsa.\n", true);
+        AddToFeedback("SCORE/SHAREDFAKENEW", true);
         if(hasReadArticle)
         {
-            AddToFeedback("¿No te has fijado en cómo está escrito?", false);
+            AddToFeedback("SCORE/SHAREDFAKENEW/READ", false);
         }
         else
         {
-            AddToFeedback("Deberías leer los artículos antes de mandarlos; puede tener consecuencias graves.\n", false);
+            AddToFeedback("SCORE/SHAREDFAKENEW/UNREAD", false);
         }
     }
 
@@ -109,7 +109,8 @@ public class ScoreManager : Singleton<ScoreManager>
 
         if(isArticleTrue)
         {
-            AddToFeedback("Has compartido una noticia verdadera.\n No te la has leído, pero has tenido la suerte de que era verdad. Hay que leer antes de compartir.", true);
+            AddToFeedback("SCORE/SHAREDTRUENEW", true);
+            AddToFeedback("SCORE/SHAREDTRUENEW/UNREAD");
         }
     }
     #endregion
@@ -117,7 +118,8 @@ public class ScoreManager : Singleton<ScoreManager>
     private void AddToFeedback(string feedback, bool restart = false)
     {
         if (restart) _whatHapppenedMessage = string.Empty;
-        _whatHapppenedMessage += feedback;
+
+        _whatHapppenedMessage += TranslationManager.Instance.GetLocalizedString("Translation", feedback) + '\n';
     }
 
     public void ShowPoints()

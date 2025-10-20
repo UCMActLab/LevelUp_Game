@@ -8,18 +8,17 @@ public class Messages : ScriptableObject
     [SerializeField]
     private string _name;
 
-    public string Name { get { return _name; } }
+    public string Name { get { return _name; } set { _name = value; } }
 
     [Header("Content")]
-    [SerializeField]
-    private List<string> _messages;
+    public List<string> MessageList;
 
     private int _currentMessage = 0;
 
-    public bool CanContinue { get { return _currentMessage < _messages.Count; } }
+    public bool CanContinue { get { return _currentMessage < MessageList.Count; } }
 
     public string GetNextMessage()
     {
-        return _messages[_currentMessage++];
+        return MessageList[_currentMessage++];
     }
 }

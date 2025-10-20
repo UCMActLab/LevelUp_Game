@@ -1,61 +1,35 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
+using UnityEngine.Localization.Tables;
 
-public enum LanguageTranslation
-{
-    english = 0,
-    spanish = 1,
-    czech = 2,
-    bulgarian = 3
-}
-
-[ExecuteInEditMode]
 public class TranslationManager : Singleton<TranslationManager>
 {
-    [SerializeField] private string _fileName = "translation.csv";
-
-    Dictionary<string, List<string>> _translations;
-
-    private LanguageTranslation _currentLanguage = LanguageTranslation.english;
-    public LanguageTranslation SelectedLanguage { get { return _currentLanguage; } }
-
-    private List<TranslateLabel> _translatedStrings;
+    LocalizedStringDatabase _database;
 
     protected override void Awake()
     {
         base.Awake();
 
-        _translatedStrings = new List<TranslateLabel>();
-        InitializeData();
+        _database = LocalizationSettings.StringDatabase;
     }
 
-    public void SelectLanguage(LanguageTranslation language)
+    public void ChangeLanguage(int localeID)
     {
-        _currentLanguage = language;
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[localeID];
     }
 
-    public string GetValueForKey(string key)
+    public string GetRandomEntryKey(string table)
     {
-        return _translations[key][(int)_currentLanguage];
+        StringTable nameTable = _database.GetTable(table);
+
+        long entry = nameTable.SharedData.Entries[Random.Range(0, nameTable.Values.Count)].Id;
+
+        return nameTable.GetEntry(entry).Key;
     }
 
-    private void InitializeData()
+    public string GetLocalizedString(string table, string key)
     {
-        string[] lines = File.ReadAllLines(Application.persistentDataPath + "/" + _fileName);
-
-        _translations = new Dictionary<string, List<string>>();
-        for (int i = 1; i < lines.Length; ++i)
-        {
-            string[] values = lines[i].Split(';');
-
-            string key = values[0];
-            List<string> translationValues = values.ToList();
-            translationValues.RemoveAt(0);
-
-            _translations.Add(key, translationValues);
-        }
+        StringTable tableReference = _database.GetTable(table);
+        return tableReference.GetEntry(key).LocalizedValue;
     }
-
 }

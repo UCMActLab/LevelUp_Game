@@ -44,7 +44,7 @@ public class ChatManager : MonoBehaviour
     {
         MessageView newMessage = Instantiate(_playerMessagePrefab, _currentChat.transform).GetComponent<MessageView>();
         // TRADUCCIÓN
-        newMessage.Setup("", "ARTICLE/PLAYER_MESSAGE");
+        newMessage.Setup("", "Translation", "ARTICLE/PLAYER_MESSAGE");
 
         GameObject prefabToUse = _articlePrefab;
         if (articleData.convType == ConversationType.TUTORIAL) prefabToUse = _tutorialArticlePrefab;
@@ -103,6 +103,19 @@ public class ChatManager : MonoBehaviour
     {
         while (_currentConversation != null && _currentConversation.CanContinue)
         {
+            string messageTable;
+            switch(_currentConversation.Type)
+            {
+                case ConversationType.REACTION_GOOD_ARTICLE:
+                    messageTable = "POSITIVE_REACTIONS";
+                    break;
+                case ConversationType.REACTION_BAD_ARTICLE:
+                    messageTable = "NEGATIVE_REACTIONS";
+                    break;
+                default:
+                    messageTable = "Translation";
+                    break;
+            }
             Messages currentMessages = Instantiate(_currentConversation.GetNextMessages());
             while(currentMessages.CanContinue)
             {
@@ -113,7 +126,7 @@ public class ChatManager : MonoBehaviour
                 _chatScrollAnimation?.PlayAnimation();
 
                 MessageView newMessage = Instantiate(_messagePrefab, _currentChat.transform).GetComponent<MessageView>();
-                newMessage.Setup(currentMessages.Name, currentMessages.GetNextMessage());
+                newMessage.Setup(currentMessages.Name, messageTable, currentMessages.GetNextMessage());
             }
         }
     }

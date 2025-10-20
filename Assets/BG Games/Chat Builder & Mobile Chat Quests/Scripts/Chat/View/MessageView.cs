@@ -26,11 +26,18 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         [SerializeField] private Image _image;
         [SerializeField] private ImageOnFullScreenAdjuster _adjuster;
 
-        public void Setup(string name, string message)
+        public void Setup(string name, string table, string message)
         {
-            if(_nameText != null) _nameLocalized.StringReference.SetReference("Translation", name);
-            _messageLocalized.StringReference.SetReference("Translation", message);
-            // _messageText.text = message;
+            if(name != "")
+            {
+                if(_nameLocalized == null)
+                {
+                    _nameLocalized = transform.GetChild(1).GetComponent<LocalizeStringEvent>();
+                }
+                _nameLocalized.StringReference.SetReference("NAMES", name);
+            }
+
+            _messageLocalized.StringReference.SetReference(table, message);
         }
 
         public void Setup(string name, Sprite spite)

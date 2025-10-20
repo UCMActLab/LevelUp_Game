@@ -4,7 +4,15 @@ public class LevelManager : Singleton<LevelManager>
 {
     [SerializeField, 
         Tooltip("Articles that will take part in this level. First article in the" +
-        " array is the first to show.")] 
+        " array is the first to show.")]
+    // ============================================
+    // 
+    // ESTO EN ALGÚN MOMENTO LO TIENE QUE RECIBIR 
+    // DE LA BASE DE DATOS QUE HAGA ANDREA. DEBEN
+    // SER INSTANCIAS DE ArticleData GENERADOS
+    // CON LOS DATOS DEL DRIVE HIHI
+    //
+    // ============================================
     private ArticleData[] _articles;
     [SerializeField,
         Tooltip("Article feed, where articles are to be displayed")]
@@ -17,7 +25,10 @@ public class LevelManager : Singleton<LevelManager>
     private bool _startOnAwake = true;
 
     private GameObject _articleObject = null;
+    private ArticleDataSetter _articleData = null;
     private int _currentArticle = 0;
+
+    private bool _pointsShowedToPlayer = true;
 
     private void Start()
     {
@@ -31,26 +42,37 @@ public class LevelManager : Singleton<LevelManager>
     {
         if (_articleObject != null) Destroy(_articleObject);
 
-        if (_currentArticle >= _articles.Length)
+        if (!_pointsShowedToPlayer)
+        {
+            ScoreManager.Instance.ShowPoints();
+            _pointsShowedToPlayer = true;
+        }
+        else if (_currentArticle >= _articles.Length)
         {
             EndLevel();
         }
         else
         {
             _articleObject = Instantiate(_articlePrefab, _articleFeed.transform);
-            ArticleDataSetter dataSetter = _articleObject.GetComponent<ArticleDataSetter>();
-            dataSetter.SetArticleData(Instantiate(_articles[_currentArticle++]));
-            dataSetter.OnShare.AddListener(ArticleShared);
+            _articleData = _articleObject.GetComponent<ArticleDataSetter>();
+            _articleData.SetArticleData(Instantiate(_articles[_currentArticle++]));
+            _pointsShowedToPlayer = false;
+            // _articleData.OnShare.AddListener(ArticleShared);
         }
     }
 
     private void ArticleShared()
     {
-        if(_articleObject.GetComponent<ArticleDataSetter>().IsTrue)
-        {
-            // TODO
-        }
-        // TODO
+        //if(_articleData.IsTrue)
+        //{
+        //    // TODO
+        //    ScoreManager.Instance.SharedUnreadArticle(true);
+        //}
+        //else
+        //{
+        //    ScoreManager.Instance.SharedFalseArticle(_articleData.HasReadArticle);
+        //}
+        //// TODO
     }
 
     private void EndLevel()

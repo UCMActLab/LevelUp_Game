@@ -11,7 +11,6 @@ public class GroupSettings : MonoBehaviour
 
     [SerializeField] private string _name;
     [SerializeField] private Sprite _image;
-    [SerializeField] private List<string> _people;
 
     [SerializeField] private GameObject _groupInfo;
 
@@ -35,6 +34,6 @@ public class GroupSettings : MonoBehaviour
 
     public string GetRandomName()
     {
-        return _people[Random.Range(0, _people.Count)];
+        return null;
     }
 }

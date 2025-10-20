@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
+using UnityEngine.Localization.Tables;
 
 public class ConversationCompendium : Singleton<ConversationCompendium>
 {
@@ -31,7 +33,30 @@ public class ConversationCompendium : Singleton<ConversationCompendium>
     /// <returns> a Conversation of the given Type </returns>
     public Conversation GetConversation(ConversationType conversationType = ConversationType.NONE)
     {
-        if (_conversations.TryGetValue(conversationType, out List<Conversation> convs))
+        if(conversationType == ConversationType.REACTION_GOOD_ARTICLE ||
+            conversationType == ConversationType.REACTION_BAD_ARTICLE)
+        {
+            Conversation cv = new Conversation();
+            cv.Messages = new List<Messages>();
+            cv.Type = conversationType;
+
+            string table = conversationType == ConversationType.REACTION_BAD_ARTICLE ? "NEGATIVE_REACTIONS" : "POSITIVE_REACTIONS";
+            
+            int n = Random.Range(2, 5);
+            for (int i = 0; i < n; ++i)
+            {
+                Messages messages = new Messages();
+
+                messages.Name = TranslationManager.Instance.GetRandomEntryKey("NAMES");
+                messages.MessageList = new List<string>();
+                messages.MessageList.Add(TranslationManager.Instance.GetRandomEntryKey(table));
+
+                cv.Messages.Add(messages);
+            }
+
+            return cv;
+        }
+        else if (_conversations.TryGetValue(conversationType, out List<Conversation> convs))
         {
             Conversation conv = convs[0];
             convs.RemoveAt(0);
