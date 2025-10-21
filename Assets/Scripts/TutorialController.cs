@@ -26,7 +26,7 @@ public class TutorialController : MonoBehaviour
 
     [Header("General")]
     [Tooltip("The greater the value, the greater the time you'll have to wait for the NextStep button to activate"), 
-        SerializeField, Range(0.01f, 0.1f)] private float _waitFactor = .01f;
+        SerializeField, Range(0.00f, 0.1f)] private float _waitFactor = .01f;
 
     [SerializeField] private GameObject _articlePrefab;
     [SerializeField] private Transform _chat;
@@ -146,7 +146,7 @@ public class TutorialController : MonoBehaviour
                 ShowNewMessage(messages[i]);
 
                 // Activate button after time
-                yield return new WaitForSeconds(TimeToReadMessage(messages[i]));
+                yield return new WaitForSeconds(TimeToReadMessage(_messageToUser.text));
                 ActivateNextStepButton(true);
                 _buttonWasPressed = false;
 
@@ -228,7 +228,7 @@ public class TutorialController : MonoBehaviour
 
     private async void ReadArticle()
     {
-        await Task.Delay((int)(TimeToReadMessage(_articles[0].GetBodyString()) * 1000));
+        await Task.Delay((int)(TimeToReadMessage(_articles[0].GetBodyString())));
 
         _hasReadAnArticle = true;
 
@@ -382,6 +382,7 @@ public class TutorialController : MonoBehaviour
         }
         else
         {
+            Destroy(gameObject);
             OnTutorialEnd.Invoke();
         }
     }

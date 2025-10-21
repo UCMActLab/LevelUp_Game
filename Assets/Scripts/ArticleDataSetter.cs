@@ -127,9 +127,12 @@ public class ArticleDataSetter : MonoBehaviour
     {
         if (_skipped) return;
 
-        OnSkip.Invoke();
-
         GetComponent<Animator>().SetTrigger("Skip");
+    }
+
+    public void InvokeOnSkip()
+    {
+        OnSkip.Invoke();
     }
 
     private void ShareArticle(int groupID, GameObject shareButtons, Conversation conv = null)

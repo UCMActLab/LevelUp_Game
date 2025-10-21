@@ -32,6 +32,7 @@ public class PointsMenu : MonoBehaviour
     private void OnDisable()
     {
         _scoreText.text = _scoreManager.MaxScore.ToString();
+        ScoreManager.Instance.RestartFeedback();
     }
 
     public void ShowScore()

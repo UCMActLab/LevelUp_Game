@@ -117,9 +117,14 @@ public class ScoreManager : Singleton<ScoreManager>
 
     private void AddToFeedback(string feedback, bool restart = false)
     {
-        if (restart) _whatHapppenedMessage = string.Empty;
+        if (restart) RestartFeedback();
 
         _whatHapppenedMessage += TranslationManager.Instance.GetLocalizedString("Translation", feedback) + '\n';
+    }
+
+    public void RestartFeedback()
+    {
+        _whatHapppenedMessage = string.Empty;
     }
 
     public void ShowPoints()

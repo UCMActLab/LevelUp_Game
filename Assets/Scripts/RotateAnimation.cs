@@ -10,6 +10,7 @@ public class RotateAnimation : MonoBehaviour
         Tooltip("Todavía no funciona bien el Clockwise. El anti-horario sí")] 
     private bool _clockwise = false;
 
+    [SerializeField]
     private float _initialRotation = 0.0f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -31,7 +32,7 @@ public class RotateAnimation : MonoBehaviour
     /// <param name="finalPoint"> [0, 1] </param>
     public void StartRotation(float finalPoint, UnityAction<float> whileRotating)
     {
-        float initial = transform.rotation.eulerAngles.z;
+        float initial = _initialRotation;
 
         float final = initial + (_clockwise ? -finalPoint : (1 - finalPoint)) * 360;
         StartCoroutine(Rotate(final, whileRotating));

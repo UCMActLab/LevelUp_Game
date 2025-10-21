@@ -40,7 +40,11 @@ public class LevelManager : Singleton<LevelManager>
 
     public void ShowNextArticle()
     {
-        if (_articleObject != null) Destroy(_articleObject);
+        if (_articleObject != null)
+        {
+            _articleData.OnSkip.RemoveAllListeners();
+            Destroy(_articleObject);
+        }
 
         if (!_pointsShowedToPlayer)
         {
@@ -55,24 +59,11 @@ public class LevelManager : Singleton<LevelManager>
         {
             _articleObject = Instantiate(_articlePrefab, _articleFeed.transform);
             _articleData = _articleObject.GetComponent<ArticleDataSetter>();
+            _articleData.OnSkip.AddListener(ShowNextArticle);
             _articleData.SetArticleData(Instantiate(_articles[_currentArticle++]));
             _pointsShowedToPlayer = false;
             // _articleData.OnShare.AddListener(ArticleShared);
         }
-    }
-
-    private void ArticleShared()
-    {
-        //if(_articleData.IsTrue)
-        //{
-        //    // TODO
-        //    ScoreManager.Instance.SharedUnreadArticle(true);
-        //}
-        //else
-        //{
-        //    ScoreManager.Instance.SharedFalseArticle(_articleData.HasReadArticle);
-        //}
-        //// TODO
     }
 
     private void EndLevel()
