@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MCLogic : MonoBehaviour
+public class MCLogic : MonoBehaviour, IQuestionLogic
 {
 	[SerializeField]
 	private TMP_Text _questionText;
@@ -46,6 +46,11 @@ public class MCLogic : MonoBehaviour
 
 			_optionToggles[i] = option.GetComponent<Toggle>();
 		}
+	}
+
+	public string GetResults()
+	{
+		return _selectedOptionID.ToString();
 	}
 
 	public void SetSelectedOption(int optionID)

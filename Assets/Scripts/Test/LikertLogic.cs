@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LikertLogic : MonoBehaviour
+public class LikertLogic : MonoBehaviour, IQuestionLogic
 {
     [SerializeField]
     private int _leftValue;
@@ -38,6 +38,11 @@ public class LikertLogic : MonoBehaviour
 
 		SetUpSlider();
     }
+
+	public string GetResults()
+	{
+		return _likertSlider.value.ToString();
+	}
 
 	private void SetUpSlider()
     {
