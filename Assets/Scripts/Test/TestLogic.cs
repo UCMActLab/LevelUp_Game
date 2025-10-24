@@ -60,9 +60,8 @@ public class TestLogic : MonoBehaviour
 		// TODO encontrar alternativa para evitar GetComponent
         for (int i = 0; i < _test.questions.Length; i++)
         {
-			Debug.Log("Question " + (i + 1) + ": " + _test.questions[i].questionText);
 			GameObject question = null;
-			switch (_test.questions[i].questionType)
+			switch (_test.questions[i].QuestionType)
             {
 				case QuestionType.LIKERT:
 					question = Instantiate(_likertQuestionPrefab, _testContainer.transform);

@@ -28,9 +28,15 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 
 	public void SetUp(Question question)
 	{
+		QuestionMC questionMC = question as QuestionMC;
+		if(questionMC == null) 
+		{
+			Debug.LogError("MCLogic: Question is not of type QuestionMC!");
+			return;
+		}
 		_questionText.text = question.questionText;
 
-		_numberOfOptions = question.answerOptions.Length;
+		_numberOfOptions = questionMC.answerOptions.Length;
 		_optionToggles = new Toggle[_numberOfOptions];
 
 		for (int i = 0; i < _numberOfOptions; i++)
@@ -42,7 +48,7 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 			// TODO encontrar alternativa para evitar GetComponent
 			MCOptionValue mcVal = option.GetComponent<MCOptionValue>();
 			mcVal.SetMCLogic(this);
-			mcVal.SetValue(i, question.answerOptions[i]);
+			mcVal.SetValue(i, questionMC.answerOptions[i]);
 
 			_optionToggles[i] = option.GetComponent<Toggle>();
 		}

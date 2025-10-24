@@ -26,15 +26,21 @@ public class LikertLogic : MonoBehaviour, IQuestionLogic
 
     public void SetUp(Question question)
     {
-        _questionText.text = question.questionText;
+        QuestionLikert questionLikert = question as QuestionLikert;
+		if (questionLikert == null)
+		{
+			Debug.LogError("MCLogic: Question is not of type QuestionLikert!");
+			return;
+		}
+		_questionText.text = question.questionText;
 
-        _leftValue = question.leftValue;
-        _rightValue = question.rightValue;
+        _leftValue = questionLikert.leftValue;
+        _rightValue = questionLikert.rightValue;
 
-        _leftText.text = question.leftLablel;
-        _rightText.text = question.rightLabel;
+        _leftText.text = questionLikert.leftLablel;
+        _rightText.text = questionLikert.rightLabel;
 
-		_likertSlider.value = question.defaultValue;
+		_likertSlider.value = questionLikert.defaultValue;
 
 		SetUpSlider();
     }

@@ -11,7 +11,13 @@ public class OpenQuestionLogic : MonoBehaviour, IQuestionLogic
 
 	public void SetUp(Question question)
 	{
-		_questionText.text = question.questionText;
+		QuestionOpen questionOpen = question as QuestionOpen;
+		if (questionOpen == null)
+		{
+			Debug.LogError("OpenQuestionLogic: Question is not of type QuestionOpen!");
+			return;
+		}
+		_questionText.text = questionOpen.questionText;
 
 		_responseInputField.text = "";
 	}
