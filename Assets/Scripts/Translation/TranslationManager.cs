@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization.Tables;
 
@@ -27,7 +28,7 @@ public class TranslationManager : Singleton<TranslationManager>
         return nameTable.GetEntry(entry).Key;
     }
 
-    public string GetLocalizedString(string table, string key)
+    public string GetLocalizedStringValue(string table, string key)
     {
         StringTable tableReference = _database.GetTable(table);
         return tableReference.GetEntry(key).LocalizedValue;

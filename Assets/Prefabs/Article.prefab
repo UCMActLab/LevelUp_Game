@@ -650,8 +650,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 422.7, y: -1404.275}
-  m_SizeDelta: {x: 813.4, y: 0}
+  m_AnchoredPosition: {x: 422.7, y: -1645.275}
+  m_SizeDelta: {x: 813.4, y: 385.95}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4541360520026125862
 MonoBehaviour:
@@ -913,8 +913,6 @@ MonoBehaviour:
   _companyText: {fileID: 9155992538471812636}
   _articleImage: {fileID: 5322740956091632681}
   _articleTitle: {fileID: 593194473917157602}
-  _likes: {fileID: 0}
-  _reposts: {fileID: 0}
   _articleBody: {fileID: 2223577138462872895}
   _bodyText: {fileID: 2009325081639944267}
   _readButton: {fileID: 5103739033724999678}
@@ -922,6 +920,15 @@ MonoBehaviour:
   _skipButton: {fileID: 5792921991935958627}
   Data: {fileID: 11400000, guid: 6981ef247a64e6447ae303da26cfc956, type: 2}
   Action: 0
+  OnSkip:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRead:
+    m_PersistentCalls:
+      m_Calls: []
+  OnShare:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4377836444910272241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1035,7 +1042,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   independent: 0
   radiiSerialized: {x: 32, y: 32, z: 32, w: 32}
-  rect2props: {x: 0.000061035156, y: 0, z: 298.89407, w: 298.89407}
+  rect2props: {x: 0.000061035156, y: 0, z: 254.91202, w: 254.91202}
   image: {fileID: 162251823864835801}
 --- !u!114 &7322704421303476616
 MonoBehaviour:
@@ -1736,8 +1743,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 406.7, y: -79.975}
-  m_SizeDelta: {x: 813.4, y: 0}
+  m_AnchoredPosition: {x: 406.7, y: -208.975}
+  m_SizeDelta: {x: 813.4, y: 353.95}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8502656766335238876
 MonoBehaviour:
@@ -1801,10 +1808,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hola buenas!
+  m_text: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2b5dae3ac8a79c148804a12eee3e2ddc, type: 2}
-  m_sharedMaterial: {fileID: 8530444609268933871, guid: 2b5dae3ac8a79c148804a12eee3e2ddc, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 7e6e61794741e9447ba6bab084b880b0, type: 2}
+  m_sharedMaterial: {fileID: -32934131397107446, guid: 7e6e61794741e9447ba6bab084b880b0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1866,7 +1875,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 30, y: 35, z: 30, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

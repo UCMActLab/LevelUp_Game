@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 
 public class PointsMenu : MonoBehaviour
@@ -7,6 +8,7 @@ public class PointsMenu : MonoBehaviour
     [SerializeField] private RotateAnimation _rotateAnim = null;
     [SerializeField] private TextMeshProUGUI _scoreText = null;
     [SerializeField] private TextMeshProUGUI _titleText = null;
+    [SerializeField] private LocalizeStringEvent _titleStringEvent = null;
     [SerializeField] private TextMeshProUGUI _explanationText = null;
     [SerializeField] private Image _avatar = null;
 
@@ -65,8 +67,7 @@ public class PointsMenu : MonoBehaviour
     {
         ScoreMessages messages = ScoreManager.Instance.GetMenuText();
 
-        _titleText.text = messages.Title;
-        // _explanationText.text = messages.Explanation;
+        _titleStringEvent.StringReference = messages.Title;
         _avatar.sprite = messages.Avatar;
 
         _explanationText.text = ScoreManager.Instance.GetWhatHappened();

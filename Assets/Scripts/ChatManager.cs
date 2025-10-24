@@ -31,12 +31,27 @@ public class ChatManager : MonoBehaviour
     [SerializeField, Range(0.0f, 5.0f)] private float _waitingBetweenMessages = 0.1f;
     [SerializeField] private bool _playOnAwake = false;
 
+    IEnumerator _displayConvCoroutine = null;
+
+    private void StartConversation()
+    {
+        StopConversation();
+        _displayConvCoroutine = DisplayConversation();
+        StartCoroutine(_displayConvCoroutine);
+    }
+
+    private void StopConversation()
+    {
+        if (_displayConvCoroutine != null) { StopCoroutine(_displayConvCoroutine); }
+        _messageWritingAnimator?.Disable();
+    }
+
     public void SetConversation(Conversation conversation, bool startConversation)
     {
         _currentConversation = Instantiate(conversation);
         if(startConversation)
         {
-            StartCoroutine(DisplayConversation());
+            StartConversation();
         }
     }
 
@@ -75,6 +90,7 @@ public class ChatManager : MonoBehaviour
             _currentChat.SetActive(false);
             ChangeCurrentChat(_mainChat);
             if (_header != null) _header?.SetActive(true);
+            StopConversation();
         }
         else
         {
@@ -136,7 +152,7 @@ public class ChatManager : MonoBehaviour
     {
         InitializeReferences();
 
-        if (_playOnAwake) StartCoroutine(DisplayConversation());
+        if (_playOnAwake) StartConversation();
     }
 
     private void InitializeReferences()

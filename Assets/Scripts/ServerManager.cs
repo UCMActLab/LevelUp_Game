@@ -4,7 +4,6 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 // TODO ESTO EN UNA PANTALLA DE CARGA ENTRE IDIOMAS Y EL JUEGO
-
 public class ServerManager : MonoBehaviour
 {
     // Codigo de Singleton

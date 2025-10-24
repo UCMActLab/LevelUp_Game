@@ -1,5 +1,5 @@
 using UnityEngine;
-
+ 
 [CreateAssetMenu(fileName ="ArticleData", menuName ="ScriptableObjects/ArticleData")]
 public class ArticleData : ScriptableObject
 {

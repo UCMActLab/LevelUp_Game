@@ -1,3 +1,4 @@
+using DA_Assets.Extensions;
 using UnityEngine;
 
 public class LevelManager : Singleton<LevelManager>
@@ -43,7 +44,7 @@ public class LevelManager : Singleton<LevelManager>
         if (_articleObject != null)
         {
             _articleData.OnSkip.RemoveAllListeners();
-            Destroy(_articleObject);
+            _articleData.DestroyArticle();
         }
 
         if (!_pointsShowedToPlayer)

@@ -2,6 +2,7 @@ using AYellowpaper.SerializedCollections;
 using System;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Localization;
 
 public enum Score
 {
@@ -15,7 +16,7 @@ public enum Score
 [Serializable]
 public struct ScoreMessages
 {
-    public string Title;
+    public LocalizedString Title;
     public string Explanation;
     public Sprite Avatar;
 }
@@ -119,7 +120,7 @@ public class ScoreManager : Singleton<ScoreManager>
     {
         if (restart) RestartFeedback();
 
-        _whatHapppenedMessage += TranslationManager.Instance.GetLocalizedString("Translation", feedback) + '\n';
+        _whatHapppenedMessage += TranslationManager.Instance.GetLocalizedStringValue("Translation", feedback) + '\n';
     }
 
     public void RestartFeedback()

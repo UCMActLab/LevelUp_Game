@@ -64,6 +64,7 @@ public class ArticleDataSetter : MonoBehaviour
 
     bool[] _sharedWithGroups;
 
+    GameObject _shareArticleButtons = null;
     public bool IsTrue { get { return Data.isTrue; } }
 
     private void Start()
@@ -93,8 +94,8 @@ public class ArticleDataSetter : MonoBehaviour
     #region Article Actions
     public void ShareButtonsSetUp()
     {
-        GameObject share = _convManager.SpawnShareButtons();
-        Button[] buttons = share.GetComponentsInChildren<Button>();
+        _shareArticleButtons = _convManager.SpawnShareButtons();
+        Button[] buttons = _shareArticleButtons.GetComponentsInChildren<Button>();
 
         buttons[0].onClick.AddListener(() =>
         {
@@ -102,7 +103,8 @@ public class ArticleDataSetter : MonoBehaviour
             LevelManager.Instance.ShowNextArticle();
             // EnableButtonsInteraction(false);
             
-            Destroy(share);
+            Destroy(_shareArticleButtons);
+            _shareArticleButtons = null;
         });
 
         for (int i = 1; i <  buttons.Length; i++) {
@@ -113,7 +115,7 @@ public class ArticleDataSetter : MonoBehaviour
             int tempInt = i;
             Conversation conversation = null;
             if(Data.conversation != null && Data.conversation.Count > i - 1) { conversation = Data.conversation[i - 1]; }
-            bt.onClick.AddListener(() => ShareArticle(tempInt, share, conversation));
+            bt.onClick.AddListener(() => ShareArticle(tempInt, _shareArticleButtons, conversation));
         }
 
         OnShare.Invoke();
@@ -128,6 +130,7 @@ public class ArticleDataSetter : MonoBehaviour
         if (_skipped) return;
 
         GetComponent<Animator>().SetTrigger("Skip");
+        _skipped = true;
     }
 
     public void InvokeOnSkip()
@@ -283,6 +286,7 @@ public class ArticleDataSetter : MonoBehaviour
 
     public void DestroyArticle()
     {
+        if(_shareArticleButtons != null) Destroy(_shareArticleButtons);
         Destroy(gameObject);
     }
 
