@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public enum ConversationType
 {
@@ -15,6 +16,7 @@ public enum ConversationType
 }
 
 [CreateAssetMenu(fileName ="Conversation",menuName ="ScriptableObjects/Conversation/Conversation")]
+[Serializable]
 public class Conversation : ScriptableObject
 {
     public ConversationType Type = ConversationType.NONE;

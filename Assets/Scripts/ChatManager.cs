@@ -142,7 +142,14 @@ public class ChatManager : MonoBehaviour
                 _chatScrollAnimation?.PlayAnimation();
 
                 MessageView newMessage = Instantiate(_messagePrefab, _currentChat.transform).GetComponent<MessageView>();
-                newMessage.Setup(currentMessages.Name, messageTable, currentMessages.GetNextMessage());
+                if(_currentConversation.Type == ConversationType.NONE)
+                {
+                    newMessage.Setup(currentMessages.Name, currentMessages.GetNextMessage());
+                }
+                else
+                {
+                    newMessage.Setup(currentMessages.Name, messageTable, currentMessages.GetNextMessage());
+                }
             }
         }
     }

@@ -11,7 +11,7 @@ public class PlayButton : MonoBehaviour
 
     public void goGameSceneCroatian()
     {
-        LanguageSelection.chosenLanguage = Language.croatian;
+        LanguageSelection.chosenLanguage = Language.czech;
         SceneManager.LoadScene("LoadingScene");
     }
 

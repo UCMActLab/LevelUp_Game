@@ -135,6 +135,11 @@ public class ScoreManager : Singleton<ScoreManager>
         _pointsMenu.SetActive(true);
     }
 
+    public void RestartScore()
+    {
+        _currentScore = _initialScore;
+    }
+
     public void DeactivateMenu()
     {
         _pointsMenu.SetActive(false);

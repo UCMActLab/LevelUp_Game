@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 // TODO ESTO EN UNA PANTALLA DE CARGA ENTRE IDIOMAS Y EL JUEGO
 public class ServerManager : MonoBehaviour
@@ -37,6 +37,9 @@ public class ServerManager : MonoBehaviour
     #endregion
 
     [SerializeField]
+    private bool _debugEnabled = false;
+
+    [SerializeField]
     string userID = "admin";
     [SerializeField]
     string userPassword = "j8$K2!";
@@ -51,24 +54,27 @@ public class ServerManager : MonoBehaviour
     [HideInInspector]
     public string inkText = "";
 
+    public UnityEvent<string> OnJsonReceived;
+
     // Start is called before the first frame update
     void Start()
     {
-        SceneManager.activeSceneChanged += ChangedActiveScene;
 
-        Debug.Log("hola");
-        processServerAnswer();
-        //StartCoroutine(serverLogin());
-    }
-
-    private void ChangedActiveScene(Scene current, Scene next)
-    {
-        if (next == SceneManager.GetSceneByName("LoadingScene"))
+        if (_debugEnabled)
         {
-            processServerAnswer();
+            ConnectionFailed();
+        }
+        else
+        {
+            StartCoroutine(serverLogin());
         }
     }
 
+    private void ConnectionFailed()
+    {
+        TextAsset json = Resources.Load<TextAsset>("Backup/articles");
+        OnJsonReceived.Invoke(json.text);
+    }
 
     IEnumerator serverLogin()
     {
@@ -83,7 +89,7 @@ public class ServerManager : MonoBehaviour
             if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log(www.error);
-                Debug.Log(www.downloadHandler.text);
+                ConnectionFailed();
             }
             else
             {
@@ -108,17 +114,12 @@ public class ServerManager : MonoBehaviour
         if (www.result != UnityWebRequest.Result.Success)
         {
             Debug.Log(www.error);
-            Debug.Log(www.downloadHandler.text);
+            ConnectionFailed();
         }
         else
         {
-            serverAnswer = JsonUtility.FromJson<RootObject>(www.downloadHandler.text);
-
-            Debug.Log(www.downloadHandler.text);
-
-            processServerAnswer();
+            OnJsonReceived.Invoke(www.downloadHandler.text);
         }
-
     }
 
     void processServerAnswer()
@@ -141,7 +142,7 @@ public class ServerManager : MonoBehaviour
 
             var lang = serverAnswer.Articles[i].ES;
             // Depende del idioma escogido en el menú se sustituye la informacion correspondiente
-            if (LanguageSelection.chosenLanguage == Language.croatian) lang = serverAnswer.Articles[i].CR;
+            if (LanguageSelection.chosenLanguage == Language.czech) lang = serverAnswer.Articles[i].CR;
             else if (LanguageSelection.chosenLanguage == Language.bulgarian) lang = serverAnswer.Articles[i].B;
 
             // Replace cada uno de los campos: headline, multimedia, source, body, reactions

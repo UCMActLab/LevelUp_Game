@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class LanguageButton : MonoBehaviour
 {
-    public void ChangeLangauge(int langauge)
+    public void ChangeLangauge(int newLanguage)
     {
-        TranslationManager.Instance.ChangeLanguage(langauge);
+        LanguageSelection.chosenLanguage = (Language)newLanguage;
+        TranslationManager.Instance.ChangeLanguage(newLanguage);
     }
 }

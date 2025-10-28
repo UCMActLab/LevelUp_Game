@@ -40,6 +40,15 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
             _messageLocalized.StringReference.SetReference(table, message);
         }
 
+        public void Setup(string name, string message)
+        {
+            if (name != "")
+            {
+                _nameText.text = name;
+            }
+            _messageText.text = message;
+        }
+
         public void Setup(string name, Sprite spite)
         {
             if (spite == null) return;

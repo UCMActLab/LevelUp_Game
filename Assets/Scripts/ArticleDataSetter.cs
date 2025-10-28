@@ -159,6 +159,7 @@ public class ArticleDataSetter : MonoBehaviour
         {
             conv = ConversationCompendium.Instance.GetConversation(Data.convType);
         }
+
         _convManager.SetConversation(conv, true);
 
         Destroy(shareButtons);
