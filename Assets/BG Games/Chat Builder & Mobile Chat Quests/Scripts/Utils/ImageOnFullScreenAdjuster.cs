@@ -10,8 +10,6 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Utils
         [SerializeField] private RectTransform _imageTransform;
         [SerializeField] private RectTransform _parentTransform;
         [SerializeField] private bool _onStart = true;
-        [SerializeField] private bool _anchorOnTop = false;
-        [SerializeField] private bool _anchorOnBottom = false;
 
         private async void Start()
         {

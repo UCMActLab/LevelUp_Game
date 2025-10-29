@@ -1,10 +1,7 @@
-using DA_Assets.Extensions;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -58,6 +55,7 @@ public class ArticleManager : Singleton<ArticleManager>
 
     private IEnumerator CreateArticles_Coroutine(List<ArticleJSONData> articles)
     {
+        Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
         foreach (ArticleJSONData data in articles)
         {
             ArticleData article = ScriptableObject.CreateInstance("ArticleData") as ArticleData;
@@ -69,19 +67,28 @@ public class ArticleManager : Singleton<ArticleManager>
             // article.image = data.Multimedia; TODO: Tratamiento de imágenes
             if(data.Multimedia != "")
             {
-                string driveURL = "https://drive.google.com/uc?export=download&id=" + data.Multimedia.Replace("image:", "");
-                UnityWebRequest request = UnityWebRequestTexture.GetTexture(driveURL);
-
-                yield return request.SendWebRequest();
-
-                if (request.result == UnityWebRequest.Result.Success)
+                if(sprites.ContainsKey(data.Multimedia))
                 {
-                    yield return new WaitUntil(() => request.downloadHandler.isDone);
-                    Texture2D loadedTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-                    article.articleImage = Sprite.Create(loadedTexture, new Rect(0.0f, 0.0f, loadedTexture.width, loadedTexture.height), Vector2.zero);
+                    article.articleImage = sprites[data.Multimedia];
                 }
-                else { 
-                    UnityEngine.Debug.LogError("No se ha podido cargar la textura: " + request.result);
+                else
+                {
+                    string driveURL = "https://drive.google.com/uc?export=download&id=" + data.Multimedia.Replace("image:", "");
+                    UnityWebRequest request = UnityWebRequestTexture.GetTexture(driveURL);
+
+                    yield return request.SendWebRequest();
+
+                    if (request.result == UnityWebRequest.Result.Success)
+                    {
+                        yield return new WaitUntil(() => request.downloadHandler.isDone);
+                        Texture2D loadedTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+                        Sprite spr = Sprite.Create(loadedTexture, new Rect(0.0f, 0.0f, loadedTexture.width, loadedTexture.height), Vector2.zero);
+                        article.articleImage = spr;
+                        sprites.Add(data.Multimedia, spr);
+                    }
+                    else { 
+                        UnityEngine.Debug.LogError("No se ha podido cargar la textura: " + request.result);
+                    }
                 }
             }
 
@@ -115,6 +122,7 @@ public class ArticleManager : Singleton<ArticleManager>
             if (data.Language == "es") { parsedLanguage = 3; }
             else if(data.Language == "cz") { parsedLanguage = 1; }
             else if(data.Language == "bg") { parsedLanguage = 0; }
+            else if(data.Language == "en") { parsedLanguage = 2; }
 
             if (!_articlesByLanguage.ContainsKey(parsedLanguage)) 
             {

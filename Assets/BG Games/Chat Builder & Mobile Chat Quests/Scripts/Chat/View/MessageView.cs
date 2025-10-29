@@ -9,7 +9,6 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
 {
     public class MessageView : MonoBehaviour
     {
-        [SerializeField] private string _freeImagText = "Free";
         [Space]
         [SerializeField] private Image _background;
         [SerializeField] private HorizontalOrVerticalLayoutGroup _messageLayout;

@@ -112,7 +112,7 @@ public class ChatManager : MonoBehaviour
         _currentChat = newChat;
         _currentChat.SetActive(true);
         _scrollRect.content = _currentChat.transform as RectTransform;
-        _messageWritingAnimator.transform.parent = _currentChat.transform;
+        _messageWritingAnimator.transform.SetParent(_currentChat.transform);
     }
 
     IEnumerator DisplayConversation()
@@ -165,7 +165,7 @@ public class ChatManager : MonoBehaviour
     private void InitializeReferences()
     {
         _currentChat = _mainChat;
-        _messageWritingAnimator.transform.parent = _currentChat.transform;
+        _messageWritingAnimator.transform.SetParent(_currentChat.transform);
 
         // hacemos una copia de la conversación para no modificar la original
         if(_currentConversation != null) _currentConversation = Instantiate(_currentConversation);

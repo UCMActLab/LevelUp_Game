@@ -1,24 +1,10 @@
 using DA_Assets.Extensions;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class LevelManager : Singleton<LevelManager>
 {
-    [SerializeField, 
-        Tooltip("Articles that will take part in this level. First article in the" +
-        " array is the first to show.")]
-    // ============================================
-    // 
-    // ESTO EN ALGÚN MOMENTO LO TIENE QUE RECIBIR 
-    // DE LA BASE DE DATOS QUE HAGA ANDREA. DEBEN
-    // SER INSTANCIAS DE ArticleData GENERADOS
-    // CON LOS DATOS DEL DRIVE HIHI
-    //
-    // ============================================
-    private ArticleData[] _articles;
     [SerializeField,
         Tooltip("Article feed, where articles are to be displayed")]
     private ArticleFeed _articleFeed;
@@ -36,20 +22,24 @@ public class LevelManager : Singleton<LevelManager>
     [SerializeField]
     private bool _startOnAwake = true;
 
+    [SerializeField]
+    private GameObject _loadingAnimation = null;
+
     private GameObject _articleObject = null;
     private ArticleDataSetter _articleData = null;
     private int _currentArticle = 0;
 
-    private bool _pointsShowedToPlayer = true;
-
     private void Start()
     {
+        _loadingAnimation?.SetActive(false);
         StartCoroutine(GetArticlesFromResources());
     }
 
     private IEnumerator GetArticlesFromResources()
     {
+        _loadingAnimation?.SetActive(true);
         yield return new WaitUntil(() => ArticleManager.Instance.ArticlesCreated);
+        _loadingAnimation?.SetActive(false);
 
         List<ArticleData> data = ArticleManager.Instance.GetAllArticlesByLanguage((int)LanguageSelection.chosenLanguage);
 
@@ -104,7 +94,6 @@ public class LevelManager : Singleton<LevelManager>
             _articleData = _articleObject.GetComponent<ArticleDataSetter>();
             _articleData.OnSkip.AddListener(ShowNextArticle);
             _articleData.SetArticleData(Instantiate(_levels[_currentLevel][_currentArticle++]));
-            _pointsShowedToPlayer = false;
         }
     }
 

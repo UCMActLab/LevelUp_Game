@@ -353,7 +353,6 @@ public class ArticleDataSetter : MonoBehaviour
         {
             // escogemos automáticamente no enviar más artículos si no quedan grupos
             GameObject share = _inkConvManager.SpawnShareButtons();
-            int i = 0;
             Button[] buttons = share.GetComponentsInChildren<Button>();
             foreach (Button bt in buttons)
             {
@@ -373,7 +372,6 @@ public class ArticleDataSetter : MonoBehaviour
         else
         {
             GameObject share = _inkConvManager.SpawnShareButtons();
-            int i = 0;
             Button[] buttons = share.GetComponentsInChildren<Button>();
 
             buttons[0].onClick.AddListener(() => {
