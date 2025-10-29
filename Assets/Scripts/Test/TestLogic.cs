@@ -95,6 +95,7 @@ public class TestLogic : MonoBehaviour
 			results[i] = questionLogics[i].GetResults();
 			Debug.Log("Answer submitted: " + results[i]);
 		}
+		AnalyticsManager.Instance.SubmitTestResults(_test, results);
 	}
 
 	public void DisplayEnd()
