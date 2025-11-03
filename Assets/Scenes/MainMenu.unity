@@ -1090,12 +1090,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef4cec1707608ad4e9a3536d6e61a7c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _debugEnabled: 0
   userID: admin
   userPassword: j8$K2!
   serverAnswer:
     Articles: []
   inkPath: /Prototipo-Septiembre/Prototipo Septiembre
   inkText: 
+  OnJsonReceived:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2019389191
 GameObject:
   m_ObjectHideFlags: 0
@@ -1274,7 +1278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1055399658171308423, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 0.8575001
       objectReference: {fileID: 0}
     - target: {fileID: 1055399658171308423, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1290,7 +1294,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1055399658171308423, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 1050.1294
+      value: 745.0647
       objectReference: {fileID: 0}
     - target: {fileID: 1055399658171308423, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1298,7 +1302,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1055399658171308423, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000003979825
+      value: -152.53235
       objectReference: {fileID: 0}
     - target: {fileID: 1109215412324272180, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_Text
@@ -1485,7 +1489,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6305003490935882637, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_fontSize
-      value: 58.5
+      value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 6305003490935882637, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_margin.w
@@ -1505,7 +1509,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 7e6e61794741e9447ba6bab084b880b0, type: 2}
     - target: {fileID: 6305003490935882637, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_fontSizeBase
-      value: 58.5
+      value: 44
       objectReference: {fileID: 0}
     - target: {fileID: 6305003490935882637, guid: 416192f0aae02b645a21fd6be57bf91b, type: 3}
       propertyPath: m_sharedMaterial

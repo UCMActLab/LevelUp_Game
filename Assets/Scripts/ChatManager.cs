@@ -25,6 +25,7 @@ public class ChatManager : MonoBehaviour
     [SerializeField] private Transform _shareButtonsParent = null;
     [SerializeField] private ChatScrollAnimation _chatScrollAnimation = null;
     [SerializeField] private GameObject _header = null;
+    [SerializeField] private GameObject _goBackButton = null;
     private GameObject _currentChat;
 
     [Header("Parameters")]
@@ -151,6 +152,11 @@ public class ChatManager : MonoBehaviour
                     newMessage.Setup(currentMessages.Name, messageTable, currentMessages.GetNextMessage());
                 }
             }
+        }
+
+        if(_goBackButton != null)
+        {
+            _goBackButton.SetActive(true);
         }
     }
 

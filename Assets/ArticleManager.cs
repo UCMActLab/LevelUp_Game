@@ -14,7 +14,7 @@ public struct ArticleJSONData {
     public string Multimedia;
     public string Source;
     public string Links;
-    public ConversationJSON Conversation;
+    public List<ConversationJSON> Conversation;
 }
 
 [Serializable]
@@ -65,7 +65,7 @@ public class ArticleManager : Singleton<ArticleManager>
             article.articleBody = data.Body;
 
             // article.image = data.Multimedia; TODO: Tratamiento de imágenes
-            if(data.Multimedia != "")
+            if(data.Multimedia != null && data.Multimedia != "")
             {
                 if(sprites.ContainsKey(data.Multimedia))
                 {
@@ -87,31 +87,32 @@ public class ArticleManager : Singleton<ArticleManager>
                         sprites.Add(data.Multimedia, spr);
                     }
                     else { 
-                        UnityEngine.Debug.LogError("No se ha podido cargar la textura: " + request.result);
+                        Debug.LogError("No se ha podido cargar la textura: " + request.result);
                     }
                 }
             }
 
             article.companyName = data.Source;
-            if (data.Conversation.Messages.Count != 0) {
-                article.conversation = new List<Conversation>();
-                Conversation conversation = ScriptableObject.CreateInstance("Conversation") as Conversation;
-
-                conversation.Type = ConversationType.NONE;
-                conversation.Messages = new List<Messages>();
-
-                foreach (MessagesJSON message in data.Conversation.Messages)
+            if (data.Conversation.Count != 0) {
+                foreach (ConversationJSON conversationJSON in data.Conversation)
                 {
-                    Messages msg = ScriptableObject.CreateInstance("Messages") as Messages;
-                    msg.Name = message.Sender;
-                    msg.MessageList = message.MessageList;
-                    conversation.Messages.Add(msg);
-                }
+                    article.conversation = new List<Conversation>();
+                    Conversation conversation = ScriptableObject.CreateInstance("Conversation") as Conversation;
 
-                // Al final sí que hacemos distinción por grupos... hihi, tengo que decírselo a andrea
-                article.conversation.Add(conversation);
-                article.conversation.Add(conversation);
-                article.conversation.Add(conversation);
+                    conversation.Type = ConversationType.NONE;
+                    conversation.Messages = new List<Messages>();
+
+                    foreach (MessagesJSON message in conversationJSON.Messages)
+                    {
+                        Messages msg = ScriptableObject.CreateInstance("Messages") as Messages;
+                        msg.Name = message.Sender;
+                        msg.MessageList = message.MessageList;
+                        conversation.Messages.Add(msg);
+                    }
+
+                    // Al final sí que hacemos distinción por grupos... hihi, tengo que decírselo a andrea
+                    article.conversation.Add(conversation);
+                }
             } 
             else
             {

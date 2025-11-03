@@ -6,6 +6,7 @@ using System;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System;
 using UnityEngine.Events;
 using UnityEngine.Localization.Components;
+using System.Collections;
 
 public enum ArticleAction
 {
@@ -131,6 +132,14 @@ public class ArticleDataSetter : MonoBehaviour
 
         GetComponent<Animator>().SetTrigger("Skip");
         _skipped = true;
+
+        StartCoroutine(SkipArticle_Wait());
+    }
+
+    IEnumerator SkipArticle_Wait()
+    {
+        yield return new WaitForSeconds(1.25f);
+        InvokeOnSkip();
     }
 
     public void InvokeOnSkip()
