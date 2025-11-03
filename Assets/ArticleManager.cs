@@ -1,3 +1,4 @@
+using DA_Assets.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -30,10 +31,19 @@ public struct MessagesJSON
     public List<string> MessageList;
 }
 
+// este es necesario porque la base de datos es tal que así:
+// {data: {data:[artículos]}}
 [Serializable]
 public struct ArticleJSONRoot
 {
-    public List<ArticleJSONData> Articles;
+    public ArticlesJSONRoot data;
+}
+
+[Serializable]
+public struct ArticlesJSONRoot
+{
+    public List<ArticleJSONData> data;
+
 }
 
 public class ArticleManager : Singleton<ArticleManager>
@@ -138,9 +148,20 @@ public class ArticleManager : Singleton<ArticleManager>
 
     public void ParseArticles(string jsonData)
     {
-        ArticleJSONRoot data = JsonConvert.DeserializeObject<ArticleJSONRoot>(jsonData);
+        jsonData = jsonData.Replace("\"Conversation\":{}", "\"Conversation\":[]");
+        ArticleJSONRoot data;
+        try
+        {
+             data = JsonConvert.DeserializeObject<ArticleJSONRoot>(jsonData);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("COULD NOT LOAD JSON FROM DATA BASE. LOADING BACK UP.\nEXCEPTION: " + e.Message);
+            TextAsset json = Resources.Load<TextAsset>("Backup/articles");
+            data = JsonConvert.DeserializeObject<ArticleJSONRoot>(json.text);
+        }
 
-        CreateArticles(data.Articles);
+        CreateArticles(data.data.data);
     }
 
     public ArticleData GetArticleByLanguage(int id)

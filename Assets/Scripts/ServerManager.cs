@@ -78,12 +78,10 @@ public class ServerManager : MonoBehaviour
 
     IEnumerator serverLogin()
     {
-        Debug.Log("hola2");
         string message = "{\n\"user\": \"" + userID + "\",\n\"password\":\"" + userPassword + "\"\n}";
 
         using (UnityWebRequest www = UnityWebRequest.Post("https://levelup.fundacionmaldita.es/api/login", message, "application/json"))
         {
-            Debug.Log("hola3");
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)
