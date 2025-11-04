@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,12 +20,16 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 	[SerializeField]
 	private int _selectedOptionID = -1;
 
+	private uint _optionBitmask = 0;
+
 	[SerializeField]
 	private float _optionSpacing = 10f;
 
 	private Toggle[] _optionToggles;
 
 	private bool _changing = false;
+
+	private bool _multipleSelection = false;
 
 	public void SetUp(Question question)
 	{
@@ -38,6 +43,8 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 
 		_numberOfOptions = questionMC.answerOptions.Length;
 		_optionToggles = new Toggle[_numberOfOptions];
+
+		_multipleSelection = questionMC.allowMultipleSelections;
 
 		for (int i = 0; i < _numberOfOptions; i++)
 		{
@@ -54,9 +61,12 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 		}
 	}
 
-	public string GetResults()
+	public EvaluationResult GetResults()
 	{
-		return _selectedOptionID.ToString();
+		EvaluationResult result = new EvaluationResult();
+		result.resultType = EvaluationResult.ResultType.BIT_MASK;
+		result.bitmaskScore = _optionBitmask;
+		return result;
 	}
 
 	public void SetSelectedOption(int optionID)
@@ -65,13 +75,51 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 		if (_changing)
 			return;
 
-		_selectedOptionID = optionID;
+		if(_multipleSelection)
+		{
+			UpdateSelectionMultiple(optionID);
+		}
+		else
+		{
+			UpdateSelectionSingle(optionID);
+		}
+	}
+
+	private void UpdateSelectionSingle(int optionID)
+	{
+		if (_selectedOptionID == optionID)
+		{
+			_optionBitmask = 0;
+			_selectedOptionID = -1;
+		}
+		else
+		{
+			_selectedOptionID = optionID;
+			_optionBitmask = (uint)(1 << _selectedOptionID);
+		}
 
 		_changing = true;
-
 		ClearOptions();
-
 		_changing = false;
+	}
+
+	private void UpdateSelectionMultiple(int optionID)
+	{
+		int maskCheck = (int)Mathf.Pow(2, optionID);
+		if ((_optionBitmask & (uint)(1 << optionID)) == maskCheck)
+		{
+			_optionBitmask -= (uint)(1 << optionID);
+			_changing = true;
+			_optionToggles[optionID].isOn = false;
+			_changing = false;
+		}
+		else
+		{
+			_optionBitmask = _optionBitmask | (uint)(1 << optionID);
+			_changing = true;
+			_optionToggles[optionID].isOn = true;
+			_changing = false;
+		}
 	}
 
 	private void ClearOptions()
@@ -80,6 +128,11 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 		{
 			_optionToggles[i].isOn = i == _selectedOptionID;
 		}
+	}
+
+	public uint GetOptionBitmask()
+	{
+		return _optionBitmask;
 	}
 
 	public int GetSelectedOption()

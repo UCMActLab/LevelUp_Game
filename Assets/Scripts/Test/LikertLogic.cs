@@ -45,9 +45,12 @@ public class LikertLogic : MonoBehaviour, IQuestionLogic
 		SetUpSlider();
     }
 
-	public string GetResults()
+	public EvaluationResult GetResults()
 	{
-		return _likertSlider.value.ToString();
+        EvaluationResult result = new EvaluationResult();
+        result.resultType = EvaluationResult.ResultType.INT;
+        result.resultScore = (int)_likertSlider.value;
+		return result;
 	}
 
 	private void SetUpSlider()

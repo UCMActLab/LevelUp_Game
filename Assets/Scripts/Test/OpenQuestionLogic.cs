@@ -22,8 +22,11 @@ public class OpenQuestionLogic : MonoBehaviour, IQuestionLogic
 		_responseInputField.text = "";
 	}
 
-	public string GetResults()
+	public EvaluationResult GetResults()
 	{
-		return _responseInputField.text;
+		EvaluationResult result = new EvaluationResult();
+		result.resultType = EvaluationResult.ResultType.STRING;
+		result.resultText = _responseInputField.text;
+		return result;
 	}
 }
