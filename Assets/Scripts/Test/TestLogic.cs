@@ -1,14 +1,6 @@
 using System;
 using UnityEngine;
 
-public enum QuestionType
-{
-	NONE = 0,
-	LIKERT = 1,
-	MULTIPLE_CHOICE = 2,
-	OPEN_ENDED = 3
-}
-
 public class TestLogic : MonoBehaviour
 {
 	[SerializeField]
@@ -62,18 +54,18 @@ public class TestLogic : MonoBehaviour
         for (int i = 0; i < _test.questions.Length; i++)
         {
 			GameObject question = null;
-			switch (_test.questions[i].QuestionType)
+			switch (_test.questions[i].questionType)
             {
-				case QuestionType.LIKERT:
+				case Question.QuestionType.LIKERT:
 					question = Instantiate(_likertQuestionPrefab, _testContainer.transform);
 					questionLogics[i] = question.GetComponent<LikertLogic>();
 					break;
-				case QuestionType.MULTIPLE_CHOICE:
+				case Question.QuestionType.MULTIPLE_CHOICE:
 					question = Instantiate(_MCQuestionPrefab, _testContainer.transform);
 					questionLogics[i] = question.GetComponent<MCLogic>();
 
 					break;
-				case QuestionType.OPEN_ENDED:
+				case Question.QuestionType.OPEN_ENDED:
 					question = Instantiate(_openQuestionPrefab, _testContainer.transform);
 					questionLogics[i] = question.GetComponent<OpenQuestionLogic>();
 					break;

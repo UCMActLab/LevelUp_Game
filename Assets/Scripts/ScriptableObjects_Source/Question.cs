@@ -2,11 +2,19 @@ using UnityEngine;
 
 public class Question : ScriptableObject
 {
-	protected QuestionType questionType = QuestionType.NONE;
-
-	public QuestionType QuestionType
+	public enum QuestionType
 	{
-		get { return questionType; }
+		NONE = 0,
+		LIKERT = 1,
+		MULTIPLE_CHOICE = 2,
+		OPEN_ENDED = 3
+	}
+
+	protected QuestionType _questionType = QuestionType.NONE;
+
+	public QuestionType questionType
+	{
+		get { return _questionType; }
 	}
 
 	public string questionText;

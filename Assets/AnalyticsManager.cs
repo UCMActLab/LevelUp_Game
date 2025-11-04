@@ -53,8 +53,8 @@ public class AnalyticsManager : MonoBehaviour
 		//	testResults.Add(responseKey, responses[i]);
 		//}
 
-		//AnalyticsService.Instance.RecordEvent(testResults);
-		//AnalyticsService.Instance.Flush();
+		AnalyticsService.Instance.RecordEvent(testResults);
+		AnalyticsService.Instance.Flush();
 		Debug.Log("test_results submited to Analytics");
 	}
 }

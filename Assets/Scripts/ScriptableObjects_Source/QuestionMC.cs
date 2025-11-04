@@ -9,6 +9,6 @@ public class QuestionMC : Question
 
 	public QuestionMC()
 	{
-		questionType = QuestionType.MULTIPLE_CHOICE;
+		_questionType = QuestionType.MULTIPLE_CHOICE;
 	}
 }

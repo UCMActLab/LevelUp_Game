@@ -13,6 +13,6 @@ public class QuestionLikert : Question
 
 	public QuestionLikert()
 	{
-		questionType = QuestionType.LIKERT;
+		_questionType = QuestionType.LIKERT;
 	}
 }
