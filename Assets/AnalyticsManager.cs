@@ -29,7 +29,7 @@ public class AnalyticsManager : MonoBehaviour
 		_isInitialized = true;
 	}
 
-	public void SubmitTestResults(Test test, string[] responses)
+	public void SubmitTestResults(Test test, EvaluationResult[] responses)
 	{
 		if(!_isInitialized)
 		{
@@ -37,16 +37,16 @@ public class AnalyticsManager : MonoBehaviour
 			return;
 		}
 		// TODO: unity analytics hates data oriented implementations, must implement manually adding each response
-		// TODO: change string array, maybe use a dictionary or a custom object to hold different types of responses to avoid parsing
 		CustomEvent testResults = new CustomEvent("debug_test")
 		{
 			{ "test_name", test.testName },
 			{ "number_of_questions", test.questions.Length },
-			{ "debug_test_response0", int.Parse(responses[0]) },
-			{ "debug_test_response1", int.Parse(responses[1]) },
-			{ "debug_test_response2", responses[2] }
+			{ "debug_test_response0", responses[0].resultScore },
+			{ "debug_test_response1", (int)responses[1].bitmaskScore },
+			{ "debug_test_response2", responses[2].resultText }
 		};
 
+		// TODO: implement dynamic adding of responses -> MUST have standardized keys already added in Unity Analytics
 		//for (int i = 0; i < test.questions.Length; i++)
 		//{
 		//	string responseKey = $"response_{i + 1}";
@@ -55,6 +55,6 @@ public class AnalyticsManager : MonoBehaviour
 
 		AnalyticsService.Instance.RecordEvent(testResults);
 		AnalyticsService.Instance.Flush();
-		Debug.Log("Stest_resultsubmited test results to Analytics");
+		Debug.Log("test_results submited to Analytics");
 	}
 }

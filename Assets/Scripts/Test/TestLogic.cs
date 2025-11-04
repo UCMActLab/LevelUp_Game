@@ -1,12 +1,5 @@
+using System;
 using UnityEngine;
-
-public enum QuestionType
-{
-	NONE = 0,
-	LIKERT = 1,
-	MULTIPLE_CHOICE = 2,
-	OPEN_ENDED = 3
-}
 
 public class TestLogic : MonoBehaviour
 {
@@ -37,7 +30,7 @@ public class TestLogic : MonoBehaviour
 
 	private IQuestionLogic[] questionLogics;
 
-	private string[] results;
+	private EvaluationResult[] results;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -55,24 +48,24 @@ public class TestLogic : MonoBehaviour
 
 		questions = new GameObject[_test.questions.Length];
 		questionLogics = new IQuestionLogic[_test.questions.Length];
-		results = new string[_test.questions.Length];
+		results = new EvaluationResult[_test.questions.Length];
 
 		// TODO encontrar alternativa para evitar GetComponent
         for (int i = 0; i < _test.questions.Length; i++)
         {
 			GameObject question = null;
-			switch (_test.questions[i].QuestionType)
+			switch (_test.questions[i].questionType)
             {
-				case QuestionType.LIKERT:
+				case Question.QuestionType.LIKERT:
 					question = Instantiate(_likertQuestionPrefab, _testContainer.transform);
 					questionLogics[i] = question.GetComponent<LikertLogic>();
 					break;
-				case QuestionType.MULTIPLE_CHOICE:
+				case Question.QuestionType.MULTIPLE_CHOICE:
 					question = Instantiate(_MCQuestionPrefab, _testContainer.transform);
 					questionLogics[i] = question.GetComponent<MCLogic>();
 
 					break;
-				case QuestionType.OPEN_ENDED:
+				case Question.QuestionType.OPEN_ENDED:
 					question = Instantiate(_openQuestionPrefab, _testContainer.transform);
 					questionLogics[i] = question.GetComponent<OpenQuestionLogic>();
 					break;
@@ -93,7 +86,21 @@ public class TestLogic : MonoBehaviour
 		for (int i = 0; i < _test.questions.Length; i++)
 		{
 			results[i] = questionLogics[i].GetResults();
-			Debug.Log("Answer submitted: " + results[i]);
+			switch (results[i].resultType)
+			{
+				case EvaluationResult.ResultType.INT:
+					Debug.Log("Answer submitted (int): " + results[i].resultScore);
+					break;
+				case EvaluationResult.ResultType.BIT_MASK:
+					Debug.Log("Answer submitted (bitmask): " + Convert.ToString(results[i].bitmaskScore, 2).PadLeft(8, '0'));
+					break;
+				case EvaluationResult.ResultType.STRING:
+					Debug.Log("Answer submitted (string): " + results[i].resultText);
+					break;
+				default:
+					Debug.Log("Answer submitted: Unknown type");
+					break;
+			}
 		}
 		AnalyticsManager.Instance.SubmitTestResults(_test, results);
 	}

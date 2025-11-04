@@ -7,6 +7,6 @@ public class QuestionOpen : Question
 
 	public QuestionOpen()
 	{
-		questionType = QuestionType.OPEN_ENDED;
+		_questionType = QuestionType.OPEN_ENDED;
 	}
 }
