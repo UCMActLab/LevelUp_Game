@@ -38,8 +38,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 450, y: -392.68}
-  m_SizeDelta: {x: 860, y: 236.42}
+  m_AnchoredPosition: {x: 510, y: -326.88998}
+  m_SizeDelta: {x: 980, y: 236.42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8845260793371145893
 CanvasRenderer:
@@ -194,7 +194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   independent: 0
   radiiSerialized: {x: 60, y: 60, z: 60, w: 60}
-  rect2props: {x: 0.000030517578, y: -0.000030517578, z: 345.2166, w: 345.2166}
+  rect2props: {x: 0.000061035156, y: 0, z: 387.64304, w: 387.64304}
   image: {fileID: 1668284614109071182}
 --- !u!114 &8879935690212625525
 MonoBehaviour:
@@ -384,6 +384,7 @@ GameObject:
   - component: {fileID: 6696279091677903563}
   - component: {fileID: 2101337131166331404}
   - component: {fileID: 5534534899431176617}
+  - component: {fileID: 2767657037021418380}
   m_Layer: 5
   m_Name: Open Question
   m_TagString: Untagged
@@ -452,6 +453,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
+--- !u!114 &2767657037021418380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716795920607913643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &908258375985019908
 GameObject:
   m_ObjectHideFlags: 0
@@ -675,8 +690,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 450, y: -122.235}
-  m_SizeDelta: {x: 860, y: 204.47}
+  m_AnchoredPosition: {x: 510, y: -89.34}
+  m_SizeDelta: {x: 980, y: 138.68}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5497546421756449516
 CanvasRenderer:

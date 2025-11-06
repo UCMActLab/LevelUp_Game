@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TestLogic : MonoBehaviour
 {
@@ -94,6 +95,12 @@ public class TestLogic : MonoBehaviour
 
 		if(questions[_currentQuestionIndex] != null)
 			questions[_currentQuestionIndex].SetActive(true);
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_parentUI.transform as RectTransform);
+        foreach (Transform tr in _parentUI.GetComponentsInChildren<Transform>(true))
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(tr as RectTransform);
+        }
     }
 
 	public void SubmitAnswers()
