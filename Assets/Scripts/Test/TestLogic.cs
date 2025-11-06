@@ -4,7 +4,12 @@ using UnityEngine;
 public class TestLogic : MonoBehaviour
 {
 	[SerializeField]
+	private bool _setUpOnAwake = false;
+
+	[SerializeField]
     private Test _test;
+
+	[SerializeField] private GameObject _parentUI = null;
 
 	[SerializeField]
 	private GameObject _testContainer;
@@ -35,17 +40,27 @@ public class TestLogic : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        SetUp();
+        if (_setUpOnAwake) SetUp();
     }
+
+	public void SetTest(Test newTest, bool startQuiz)
+	{
+		_test = newTest;
+
+		if (startQuiz) SetUp();
+	}
 
     public void SetUp()
     {
+
         if(_test == null)
         {
 			Debug.LogError("TestLogic: No test assigned!");
 			return;
 		}
 
+		if (!_parentUI.activeSelf) _parentUI.SetActive(true);
+		
 		questions = new GameObject[_test.questions.Length];
 		questionLogics = new IQuestionLogic[_test.questions.Length];
 		results = new EvaluationResult[_test.questions.Length];

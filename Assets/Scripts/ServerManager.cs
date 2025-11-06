@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
@@ -54,7 +56,7 @@ public class ServerManager : MonoBehaviour
     [HideInInspector]
     public string inkText = "";
 
-    public UnityEvent<string> OnJsonReceived;
+    public UnityEvent<List<string>> OnJsonReceived;
 
     // Start is called before the first frame update
     void Start()
@@ -72,8 +74,9 @@ public class ServerManager : MonoBehaviour
 
     private void ConnectionFailed()
     {
-        TextAsset json = Resources.Load<TextAsset>("Backup/articles");
-        OnJsonReceived.Invoke(json.text);
+        List<string> json = new List<string>();
+        json.Add(Resources.Load<TextAsset>("Backup/articles").text);
+        OnJsonReceived.Invoke(json);
     }
 
     IEnumerator serverLogin()
@@ -103,21 +106,32 @@ public class ServerManager : MonoBehaviour
 
     IEnumerator serverRequest()
     {
-        UnityWebRequest www = UnityWebRequest.Get("https://levelup.fundacionmaldita.es/api/resources/");
-
-        www.SetRequestHeader("Authorization", serverLoginInfo.data.token);
-
-        yield return www.SendWebRequest();
-
-        if (www.result != UnityWebRequest.Result.Success)
+        int nPage = 1;
+        int maxPages = int.MaxValue;
+        List<string> jsons = new List<string>();
+        while (nPage <= maxPages)
         {
-            Debug.Log(www.error);
-            ConnectionFailed();
+            UnityWebRequest www = UnityWebRequest.Get("https://levelup.fundacionmaldita.es/api/resources?page=" + nPage);
+
+            www.SetRequestHeader("Authorization", serverLoginInfo.data.token);
+
+            yield return www.SendWebRequest();
+
+            maxPages = Int32.Parse(www.downloadHandler.text.Split("\"totalPages\":")[1].Substring(0, 1));
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(www.error);
+                ConnectionFailed();
+            }
+            else
+            {
+                jsons.Add(www.downloadHandler.text);
+            }
+            nPage++;
         }
-        else
-        {
-            OnJsonReceived.Invoke(www.downloadHandler.text);
-        }
+
+        OnJsonReceived.Invoke(jsons);
     }
 
     void processServerAnswer()

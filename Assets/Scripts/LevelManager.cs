@@ -1,7 +1,15 @@
 using DA_Assets.Extensions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+[Serializable]
+public struct LevelInfo
+{
+    public Test test;
+    public int numArticles;
+}
 
 public class LevelManager : Singleton<LevelManager>
 {
@@ -10,8 +18,9 @@ public class LevelManager : Singleton<LevelManager>
     private ArticleFeed _articleFeed;
 
     [Header("Levels")]
-    [SerializeField] private int _articlesPerLevel = 3;
-    [SerializeField] private int _maxLevels = 5;
+    [SerializeField] private List<LevelInfo> _levelsInfo = null;
+    //[SerializeField] private int _articlesPerLevel = 3;
+    //[SerializeField] private int _maxLevels = 5;
 
     int _currentLevel = 0;
     List<List<ArticleData>> _levels;
@@ -29,10 +38,15 @@ public class LevelManager : Singleton<LevelManager>
     private ArticleDataSetter _articleData = null;
     private int _currentArticle = 0;
 
+    [SerializeField]
+    private TestLogic _testLogic = null;
+
     private void Start()
     {
         _loadingAnimation?.SetActive(false);
         StartCoroutine(GetArticlesFromResources());
+
+        if (!_testLogic) _testLogic = GameObject.FindFirstObjectByType<TestLogic>();
     }
 
     private IEnumerator GetArticlesFromResources()
@@ -48,18 +62,17 @@ public class LevelManager : Singleton<LevelManager>
         _levels = new List<List<ArticleData>>();
         _levels.Add(new List<ArticleData>());
         int currentLevel = 0;
-        foreach(ArticleData articleData in data)
+
+        foreach(LevelInfo level in _levelsInfo)
         {
-            if (_levels[currentLevel].Count >= _articlesPerLevel && currentLevel < _maxLevels)
+            _levels.Add(new List<ArticleData>());
+            for (int i = 0; i < level.numArticles; ++i)
             {
-                currentLevel++;
-                if(currentLevel >= _maxLevels)
-                {
-                    break;
-                }
-                _levels.Add(new List<ArticleData>());
+                _levels[currentLevel].Add(data[0]);
+                data.RemoveAt(0);
             }
-            _levels[currentLevel].Add(articleData);
+
+            currentLevel++;
         }
 
         if (_startOnAwake)
@@ -82,11 +95,12 @@ public class LevelManager : Singleton<LevelManager>
         }
         else if (_currentArticle >= _levels[_currentLevel].Count)
         {
+            _testLogic.SetTest(_levelsInfo[_currentLevel].test, true);
+
+            // ScoreManager.Instance.ShowPoints();
+
             _currentLevel++;
             _currentArticle = 0;
-
-            ScoreManager.Instance.ShowPoints();
-            
         }
         else
         {
