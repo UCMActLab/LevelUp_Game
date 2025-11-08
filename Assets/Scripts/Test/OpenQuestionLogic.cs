@@ -17,7 +17,7 @@ public class OpenQuestionLogic : MonoBehaviour, IQuestionLogic
 			Debug.LogError("OpenQuestionLogic: Question is not of type QuestionOpen!");
 			return;
 		}
-		_questionText.text = questionOpen.questionText;
+		_questionText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", questionOpen.questionText);
 
 		_responseInputField.text = "";
 	}

@@ -32,13 +32,13 @@ public class LikertLogic : MonoBehaviour, IQuestionLogic
 			Debug.LogError("MCLogic: Question is not of type QuestionLikert!");
 			return;
 		}
-		_questionText.text = question.questionText;
+        _questionText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", questionLikert.questionText);
 
-        _leftValue = questionLikert.leftValue;
+		_leftValue = questionLikert.leftValue;
         _rightValue = questionLikert.rightValue;
 
-        _leftText.text = questionLikert.leftLablel;
-        _rightText.text = questionLikert.rightLabel;
+		_leftText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", questionLikert.leftLablel);
+		_rightText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", questionLikert.rightLabel);
 
 		_likertSlider.value = questionLikert.defaultValue;
 

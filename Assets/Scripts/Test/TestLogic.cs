@@ -53,7 +53,6 @@ public class TestLogic : MonoBehaviour
 
     public void SetUp()
     {
-
         if(_test == null)
         {
 			Debug.LogError("TestLogic: No test assigned!");
@@ -61,7 +60,7 @@ public class TestLogic : MonoBehaviour
 		}
 
 		if (!_parentUI.activeSelf) _parentUI.SetActive(true);
-		
+
 		questions = new GameObject[_test.questions.Length];
 		questionLogics = new IQuestionLogic[_test.questions.Length];
 		results = new EvaluationResult[_test.questions.Length];
