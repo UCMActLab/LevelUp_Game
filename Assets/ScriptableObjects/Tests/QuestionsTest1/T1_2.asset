@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: T1_2
   m_EditorClassIdentifier: 
   questionText: TD_1_Q
-  allowMultipleSelections: 0
+  showFeedback: 1
+  explanation: You should have paid attention in class
+  allowMultipleSelections: 1
   answerOptions:
-  - TD_1_0OPT
-  - TD_1_1OPT
-  - TD_1_2OPT
+  - optionText: TD_1_0OPT
+    isCorrect: 1
+  - optionText: TD_1_1OPT
+    isCorrect: 1
+  - optionText: TD_1_2OPT
+    isCorrect: 0

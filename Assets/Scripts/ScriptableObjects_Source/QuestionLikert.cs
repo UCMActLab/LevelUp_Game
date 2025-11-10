@@ -11,6 +11,9 @@ public class QuestionLikert : Question
 
 	public int defaultValue = 3;
 
+	[Header("Optional")]
+	public int correctValue = -1;
+
 	public QuestionLikert()
 	{
 		_questionType = QuestionType.LIKERT;

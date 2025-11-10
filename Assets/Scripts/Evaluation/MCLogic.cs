@@ -31,20 +31,22 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 
 	private bool _multipleSelection = false;
 
+	private QuestionMC _questionMC;
+
 	public void SetUp(Question question)
 	{
-		QuestionMC questionMC = question as QuestionMC;
-		if(questionMC == null) 
+		_questionMC = question as QuestionMC;
+		if(_questionMC == null) 
 		{
 			Debug.LogError("MCLogic: Question is not of type QuestionMC!");
 			return;
 		}
-		_questionText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", questionMC.questionText);
+		_questionText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionMC.questionText);
 
-		_numberOfOptions = questionMC.answerOptions.Length;
+		_numberOfOptions = _questionMC.answerOptions.Length;
 		_optionToggles = new Toggle[_numberOfOptions];
 
-		_multipleSelection = questionMC.allowMultipleSelections;
+		_multipleSelection = _questionMC.allowMultipleSelections;
 
 		for (int i = 0; i < _numberOfOptions; i++)
 		{
@@ -55,7 +57,7 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 			// TODO encontrar alternativa para evitar GetComponent
 			MCOptionValue mcVal = option.GetComponent<MCOptionValue>();
 			mcVal.SetMCLogic(this);
-			mcVal.SetValue(i, TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", questionMC.answerOptions[i]));
+			mcVal.SetValue(i, TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionMC.answerOptions[i].optionText));
 
 			_optionToggles[i] = option.GetComponent<Toggle>();
 		}
@@ -138,5 +140,45 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 	public int GetSelectedOption()
 	{
 		return _selectedOptionID;
+	}
+
+	public void LockQuestion()
+	{
+		for (int i = 0; i < _numberOfOptions; i++)
+		{
+			_optionToggles[i].interactable = false;
+		}
+	}
+
+	public bool IsCorrect()
+	{
+		uint result = 0;
+		for(int i = 0; i < _numberOfOptions; i++)
+		{
+			if (_questionMC.answerOptions[i].isCorrect)
+			{
+				result = result | (uint)(1 << i);
+			}
+		}
+		return result == _optionBitmask;
+	}
+
+	public string GetCorrectResponse()
+	{
+		string correctResponses = "";
+		bool first = true;
+		for (int i = 0; i < _numberOfOptions; i++)
+		{
+			if (_questionMC.answerOptions[i].isCorrect)
+			{
+				if(!first)
+				{
+					correctResponses += ", ";
+				}
+				correctResponses += TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionMC.answerOptions[i].optionText);
+				first = false;
+			}
+		}	
+		return correctResponses;
 	}
 }
