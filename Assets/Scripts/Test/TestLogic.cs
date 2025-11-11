@@ -133,7 +133,7 @@ public class TestLogic : MonoBehaviour
 	public void DisplayEnd()
 	{
 		questions[_currentQuestionIndex].SetActive(false);
-		_testButtons.SetActive(false);
+		//  _testButtons.SetActive(false);
         // _closingQuestion.SetActive(true);
         _parentUI.SetActive(false);
 
