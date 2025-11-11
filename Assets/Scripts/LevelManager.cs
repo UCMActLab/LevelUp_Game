@@ -60,7 +60,6 @@ public class LevelManager : Singleton<LevelManager>
         data.Shuffle();
 
         _levels = new List<List<ArticleData>>();
-        _levels.Add(new List<ArticleData>());
         int currentLevel = 0;
 
         foreach(LevelInfo level in _levelsInfo)
@@ -91,17 +90,19 @@ public class LevelManager : Singleton<LevelManager>
 
         if (_currentArticle >= _levels[_currentLevel].Count)
         {
-            _testLogic.SetTest(_levelsInfo[_currentLevel].test, true);
-
-            // ScoreManager.Instance.ShowPoints();
-
             _currentLevel++;
             _currentArticle = 0;
 
+            // ScoreManager.Instance.ShowPoints();
             if (_currentLevel >= _levels.Count)
             {
                 EndLevel();
             }
+            else
+            {
+                _testLogic.SetTest(_levelsInfo[_currentLevel].test, true);
+            }
+
         }
         else
         {
