@@ -66,7 +66,7 @@ public class ChatManager : MonoBehaviour
         if (articleData.convType == ConversationType.TUTORIAL) prefabToUse = _tutorialArticlePrefab;
 
         GameObject article = Instantiate(prefabToUse, _currentChat.transform);
-        ArticleDataSetter setter = article.GetComponent<ArticleDataSetter>();
+        ArticleGameObject setter = article.GetComponent<ArticleGameObject>();
         articleData.articleBody = string.Empty;
         setter.SetArticleData(articleData);
         setter.DestroyButtons();

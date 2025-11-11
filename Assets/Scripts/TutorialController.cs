@@ -23,6 +23,7 @@ public class TutorialController : MonoBehaviour
     [Header("DEBUG")]
     [SerializeField] private bool DEBUGGING_TUTORIAL = true;
     [SerializeField] private int STARTING_STEP = 5;
+    [SerializeField] private TextMeshProUGUI _currentStepText = null;
 
     [Header("General")]
     [Tooltip("The greater the value, the greater the time you'll have to wait for the NextStep button to activate"), 
@@ -52,7 +53,7 @@ public class TutorialController : MonoBehaviour
 
     private GameObject _scrollContent;
 
-    private ArticleDataSetter[] _articles;
+    private ArticleGameObject[] _articles;
 
 
     private bool _buttonWasPressed = false;
@@ -83,13 +84,13 @@ public class TutorialController : MonoBehaviour
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(_messageToUser.transform.parent as RectTransform);
 
-        _messageAnimator = _messageToUser.transform.parent.GetComponent<Animator>();
+        _messageAnimator = _messageToUser.transform.parent.parent.GetComponent<Animator>();
         _messageAudioSource = _messageAnimator.GetComponent<AudioSource>();
 
         _data = Instantiate(_data);
 
-        _articles = _scrollContent.GetComponentsInChildren<ArticleDataSetter>();
-        foreach(ArticleDataSetter article in _articles)
+        _articles = _scrollContent.GetComponentsInChildren<ArticleGameObject>();
+        foreach(ArticleGameObject article in _articles)
         {
             article.ActivateButtons(false);
         }
@@ -102,6 +103,10 @@ public class TutorialController : MonoBehaviour
                 _messageSteps[_currentStep].onMessagesStart.Invoke();
                 _messageSteps[_currentStep].onMessagesEnd.Invoke();
             }
+        }
+        else
+        {
+            if (_currentStepText != null) _currentStepText.gameObject.SetActive(false);
         }
     }
 
@@ -131,8 +136,8 @@ public class TutorialController : MonoBehaviour
 
         stepMessages.onMessagesStart?.Invoke();
 
-        if(!DEBUGGING_TUTORIAL)
-        {
+        //if(!DEBUGGING_TUTORIAL)
+        //{
             List<string> messages = stepMessages.messages;
 
             // we show the first message 
@@ -152,7 +157,7 @@ public class TutorialController : MonoBehaviour
 
                 ++i;
             }
-        }
+        //}
 
 
         ActivateNextStepButton(false);
@@ -177,7 +182,7 @@ public class TutorialController : MonoBehaviour
 
     public void ActivateSkipButtons()
     {
-        foreach (ArticleDataSetter article in _articles)
+        foreach (ArticleGameObject article in _articles)
         {
             article.EnableSkipButton(true);
             article.OnSkip.AddListener(SkippedArticle);
@@ -186,7 +191,7 @@ public class TutorialController : MonoBehaviour
 
     public void ActivateReadButtons()
     {
-        foreach (ArticleDataSetter article in _articles)
+        foreach (ArticleGameObject article in _articles)
         {
             article.EnableReadButton(true);
             article.OnRead.AddListener(ReadArticle);
@@ -195,7 +200,7 @@ public class TutorialController : MonoBehaviour
     
     public void ActivateShareButtons()
     {
-        foreach(ArticleDataSetter article in _articles)
+        foreach(ArticleGameObject article in _articles)
         {
             article.EnableShareButton(true);
             article.OnShare.AddListener(ClickedShareButton); 
@@ -219,7 +224,7 @@ public class TutorialController : MonoBehaviour
     {
         _hasSkipedAnArticle = true;
 
-        foreach (ArticleDataSetter article in _articles)
+        foreach (ArticleGameObject article in _articles)
         {
             article.EnableSkipButton(false);
             article.HighlightSkipButton(false);
@@ -232,7 +237,7 @@ public class TutorialController : MonoBehaviour
 
         _hasReadAnArticle = true;
 
-        foreach (ArticleDataSetter article in _articles)
+        foreach (ArticleGameObject article in _articles)
         {
             article.EnableReadButton(false);
             article.HighlightReadButton(false);
@@ -241,7 +246,7 @@ public class TutorialController : MonoBehaviour
 
     private void ClickedShareButton()
     {
-        foreach (ArticleDataSetter article in _articles)
+        foreach (ArticleGameObject article in _articles)
         {
             article.EnableShareButton(false);
             article.HighlightShareButton(false);
@@ -277,7 +282,7 @@ public class TutorialController : MonoBehaviour
 
     public void SetupSkipButtonsForLastQuestions()
     {
-        foreach (ArticleDataSetter art in _articles)
+        foreach (ArticleGameObject art in _articles)
         {
             art.OnSkip.RemoveAllListeners();
 
@@ -287,7 +292,7 @@ public class TutorialController : MonoBehaviour
 
     public void SetupReadButtonsForLastQuestions()
     {
-        foreach (ArticleDataSetter art in _articles)
+        foreach (ArticleGameObject art in _articles)
         {
             art.OnRead.RemoveAllListeners();
 
@@ -297,7 +302,7 @@ public class TutorialController : MonoBehaviour
 
     public void SetupShareButtonsForLastQuestions()
     {
-        foreach (ArticleDataSetter art in _articles)
+        foreach (ArticleGameObject art in _articles)
         {
             art.OnShare.RemoveAllListeners();
 
@@ -318,7 +323,7 @@ public class TutorialController : MonoBehaviour
 
     public void ShowArticleButtonsDisabled()
     {
-        foreach (ArticleDataSetter article in _articles)
+        foreach (ArticleGameObject article in _articles)
         {
             article.ActivateButtons(true);
             article.EnableButtonsInteraction(false);
@@ -327,7 +332,7 @@ public class TutorialController : MonoBehaviour
 
     public void HighlightSkipButtons()
     {
-        foreach (ArticleDataSetter article in _articles)
+        foreach (ArticleGameObject article in _articles)
         {
             article.HighlightSkipButton(true);
         }
@@ -335,7 +340,7 @@ public class TutorialController : MonoBehaviour
 
     public void UnhighlightSkipButtons()
     {
-        foreach (ArticleDataSetter article in _articles)
+        foreach (ArticleGameObject article in _articles)
         {
             article.HighlightSkipButton(false);
         }
@@ -343,7 +348,7 @@ public class TutorialController : MonoBehaviour
 
     public void HighlightReadButtons()
     {
-        foreach (ArticleDataSetter article in _articles)
+        foreach (ArticleGameObject article in _articles)
         {
             article.HighlightReadButton(true);
         }
@@ -351,7 +356,7 @@ public class TutorialController : MonoBehaviour
 
     public void UnhighlightReadButtons()
     {
-        foreach (ArticleDataSetter article in _articles)
+        foreach (ArticleGameObject article in _articles)
         {
             article.HighlightReadButton(false);
         }
@@ -359,7 +364,7 @@ public class TutorialController : MonoBehaviour
 
     public void HighlightShareButtons()
     {
-        foreach (ArticleDataSetter article in _articles)
+        foreach (ArticleGameObject article in _articles)
         {
             article.HighlightShareButton(true);
         }
@@ -367,7 +372,7 @@ public class TutorialController : MonoBehaviour
 
     public void UnhighlightShareButtons()
     {
-        foreach (ArticleDataSetter article in _articles)
+        foreach (ArticleGameObject article in _articles)
         {
             article.HighlightShareButton(false);
         }
@@ -378,6 +383,8 @@ public class TutorialController : MonoBehaviour
     {
         if (++_currentStep < _messageSteps.Count)
         {
+            if(DEBUGGING_TUTORIAL) _currentStepText.SetText("CURRENT STEP: " + _currentStep);
+            
             StartCoroutine(ShowMessages());
         }
         else

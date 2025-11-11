@@ -35,7 +35,7 @@ public class LevelManager : Singleton<LevelManager>
     private GameObject _loadingAnimation = null;
 
     private GameObject _articleObject = null;
-    private ArticleDataSetter _articleData = null;
+    private ArticleGameObject _articleData = null;
     private int _currentArticle = 0;
 
     [SerializeField]
@@ -89,11 +89,7 @@ public class LevelManager : Singleton<LevelManager>
             _articleData.DestroyArticle();
         }
 
-        if (_currentLevel >= _levels.Count)
-        {
-            EndLevel();
-        }
-        else if (_currentArticle >= _levels[_currentLevel].Count)
+        if (_currentArticle >= _levels[_currentLevel].Count)
         {
             _testLogic.SetTest(_levelsInfo[_currentLevel].test, true);
 
@@ -101,11 +97,16 @@ public class LevelManager : Singleton<LevelManager>
 
             _currentLevel++;
             _currentArticle = 0;
+
+            if (_currentLevel >= _levels.Count)
+            {
+                EndLevel();
+            }
         }
         else
         {
             _articleObject = Instantiate(_articlePrefab, _articleFeed.transform);
-            _articleData = _articleObject.GetComponent<ArticleDataSetter>();
+            _articleData = _articleObject.GetComponent<ArticleGameObject>();
             _articleData.OnSkip.AddListener(ShowNextArticle);
             _articleData.SetArticleData(Instantiate(_levels[_currentLevel][_currentArticle++]));
         }

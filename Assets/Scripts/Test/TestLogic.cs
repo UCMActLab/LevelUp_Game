@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class TestLogic : MonoBehaviour
@@ -37,6 +38,8 @@ public class TestLogic : MonoBehaviour
 	private IQuestionLogic[] questionLogics;
 
 	private EvaluationResult[] results;
+
+	public UnityEvent OnTestEnd = new UnityEvent();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -131,8 +134,11 @@ public class TestLogic : MonoBehaviour
 	{
 		questions[_currentQuestionIndex].SetActive(false);
 		_testButtons.SetActive(false);
-		_closingQuestion.SetActive(true);
-	}
+        // _closingQuestion.SetActive(true);
+        _parentUI.SetActive(false);
+
+		OnTestEnd.Invoke();
+    }
 
 	public void ReturnToTest()
 	{

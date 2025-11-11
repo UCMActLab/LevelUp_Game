@@ -25,7 +25,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             }
         }
 
-        public void ArticleReadOptions(List<Choice> answers, ArticleDataSetter article)
+        public void ArticleReadOptions(List<Choice> answers, ArticleGameObject article)
         {
             Choice read = answers[0];
             Choice skip = answers[1];
@@ -34,7 +34,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
             article.OnSkipChoice += OnAnswerClicked;
             article.OnShareChoice += OnAnswerClicked;
 
-            article.SetUpButtons(read, skip);
+            // article.SetUpButtons(read, skip);
         }
 
         private void SpawnDialogueAnswerButton(Choice answerChoice)

@@ -7,18 +7,7 @@ using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System;
 using UnityEngine.Events;
 using UnityEngine.Localization.Components;
 using System.Collections;
-
-public enum ArticleAction
-{
-    Read,
-    Share,
-    Skip,
-
-    // this means article's lifetime can be ended
-    None = -1
-}
-
-public class ArticleDataSetter : MonoBehaviour
+public class ArticleGameObject : MonoBehaviour
 {
     [Header("General Info")]
     [SerializeField] Image _companyLogo = null;
@@ -34,9 +23,14 @@ public class ArticleDataSetter : MonoBehaviour
     public Button _readButton = null;
     [SerializeField] Button _shareButton = null;
     [SerializeField] Button _skipButton = null;
+    [SerializeField] Button _verifyButton = null;
 
+    [Header("Feedback")]
+    [SerializeField] GameObject _verificationFeedbackGO = null;
+    [SerializeField] LocalizeStringEvent _verificationTextLocalized = null;
+
+    [Header("Data")]
     public ArticleData Data = null;
-    public ArticleAction Action;
 
     public event Action<Choice> OnReadChoice;
     public event Action<Choice> OnSkipChoice;
@@ -54,7 +48,7 @@ public class ArticleDataSetter : MonoBehaviour
     [HideInInspector]
     public UnityEvent OnShare;
 
-    InkConversationManager _inkConvManager = null;
+    // InkConversationManager _inkConvManager = null;
     ChatManager _convManager = null;
 
     ArticleFeed _articleFeed = null;
@@ -74,7 +68,7 @@ public class ArticleDataSetter : MonoBehaviour
 
         _sharedWithGroups = new bool[3] { false, false, false };
 
-        _inkConvManager = FindAnyObjectByType<InkConversationManager>();
+        // _inkConvManager = FindAnyObjectByType<InkConversationManager>();
         _convManager = FindAnyObjectByType<ChatManager>();
 
         _articleBody.SetActive(false);
@@ -83,7 +77,10 @@ public class ArticleDataSetter : MonoBehaviour
         _title = _articleTitle.GetComponent<LocalizeStringEvent>();
         _body = _bodyText.GetComponent<LocalizeStringEvent>();
 
-        SetArticleData(Instantiate(Data));
+        if (Data != null)
+        {
+            SetArticleData(Instantiate(Data));
+        }
     }
 
     public string GetBodyString()
@@ -185,7 +182,18 @@ public class ArticleDataSetter : MonoBehaviour
 
         _hasReadArticle = true;
 
+        RebuildAllLayouts();
+
         OnRead.Invoke();
+    }
+
+    public void VerifyArticle()
+    {
+        // add text to verification feedback
+        _verificationTextLocalized.StringReference = ConversationCompendium.Instance.GetVerification(IsTrue);
+
+        // activate feedback prefab
+        _verificationFeedbackGO.SetActive(true);
     }
     #endregion
 
@@ -319,142 +327,5 @@ public class ArticleDataSetter : MonoBehaviour
         _readButton.onClick.AddListener(ReadArticle);
         _shareButton.onClick.AddListener(ShareButtonsSetUp);
     }
-    #endregion
-    #region INK
-    public void ChangeButtonsOnArticleRead()
-    {
-        _readButton.interactable = false;
-
-        if (_inkConvManager.story.currentChoices.Count > 0)
-        {
-            Choice skip = _inkConvManager.story.currentChoices[3];
-
-            _skipButton.onClick.RemoveAllListeners();
-            _shareButton.onClick.RemoveAllListeners();
-
-            _skipButton.onClick.AddListener(() =>
-                SkipArticle(skip)
-            );
-            _shareButton.onClick.AddListener(() =>
-            {
-                ShareButton(_inkConvManager.story.currentChoices);
-                _shareButton.interactable = false;
-                Action = ArticleAction.Share;
-            }
-            );
-        }
-    }
-    private void SkipArticle(Choice skip)
-    {
-        this.Action = ArticleAction.None;
-        _skipButton.interactable = false;
-        _skipButton.onClick.RemoveAllListeners();
-        _readButton.interactable = false;
-        _readButton.onClick.RemoveAllListeners();
-        _shareButton.interactable = false;
-        _shareButton.onClick.RemoveAllListeners();
-
-        OnSkipChoice?.Invoke(skip);
-    }
-    public void ShareButton(System.Collections.Generic.List<Choice> choices)
-    {
-        if (choices.Count == 1)
-        {
-            // escogemos automáticamente no enviar más artículos si no quedan grupos
-            GameObject share = _inkConvManager.SpawnShareButtons();
-            Button[] buttons = share.GetComponentsInChildren<Button>();
-            foreach (Button bt in buttons)
-            {
-                bt.transform.parent.gameObject.SetActive(false);
-            }
-            buttons[0].transform.parent.gameObject.SetActive(true);
-            buttons[0].onClick.AddListener(() =>
-            {
-                _inkConvManager.ChangeGroup(null);
-                OnShareChoice.Invoke(choices[0]);
-                Destroy(share);
-                _readButton.interactable = false;
-                _skipButton.interactable = false;
-                Action = ArticleAction.None;
-            });
-        }
-        else
-        {
-            GameObject share = _inkConvManager.SpawnShareButtons();
-            Button[] buttons = share.GetComponentsInChildren<Button>();
-
-            buttons[0].onClick.AddListener(() => {
-                _inkConvManager.ChangeGroup(null);
-                OnShareChoice.Invoke(choices[choices.Count - 1]);
-                Destroy(share);
-                _readButton.interactable = false;
-                _skipButton.interactable = false;
-                Action = ArticleAction.None;
-            });
-
-            string[] words = choices[0].text.Split(' ');
-            string text = words[words.Length - 1].Trim('.').ToUpper();
-            buttons[1].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
-            buttons[1].onClick.AddListener(() => {
-                _inkConvManager.ChangeGroup(choices[0]);
-                _inkConvManager.SendArticle(Data);
-                OnShareChoice.Invoke(choices[0]);
-                Destroy(share);
-                _readButton.interactable = false;
-                _skipButton.interactable = false;
-            });
-
-            if (choices.Count > 2)
-            {
-                words = choices[1].text.Split(' ');
-                text = words[words.Length - 1].Trim('.').ToUpper();
-                buttons[2].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
-                buttons[2].onClick.AddListener(() => {
-                    _inkConvManager.ChangeGroup(choices[1]);
-                    _inkConvManager.SendArticle(Data);
-                    OnShareChoice.Invoke(choices[1]);
-                    Destroy(share);
-                    _readButton.interactable = false;
-                    _skipButton.interactable = false;
-                });
-            }
-            else buttons[2].transform.parent.gameObject.SetActive(false);
-
-            if (choices.Count > 3)
-            {
-                words = choices[2].text.Split(' ');
-                text = words[words.Length - 1].Trim('.').ToUpper();
-                buttons[3].transform.parent.GetComponentInChildren<TextMeshProUGUI>().text = text;
-                buttons[3].onClick.AddListener(() => {
-                    _inkConvManager.ChangeGroup(choices[2]);
-                    _inkConvManager.SendArticle(Data);
-                    OnShareChoice.Invoke(choices[2]);
-                    Destroy(share);
-                    _readButton.interactable = false;
-                    _skipButton.interactable = false;
-                });
-            }
-            else buttons[3].transform.parent.gameObject.SetActive(false);
-        }
-    }
-    public void SetUpButtons(Choice read, Choice skip)
-    {
-        _readButton.onClick.AddListener(() =>
-        {
-            Action = ArticleAction.Read;
-            OnReadChoice?.Invoke(read);
-        });
-        _skipButton.onClick.AddListener(() =>
-        {
-            Action = ArticleAction.Skip;
-            OnSkipChoice?.Invoke(skip);
-        });
-        _shareButton.onClick.AddListener(() =>
-        {
-            Action = ArticleAction.Share;
-            OnShareChoice?.Invoke(skip);
-        });
-    }
-
     #endregion
 }

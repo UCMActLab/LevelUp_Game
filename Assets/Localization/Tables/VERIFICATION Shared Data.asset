@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: VERIFICATION Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: VERIFICATION
+  m_TableCollectionNameGuidString: 86140b9564c17ef498f69ef714028605
+  m_Entries:
+  - m_Id: 48323334144
+    m_Key: POSITIVE/0
+    m_Metadata:
+      m_Items:
+      - rid: 8373808225222132049
+  - m_Id: 48394637312
+    m_Key: POSITIVE/1
+    m_Metadata:
+      m_Items:
+      - rid: 8373808225222132050
+  - m_Id: 48394637313
+    m_Key: POSITIVE/2
+    m_Metadata:
+      m_Items:
+      - rid: 8373808225222132051
+  - m_Id: 48394637314
+    m_Key: NEGATIVE/0
+    m_Metadata:
+      m_Items:
+      - rid: 8373808225222132052
+  - m_Id: 48398831616
+    m_Key: NEGATIVE/1
+    m_Metadata:
+      m_Items:
+      - rid: 8373808225222132053
+  - m_Id: 48398831617
+    m_Key: NEGATIVE/2
+    m_Metadata:
+      m_Items:
+      - rid: 8373808225222132054
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8373808225222132048
+  references:
+    version: 2
+    RefIds:
+    - rid: 8373808225222132048
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1762771345507
+    - rid: 8373808225222132049
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=60
+    - rid: 8373808225222132050
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=60
+    - rid: 8373808225222132051
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=60
+    - rid: 8373808225222132052
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=60
+    - rid: 8373808225222132053
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=60
+    - rid: 8373808225222132054
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=60

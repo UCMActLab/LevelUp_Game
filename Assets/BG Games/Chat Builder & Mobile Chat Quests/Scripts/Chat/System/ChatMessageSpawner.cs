@@ -101,7 +101,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
                 newMessage.Setup("", "Translation", HAVEYOUSEENTHIS_KEYWORD[LanguageSelection.chosenLanguage]);
 
                 GameObject article = Instantiate(_articlePrefab, newMessage.transform);
-                ArticleDataSetter setter = article.GetComponent<ArticleDataSetter>();
+                ArticleGameObject setter = article.GetComponent<ArticleGameObject>();
                 articleData.articleBody = string.Empty;
                 setter.SetArticleData(articleData);
                 setter.DestroyButtons();

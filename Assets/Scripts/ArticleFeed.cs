@@ -4,14 +4,14 @@ using System.Linq;
 
 public class ArticleFeed : MonoBehaviour
 {
-    List<ArticleDataSetter> _articles;
+    List<ArticleGameObject> _articles;
 
     private void Start()
     {
-        _articles = GetComponentsInChildren<ArticleDataSetter>().ToList();
+        _articles = GetComponentsInChildren<ArticleGameObject>().ToList();
     }
 
-    public void SkipArticle(ArticleDataSetter art)
+    public void SkipArticle(ArticleGameObject art)
     {
         art.SkipArticle();
 

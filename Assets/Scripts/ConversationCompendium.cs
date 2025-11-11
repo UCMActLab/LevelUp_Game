@@ -1,14 +1,18 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
-using UnityEngine.Localization.Tables;
+using UnityEngine.Localization;
 
 public class ConversationCompendium : Singleton<ConversationCompendium>
 {
     [SerializeField]
     Conversation[] _allAvaliableConversations;
 
+    [SerializeField]
+    VerificationFeedback[] _allAvaliableVerification;
+
     Dictionary<ConversationType, List<Conversation>> _conversations = new Dictionary<ConversationType, List<Conversation>>();
+    List<List<LocalizedString>> _verifications = new List<List<LocalizedString>>();
 
     private void Start()
     {
@@ -25,6 +29,33 @@ public class ConversationCompendium : Singleton<ConversationCompendium>
                 _conversations.Add(cv.Type, list);
             }
         }
+
+        _verifications.Add(new List<LocalizedString>());
+        _verifications.Add(new List<LocalizedString>());
+
+        foreach(VerificationFeedback feedback in _allAvaliableVerification)
+        {
+            if (feedback.IsTrue)
+            {
+                _verifications[0].AddRange(feedback.Feedback.ToList());
+            }
+            else
+            {
+                _verifications[1].AddRange(feedback.Feedback.ToList());
+            }
+        }
+    }
+
+    public LocalizedString GetVerification(bool isTrue)
+    {
+        LocalizedString message = null;
+
+        int index = 0;
+        if (isTrue) index = 1;
+
+        message = _verifications[index][Random.Range(0, _verifications[index].Count)];
+
+        return message;
     }
 
     /// <summary>
