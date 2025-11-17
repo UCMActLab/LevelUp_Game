@@ -1,76 +1,131 @@
+using DA_Assets.Extensions;
+using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 
 public class PointsMenu : MonoBehaviour
 {
-    [SerializeField] private RotateAnimation _rotateAnim = null;
-    [SerializeField] private TextMeshProUGUI _scoreText = null;
-    [SerializeField] private TextMeshProUGUI _titleText = null;
-    [SerializeField] private LocalizeStringEvent _titleStringEvent = null;
-    [SerializeField] private TextMeshProUGUI _explanationText = null;
-    [SerializeField] private Image _avatar = null;
+    [Header("Scores Object")]
+    [SerializeField] private GameObject _readArticlesObject = null;
+    [SerializeField] private GameObject _trueArticlesObject = null;
+    [SerializeField] private GameObject _falseArticlesObject = null;
+
+    [Header("Sliders")]
+    [SerializeField] private Slider _generalSlider = null;
+    [SerializeField] private Slider _readArticlesSlider = null;
+    [SerializeField] private Slider _trueArticlesSlider = null;
+    [SerializeField] private Slider _falseArticlesSlider = null;
+
+    [Header("Score Texts")]
+    [SerializeField] private TextMeshProUGUI _readArticlesText = null;
+    [SerializeField] private TextMeshProUGUI _trueArticlesText = null;
+    [SerializeField] private TextMeshProUGUI _falseArticlesText = null;
+
+    [Header("Image")]
+    [SerializeField] private Image _medal = null;
+    private Sprite _newMedal = null;
+
+    [Header("Button")]
+    [SerializeField] private Button _okButton = null;
+    [SerializeField] private float _enableOkButtonAfterSeconds = 3.0f;
+    
 
     private Animator _animator;
     private ScoreManager _scoreManager;
 
-    private void OnEnable()
-    {
-        _animator.SetTrigger("PopUp");
-    }
-
     void Awake()
     {
         _animator = GetComponent<Animator>();
+        _generalSlider.value = 0;
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        _scoreManager = ScoreManager.Instance;
-        SetText();
+        StartCoroutine(EnableAfterSeconds(_okButton.gameObject, _enableOkButtonAfterSeconds));
     }
 
     private void OnDisable()
     {
-        _scoreText.text = _scoreManager.MaxScore.ToString();
-        ScoreManager.Instance.RestartFeedback();
-        ScoreManager.Instance.RestartScore();
+        _okButton.gameObject.SetActive(false);
     }
 
-    public void ShowScore()
+    IEnumerator EnableAfterSeconds(GameObject gameObject, float time)
     {
-        float score = _scoreManager.Score / (float)_scoreManager.MaxScore;
-        Debug.Log(score);
-        _rotateAnim.StartRotation(score, ShowScoreText);
+        yield return new WaitForSeconds(time);
+        gameObject.SetActive(true);
     }
 
-    private void ShowScoreText(float progress)
+    public void ShowScore(int numArticles, int articlesRead, int articlesTrue, int totalArticlesTrue, int articlesFalseShared, int totalArticlesFalse)
     {
-        _scoreText.text = 
-            (_scoreManager.Score + 
-            (int)((_scoreManager.MaxScore - _scoreManager.Score) 
-            * (1 - progress))).ToString();
+        _readArticlesSlider.value = 0.0f;
+        _falseArticlesSlider.value = 0.0f;
+        _trueArticlesSlider.value = 0.0f;
 
-        if(progress >= 1.0f)
+        // Aquí una función de SetSlider que haga la animación y todo esto jej
+        SetValues(_readArticlesObject, _readArticlesSlider, _readArticlesText, articlesRead, numArticles, 1.25f);
+
+        // Aquí una función de SetSlider que haga la animación y todo esto jej
+        SetValues(_trueArticlesObject, _trueArticlesSlider, _trueArticlesText, articlesTrue, totalArticlesTrue, 1.25f);
+
+        // Aquí una función de SetSlider que haga la animación y todo esto jej
+        SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, articlesFalseShared, totalArticlesFalse, 1.25f);
+    }
+
+    public void SetTotalScore(int maxScore)
+    {
+        _generalSlider.maxValue = maxScore;
+    }
+
+    public void ChangeMedal(Sprite newSprite)
+    {
+        _newMedal = newSprite;
+        _animator.SetTrigger("ChangeMedal");
+    }
+
+    public void ChangeMedalDuringAnimation()
+    {
+        _medal.sprite = _newMedal;
+    }
+
+    private void SetValues(GameObject targetObject, Slider target, TextMeshProUGUI text, int value, int maxValue, float time)
+    {
+        if (maxValue == 0)
         {
-            ShowText();
+            targetObject.SetActive(false);
+            return;
         }
+
+        targetObject.SetActive(true);
+        StartCoroutine(AnimSliderValue(targetObject, target, value, maxValue, time));
+        text.SetText(string.Format("{0}/{1}", value, maxValue));
     }
 
-    private void ShowText()
+    IEnumerator AnimSliderValue(GameObject targetObject, Slider target, int targetValue, int maxValue, float time)
     {
-        SetText();
-        _animator.SetTrigger("ShowInfo");
-    }
+        float initialValue = target.value;
+        if (targetValue != initialValue)
+        {
+            float currentValue = initialValue;
+            target.maxValue = maxValue;
 
-    private void SetText()
-    {
-        ScoreMessages messages = ScoreManager.Instance.GetMenuText();
+            float currentTime = 0.0f;
 
-        _titleStringEvent.StringReference = messages.Title;
-        _avatar.sprite = messages.Avatar;
+            while(currentTime < time)
+            {
+                yield return new WaitForEndOfFrame();
 
-        _explanationText.text = ScoreManager.Instance.GetWhatHappened();
+                currentTime += Time.deltaTime;
+                currentValue = Mathf.Lerp(initialValue, targetValue, currentTime / time);
+
+                target.value = currentValue;
+            }
+
+            target.value = targetValue;
+
+            AddPointsFeedback feedback = targetObject.GetComponent<AddPointsFeedback>();
+            if(feedback) feedback.AddPoints((int)target.value);
+        }
     }
 }

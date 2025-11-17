@@ -1,50 +1,48 @@
 using AYellowpaper.SerializedCollections;
+using NUnit.Framework;
 using System;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Localization;
 
 public enum Score
 {
-    PERFECT,
-    HIGH,
-    MEDIUM,
-    LOW,
-    ZERO
+    GOLD = 3,
+    SILVER = 2,
+    BRONZE = 1,
+    NONE = 0
 }
 
 [Serializable]
-public struct ScoreMessages
+public struct ScoreInfo
 {
-    public LocalizedString Title;
-    public string Explanation;
-    public Sprite Avatar;
+    public Sprite Sprite;
+    public float NeededScore;
 }
 
 public class ScoreManager : Singleton<ScoreManager>
 {
-    [Header("How many points does any of this substract from the player's score")]
-    [SerializeField] private int _sharedFalseArticle = 0;
-    [SerializeField] private int _sharedUnreadArticle = 0;
-    // [SerializeField] private int _sharedArticleAfterBadComments = 0;
+    [Header("Score")]
+    private int _maxScore;
+    private int _initialScore = 0;
 
-    [Header("Score States")]
-    [SerializeField, Range(0.0f,1.0f)] float _howMuchForHIGH;
-    [SerializeField, Range(0.0f,1.0f)] float _howMuchForMEDIUM;
-
-    [Header("Messages to Show")]
-    [SerializeField] private SerializedDictionary<Score, ScoreMessages> _messagesOnScore;
-
-    [Header("Other")]
-    [SerializeField] private int _initialScore = 100;
+    [SerializeField] private int _pointsForIdentifyingTrueArticle = 1;
+    [SerializeField] private int _pointsForReadingArticle = 1;
 
     [Header("References")]
-    [SerializeField] private GameObject _pointsMenu = null;
+    [SerializeField] private PointsMenu _pointsMenu = null;
+
+    [SerializeField]
+    SerializedDictionary<global::Score, ScoreInfo> _pointsForEachCategory = null;
 
     private int _currentScore = 0;
-    private Score _currentState = global::Score.PERFECT;
+    private Score _currentState = global::Score.NONE;
 
-    private string _whatHapppenedMessage = string.Empty;
+    private int _numArticlesForCurrentLevel = 0;
+    private int _numArticlesReadForCurrentLevel = 0;
+    private int _numTrueArticlesSharedForCurrentLevel = 0;
+    private int _numTrueArticles = 0;
+    private int _numFalseArticlesSharedForCurrentLevel = 0;
 
     public int Score { get { return _currentScore; } }
     public int MaxScore { get { return _initialScore; } }
@@ -52,87 +50,89 @@ public class ScoreManager : Singleton<ScoreManager>
     private void Start()
     {
         _currentScore = _initialScore;
-        SetScoreState();
+        _currentState = global::Score.NONE;
     }
 
-    private void SubstractScore(int howMuch)
+    public void CalculateScoreState()
     {
-        _currentScore = Mathf.Max(_currentScore - howMuch, 0);
+        int nextState = (int)_currentState + 1;
+        // reached max score
+        if (nextState >= _pointsForEachCategory.Count) return;
 
-        SetScoreState();
+        if(_currentScore >= _maxScore * _pointsForEachCategory[(global::Score)nextState].NeededScore)
+        {
+            _currentState = (global::Score)nextState;
+
+            // change something (?)
+            _pointsMenu.ChangeMedal(_pointsForEachCategory[_currentState].Sprite);
+        }
     }
 
-    private void SetScoreState()
+    private void AwardPointsReadArticle()
     {
-        if(_currentScore == MaxScore)
+        AddPoints(_pointsForReadingArticle);
+        _numArticlesReadForCurrentLevel++;
+    }
+
+    private void AwardPointsIdentifyingArticle(bool wasTrue)
+    {
+        AddPoints(_pointsForIdentifyingTrueArticle);
+        if(wasTrue) _numTrueArticlesSharedForCurrentLevel++;
+    }
+
+    public void CalculateArticlePoints(ArticleGameObject data)
+    {
+        if(data.HasReadArticle)
         {
-            _currentState = global::Score.PERFECT;
+            AwardPointsReadArticle();
         }
-        else if (_currentScore >= _howMuchForHIGH * MaxScore)
+
+        if(data.IsTrue)
         {
-            _currentState = global::Score.HIGH;
+            _numTrueArticles++;
+            if(data.HasSharedArticle)
+            {
+                AwardPointsIdentifyingArticle(true);
+            }
         }
-        else if (_currentScore >= _howMuchForMEDIUM * MaxScore)
+        else if (!data.HasSharedArticle)
         {
-            _currentState = global::Score.MEDIUM;
-        }
-        else if (_currentScore > 0)
-        {
-            _currentState = global::Score.LOW;
+            AwardPointsIdentifyingArticle(false);
         }
         else
         {
-            _currentState = global::Score.ZERO;
+            _numFalseArticlesSharedForCurrentLevel++;
         }
     }
 
-    #region Substract Score Actions
-    public void SharedFalseArticle(bool hasReadArticle) 
-    { 
-        SubstractScore(_sharedFalseArticle);
-
-        // feedback
-        AddToFeedback("SCORE/SHAREDFAKENEW", true);
-        if(hasReadArticle)
-        {
-            AddToFeedback("SCORE/SHAREDFAKENEW/READ", false);
-        }
-        else
-        {
-            AddToFeedback("SCORE/SHAREDFAKENEW/UNREAD", false);
-        }
-    }
-
-    // public void SharedArticleAfterBadComments() { SubstractScore(_sharedArticleAfterBadComments); }
-    public void SharedUnreadArticle(bool isArticleTrue) 
-    { 
-        SubstractScore(_sharedUnreadArticle);
-
-        if(isArticleTrue)
-        {
-            AddToFeedback("SCORE/SHAREDTRUENEW", true);
-            AddToFeedback("SCORE/SHAREDTRUENEW/UNREAD");
-        }
-    }
-    #endregion
-
-    private void AddToFeedback(string feedback, bool restart = false)
+    public void SetMaxScore(int numArticles)
     {
-        if (restart) RestartFeedback();
-
-        _whatHapppenedMessage += TranslationManager.Instance.GetLocalizedStringValue("Translation", feedback) + '\n';
+        // Cada artículo tiene 2 variables que cuentan puntitos
+        _maxScore = numArticles * 2;
+        _pointsMenu.SetTotalScore(_maxScore);
+        CalculateScoreState();
     }
 
-    public void RestartFeedback()
+    public void SetLevelInfo(int numArticles)
     {
-        _whatHapppenedMessage = string.Empty;
+        _numArticlesForCurrentLevel = numArticles;
+
+        _numArticlesReadForCurrentLevel = 0;
+        _numTrueArticlesSharedForCurrentLevel = 0;
+        _numTrueArticles = 0;
+    }
+
+    private void AddPoints(int points)
+    {
+        _currentScore += points;
     }
 
     public void ShowPoints()
     {
         // poner los puntos y eso
-
-        _pointsMenu.SetActive(true);
+        _pointsMenu.gameObject.SetActive(true);
+        
+        _pointsMenu.ShowScore(_numArticlesForCurrentLevel, _numArticlesReadForCurrentLevel, _numTrueArticlesSharedForCurrentLevel, _numTrueArticles, _numFalseArticlesSharedForCurrentLevel, _numArticlesForCurrentLevel - _numTrueArticles);
     }
 
     public void RestartScore()
@@ -142,24 +142,15 @@ public class ScoreManager : Singleton<ScoreManager>
 
     public void DeactivateMenu()
     {
-        _pointsMenu.SetActive(false);
+        _pointsMenu.gameObject.SetActive(false);
     }
 
     public void ToggleMenu()
     {
-        _pointsMenu.SetActive(!_pointsMenu.activeSelf);
-    }
-
-    public ScoreMessages GetMenuText()
-    {
-        return _messagesOnScore[_currentState];
-    }
-
-    public string GetWhatHappened()
-    {
-        return _whatHapppenedMessage;
+        _pointsMenu.gameObject.SetActive(!_pointsMenu.gameObject.activeSelf);
     }
 }
+
 #if UNITY_EDITOR
 [CustomEditor(typeof(ScoreManager))]
 public class ScoreManagerEditor : Editor
@@ -176,18 +167,6 @@ public class ScoreManagerEditor : Editor
         {
             my.ToggleMenu();
         }
-
-        if (GUILayout.Button("Shared False Article"))
-        {
-            my.SharedFalseArticle(false);
-        }
-
-        if (GUILayout.Button("Shared Unread Article"))
-        {
-            my.SharedUnreadArticle(true);
-        }
-        EditorGUI.EndDisabledGroup();
-
         // If you want the button to work in edit mode too, remove the BeginDisabledGroup/EndDisabledGroup
     }
 }

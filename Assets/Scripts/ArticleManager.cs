@@ -88,6 +88,13 @@ public class ArticleManager : Singleton<ArticleManager>
             {
                 ArticleData article = ScriptableObject.CreateInstance("ArticleData") as ArticleData;
 
+                int parsedLanguage = 0;
+                if (data.Language == "es") { parsedLanguage = 3; }
+                else if (data.Language == "cz") { parsedLanguage = 1; }
+                else if (data.Language == "bg") { parsedLanguage = 0; }
+                else if (data.Language == "en") { parsedLanguage = 2; }
+                else continue;
+
                 article.isTrue = data.isTrue;
                 article.articleTitle = data.Headline;
                 article.articleBody = data.Body;
@@ -122,9 +129,9 @@ public class ArticleManager : Singleton<ArticleManager>
 
                 article.companyName = data.Source;
                 if (data.Conversation.Count != 0) {
+                    article.conversation = new List<Conversation>();
                     foreach (ConversationJSON conversationJSON in data.Conversation)
                     {
-                        article.conversation = new List<Conversation>();
                         Conversation conversation = ScriptableObject.CreateInstance("Conversation") as Conversation;
 
                         conversation.Type = ConversationType.NONE;
@@ -146,12 +153,6 @@ public class ArticleManager : Singleton<ArticleManager>
                 {
                     article.convType = article.isTrue ? ConversationType.REACTION_GOOD_ARTICLE : ConversationType.REACTION_BAD_ARTICLE;
                 }
-
-                int parsedLanguage = 0;
-                if (data.Language == "es") { parsedLanguage = 3; }
-                else if(data.Language == "cz") { parsedLanguage = 1; }
-                else if(data.Language == "bg") { parsedLanguage = 0; }
-                else if(data.Language == "en") { parsedLanguage = 2; }
 
                 if (!_articlesByLanguage.ContainsKey(parsedLanguage)) 
                 {
