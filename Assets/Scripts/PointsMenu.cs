@@ -43,12 +43,14 @@ public class PointsMenu : MonoBehaviour
 
     private void OnEnable()
     {
+        _okButton.gameObject.SetActive(false);
         StartCoroutine(EnableAfterSeconds(_okButton.gameObject, _enableOkButtonAfterSeconds));
     }
 
     private void OnDisable()
     {
         _okButton.gameObject.SetActive(false);
+        if(_newMedal != null) ChangeMedalDuringAnimation();
     }
 
     IEnumerator EnableAfterSeconds(GameObject gameObject, float time)
@@ -87,6 +89,7 @@ public class PointsMenu : MonoBehaviour
     public void ChangeMedalDuringAnimation()
     {
         _medal.sprite = _newMedal;
+        _newMedal = null;
     }
 
     private void SetValues(GameObject targetObject, Slider target, TextMeshProUGUI text, int value, int maxValue, float time)

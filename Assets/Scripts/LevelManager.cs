@@ -86,6 +86,11 @@ public class LevelManager : Singleton<LevelManager>
 
     public void ShowNextArticle()
     {
+        if(_currentLevel >= _levels.Count)
+        {
+            EndLevel();
+            return;
+        }
 
         if (_articleObject != null)
         {
@@ -95,17 +100,9 @@ public class LevelManager : Singleton<LevelManager>
 
         if (_currentArticle >= _levels[_currentLevel].Count)
         {
-            // ScoreManager.Instance.ShowPoints();
-            if (_currentLevel + 1 >= _levels.Count)
-            {
-                EndLevel();
-            }
-            else
-            {
-                _testLogic.SetTest(_levelsInfo[_currentLevel].test, true);
-                _currentLevel++;
-                _currentArticle = 0;
-            }
+            _testLogic.SetTest(_levelsInfo[_currentLevel].test, true);
+            _currentLevel++;
+            _currentArticle = 0;
         }
         else
         {

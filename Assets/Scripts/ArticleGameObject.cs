@@ -140,8 +140,10 @@ public class ArticleGameObject : MonoBehaviour
     {
         yield return new WaitForSeconds(1.25f);
 
-        // Set Score!!
-        ScoreManager.Instance.CalculateArticlePoints(this);
+        if(ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.CalculateArticlePoints(this);
+        }
 
         InvokeOnSkip();
     }
