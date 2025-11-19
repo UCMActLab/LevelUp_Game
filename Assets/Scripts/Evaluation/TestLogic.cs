@@ -86,7 +86,7 @@ public class TestLogic : MonoBehaviour
 				case Question.QuestionType.MULTIPLE_CHOICE:
 					question = Instantiate(_MCQuestionPrefab, _testContainer.transform);
 					_questionLogics[i] = question.GetComponent<MCLogic>();
-
+					(_questionLogics[i] as MCLogic).SetTestLogic(this);
 					break;
 				case Question.QuestionType.OPEN_ENDED:
 					question = Instantiate(_openQuestionPrefab, _testContainer.transform);

@@ -15,7 +15,11 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 	private GameObject _optionsParent;
 
 	[SerializeField]
-	private GameObject _optionPrefab;
+	private GameObject _multipleOptionPrefab;
+
+	[SerializeField]
+	private GameObject _singleOptionPrefab;
+
 
 	[SerializeField]
 	private int _selectedOptionID = -1;
@@ -27,11 +31,17 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 
 	private Toggle[] _optionToggles;
 
+	private Button[] _optionButtons;
+
 	private bool _changing = false;
 
 	private bool _multipleSelection = false;
 
+	private bool _optionsAsButtons = false;
+
 	private QuestionMC _questionMC;
+
+	private TestLogic _testLogic = null;
 
 	public void SetUp(Question question)
 	{
@@ -44,13 +54,26 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 		_questionText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionMC.questionText);
 
 		_numberOfOptions = _questionMC.answerOptions.Length;
-		_optionToggles = new Toggle[_numberOfOptions];
 
 		_multipleSelection = _questionMC.allowMultipleSelections;
 
+		_optionsAsButtons = _questionMC.optionsAsButtons;
+
+		GameObject optionPrefab = _multipleOptionPrefab;
+
+		if(_optionsAsButtons)
+		{
+			_optionButtons = new Button[_numberOfOptions];
+			optionPrefab = _singleOptionPrefab;
+		}
+		else
+		{
+			_optionToggles = new Toggle[_numberOfOptions];
+		}
+
 		for (int i = 0; i < _numberOfOptions; i++)
 		{
-			GameObject option = Instantiate(_optionPrefab, _optionsParent.transform);
+			GameObject option = Instantiate(optionPrefab, _optionsParent.transform);
 
 			option.transform.localPosition = new Vector3(0, -i * _optionSpacing, 0);
 
@@ -59,7 +82,14 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 			mcVal.SetMCLogic(this);
 			mcVal.SetValue(i, TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionMC.answerOptions[i].optionText));
 
-			_optionToggles[i] = option.GetComponent<Toggle>();
+			if (_optionsAsButtons)
+			{
+				_optionButtons[i] = option.GetComponent<Button>();
+			}
+			else
+			{
+				_optionToggles[i] = option.GetComponent<Toggle>();
+			}
 		}
 	}
 
@@ -77,7 +107,7 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 		if (_changing)
 			return;
 
-		if(_multipleSelection)
+		if(_multipleSelection && !_optionsAsButtons)
 		{
 			UpdateSelectionMultiple(optionID);
 		}
@@ -100,9 +130,17 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 			_optionBitmask = (uint)(1 << _selectedOptionID);
 		}
 
-		_changing = true;
-		ClearOptions();
-		_changing = false;
+		if(_optionsAsButtons && _testLogic != null)
+		{
+			_testLogic.NextQuestion();
+		}
+		else
+		{
+			_changing = true;
+			ClearOptions();
+			_changing = false;
+		}
+
 	}
 
 	private void UpdateSelectionMultiple(int optionID)
@@ -144,9 +182,19 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 
 	public void LockQuestion()
 	{
-		for (int i = 0; i < _numberOfOptions; i++)
+		if(_optionsAsButtons)
 		{
-			_optionToggles[i].interactable = false;
+			for (int i = 0; i < _numberOfOptions; i++)
+			{
+				_optionButtons[i].interactable = false;
+			}
+		}
+		else
+		{
+			for (int i = 0; i < _numberOfOptions; i++)
+			{
+				_optionToggles[i].interactable = false;
+			}
 		}
 	}
 
@@ -180,5 +228,10 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 			}
 		}	
 		return correctResponses;
+	}
+
+	public void SetTestLogic(TestLogic testLogic)
+	{
+		_testLogic = testLogic;
 	}
 }
