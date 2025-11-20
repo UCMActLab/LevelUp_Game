@@ -1,3 +1,4 @@
+using DA_Assets.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,18 +7,33 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Localization.Components;
-using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 public class TutorialController : MonoBehaviour
 {
     [Serializable]
+    public struct Choice
+    {
+        public string button;
+        public Vector2Int toChoiceStep;
+    }
+    [Serializable]
     public struct TutorialStepMessages
     {
         public List<string> messages;
+        public bool isLinear;
+        public Vector2Int toChoiceStep;
+        public bool hasChoice;
+        public Choice[] buttons;
         public SerializedCallback<bool> nextStepCondition;
         public UnityEvent onMessagesStart;
         public UnityEvent onMessagesEnd;
+    }
+
+    [Serializable]
+    public struct ChoiceTutorialStepMessages
+    {
+        public List<TutorialStepMessages> steps;
     }
 
     [Header("DEBUG")]
@@ -30,6 +46,8 @@ public class TutorialController : MonoBehaviour
         SerializeField, Range(0.00f, 0.1f)] private float _waitFactor = .01f;
 
     [SerializeField] private GameObject _articlePrefab;
+    [SerializeField] private GameObject _choiceButtons;
+    [SerializeField] private GameObject _choiceButtonPrefab;
     [SerializeField] private Transform _chat;
     [SerializeField] private TextMeshProUGUI _messageToUser;
     private LocalizeStringEvent _messageToUserLocalized;
@@ -45,11 +63,18 @@ public class TutorialController : MonoBehaviour
 
     [SerializeField] private ScrollRect _scrollRect;
 
+    [SerializeField] private InstantFeedback _feedback = null;
+
     [Header("Events")]
     public UnityEvent OnTutorialEnd = new UnityEvent();
 
     [Header("Steps")]
-    [SerializeField] private List<TutorialStepMessages> _messageSteps;
+    // [SerializeField] private List<TutorialStepMessages> _messageSteps;
+    [SerializeField] private List<ChoiceTutorialStepMessages> _choicesMessageSteps;
+
+    private int _currentChoice = 0;
+    private bool _lastStepWasLinear = true;
+    private bool _choiceIsMade = false;
 
     private GameObject _scrollContent;
 
@@ -100,8 +125,8 @@ public class TutorialController : MonoBehaviour
         if (DEBUGGING_TUTORIAL) { 
             for(_currentStep = 0; _currentStep < STARTING_STEP; ++_currentStep)
             {
-                _messageSteps[_currentStep].onMessagesStart.Invoke();
-                _messageSteps[_currentStep].onMessagesEnd.Invoke();
+                _choicesMessageSteps[_currentChoice].steps[_currentStep].onMessagesStart.Invoke();
+                _choicesMessageSteps[_currentChoice].steps[_currentStep].onMessagesEnd.Invoke();
             }
         }
         else
@@ -132,45 +157,90 @@ public class TutorialController : MonoBehaviour
         _nextStepButton.onClick.RemoveAllListeners();
         _nextStepButton.onClick.AddListener(() => { _buttonWasPressed = true; ActivateNextStepButton(false); });
 
-        TutorialStepMessages stepMessages = _messageSteps[_currentStep];
+        TutorialStepMessages stepMessages = _choicesMessageSteps[_currentChoice].steps[_currentStep];
 
         stepMessages.onMessagesStart?.Invoke();
 
-        //if(!DEBUGGING_TUTORIAL)
-        //{
-            List<string> messages = stepMessages.messages;
+        List<string> messages = stepMessages.messages;
 
-            // we show the first message 
-            ShowNewMessage(messages[0]);
+        // we show the first message 
+        ShowNewMessage(messages[0]);
 
-            int i = 1;
-            while (i < messages.Count)
-            {
-                // Show message after time
-                yield return new WaitUntil(WasButtonPressed);
-                ShowNewMessage(messages[i]);
+        int i = 1;
+        while (i < messages.Count)
+        {
+            // Show message after time
+            yield return new WaitUntil(WasButtonPressed);
+            ShowNewMessage(messages[i]);
 
-                // Activate button after time
-                yield return new WaitForSeconds(TimeToReadMessage(_messageToUser.text));
-                ActivateNextStepButton(true);
-                _buttonWasPressed = false;
+            // Activate button after time
+            yield return new WaitForSeconds(TimeToReadMessage(_messageToUser.text));
+            ActivateNextStepButton(true);
+            _buttonWasPressed = false;
 
-                ++i;
-            }
-        //}
-
+            ++i;
+        }
 
         ActivateNextStepButton(false);
 
         stepMessages.onMessagesEnd?.Invoke();
 
-        yield return new WaitUntil(() => stepMessages.nextStepCondition.Invoke());
+
+        if(!stepMessages.isLinear && !stepMessages.hasChoice)
+        {
+            ToChoice(stepMessages.toChoiceStep);
+
+            yield return new WaitUntil(() => stepMessages.nextStepCondition.Invoke());
+        }
+        else if (stepMessages.hasChoice)
+        {
+            SetUpChoiceButtons(stepMessages.buttons);
+
+            yield return new WaitUntil(() => _choiceIsMade);
+            _choiceIsMade = false;
+        }
+        else
+        {
+            _lastStepWasLinear = true;
+            yield return new WaitUntil(() => stepMessages.nextStepCondition.Invoke());
+        }
 
         _nextStepButton.onClick.RemoveAllListeners();
 
         ActivateNextStepButton(true);
 
         _nextStepButton.onClick.AddListener(NextStep);
+    }
+
+    public void SetUpChoiceButtons(Choice[] buttons)
+    {
+        _choiceIsMade = false;
+        _choiceButtons.gameObject.DestroyChilds();
+
+        foreach (Choice button in buttons)
+        {
+            Button newButton = Instantiate(_choiceButtonPrefab, _choiceButtons.transform).GetComponent<Button>();
+            newButton.GetComponentInChildren<TextMeshProUGUI>().SetText(button.button);
+            Vector2Int choice = button.toChoiceStep;
+            newButton.onClick.AddListener(() =>
+            {
+                ToChoice(choice);
+                _choiceButtons.gameObject.SetActive(false);
+                _choiceIsMade = true;
+            }
+            );
+        }
+
+        _choiceButtons.gameObject.SetActive(true);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_choiceButtons.transform as RectTransform);
+    }
+
+    private void ToChoice(Vector2Int choice)
+    {
+        _lastStepWasLinear = false;
+        Debug.Log("CHOICE: " + choice);
+        _currentChoice = choice.x;
+        _currentStep = choice.y;
     }
 
     private float TimeToReadMessage(string message)
@@ -180,29 +250,49 @@ public class TutorialController : MonoBehaviour
          
     #region On Messages Ended
 
-    public void ActivateSkipButtons()
+    public void AddFirstListenerToSkipButton()
     {
         foreach (ArticleGameObject article in _articles)
         {
-            article.EnableSkipButton(true);
+            article.OnSkip.AddListener(() =>
+            {
+                SkippedArticle();
+                ToChoice(new Vector2Int(3, 0));
+            });
+        }
+    }
+    public void AddListenerToReadButton()
+    {
+        foreach (ArticleGameObject article in _articles)
+        {
+            article.OnRead.AddListener(ReadArticle);
+        }
+    }
+
+    //public void AddReadFirstFeedbackToSkipButton()
+    //{
+    //    foreach (ArticleGameObject article in _articles)
+    //    {
+    //        article.OnSkip.AddListener(() =>
+    //        {
+    //            _feedback.Setup("Deberías leer antes de saltarte un artículo, no puedes sacar toda la información de su título.");
+
+    //        });
+    //    }
+    //}
+
+    public void AddListenerToSkipButton()
+    {
+        foreach (ArticleGameObject article in _articles)
+        {
             article.OnSkip.AddListener(SkippedArticle);
         }
     }
 
-    public void ActivateReadButtons()
-    {
-        foreach (ArticleGameObject article in _articles)
-        {
-            article.EnableReadButton(true);
-            article.OnRead.AddListener(ReadArticle);
-        }
-    }
-    
-    public void ActivateShareButtons()
+    public void AddListenerToShareButton()
     {
         foreach(ArticleGameObject article in _articles)
         {
-            article.EnableShareButton(true);
             article.OnShare.AddListener(ClickedShareButton); 
         }
     }
@@ -266,6 +356,11 @@ public class TutorialController : MonoBehaviour
     public bool HasReadArticle()
     {
         return _hasReadAnArticle;
+    }
+
+    public bool HasSkippedOrReadArticle()
+    {
+        return _hasReadAnArticle || _hasSkipedAnArticle;
     }
 
     public bool HasSharedAnArticle()
@@ -381,11 +476,17 @@ public class TutorialController : MonoBehaviour
 
     private void NextStep()
     {
-        if (++_currentStep < _messageSteps.Count)
+        if (_lastStepWasLinear && ++_currentStep < _choicesMessageSteps[_currentChoice].steps.Count)
         {
-            if(DEBUGGING_TUTORIAL) _currentStepText.SetText("CURRENT STEP: " + _currentStep);
-            
+            if (DEBUGGING_TUTORIAL) _currentStepText.SetText("CHOICE: " + _currentChoice + " STEP: " + _currentStep);
             StartCoroutine(ShowMessages());
+        } 
+        else if (_currentStep < _choicesMessageSteps[_currentChoice].steps.Count)
+        {
+            StartCoroutine(ShowMessages());
+            if (DEBUGGING_TUTORIAL) _currentStepText.SetText("CHOICE: " + _currentChoice + " STEP: " + _currentStep);
+
+            _lastStepWasLinear = true;
         }
         else
         {

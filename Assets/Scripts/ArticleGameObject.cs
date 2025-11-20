@@ -3,10 +3,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System;
 using UnityEngine.Events;
 using UnityEngine.Localization.Components;
 using System.Collections;
+
 public class ArticleGameObject : MonoBehaviour
 {
     [Header("General Info")]
@@ -210,6 +210,26 @@ public class ArticleGameObject : MonoBehaviour
         _shareButton.gameObject.SetActive(active);
 
         RebuildAllLayouts();
+    }
+
+    private void ActivateButton(Button bt, bool active)
+    {
+        bt.gameObject.SetActive(active);
+    }
+
+    public void ActivateReadButton(bool active)
+    {
+        ActivateButton(_readButton, active);
+    }
+
+    public void ActivateSkipButton(bool active)
+    {
+        ActivateButton(_skipButton, active);
+    }
+
+    public void ActivateShareButton(bool active)
+    {
+        ActivateButton(_shareButton, active);
     }
     #endregion
 
