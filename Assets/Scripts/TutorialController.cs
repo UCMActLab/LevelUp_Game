@@ -50,6 +50,7 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private GameObject _choiceButtonPrefab;
     [SerializeField] private Transform _chat;
     [SerializeField] private TextMeshProUGUI _messageToUser;
+    [SerializeField] private GameObject _secondArticle;
     private LocalizeStringEvent _messageToUserLocalized;
     private Animator _messageAnimator = null;
     private AudioSource _messageAudioSource = null;
@@ -185,7 +186,6 @@ public class TutorialController : MonoBehaviour
 
         stepMessages.onMessagesEnd?.Invoke();
 
-
         if(!stepMessages.isLinear && !stepMessages.hasChoice)
         {
             ToChoice(stepMessages.toChoiceStep);
@@ -247,8 +247,34 @@ public class TutorialController : MonoBehaviour
     {
         return message.Length * _waitFactor;
     }
-         
+    
     #region On Messages Ended
+    public void RestartVarialbes()
+    {
+        _hasReadAnArticle = false;
+        _hasSkipedAnArticle = false;
+        _hasSharedAnArticle = false;
+    }
+
+    public void InstantiateSecondArticle()
+    {
+        Transform parent = null;
+        foreach (ArticleGameObject article in _articles)
+        {
+            parent = article.transform.parent;
+            Destroy(article.gameObject);
+        }
+
+        _secondArticle.gameObject.SetActive(true);
+        ArticleGameObject art = _secondArticle.GetComponent<ArticleGameObject>();
+        art.ActivateShareButton(false);
+        art.SetUpButtons();
+        art.OnRead.AddListener(() => _hasReadAnArticle = true);
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(art.transform as RectTransform);
+
+        AddSecondListenerToSkipButton();
+    }
 
     public void AddFirstListenerToSkipButton()
     {
@@ -261,6 +287,15 @@ public class TutorialController : MonoBehaviour
             });
         }
     }
+
+    public void AddSecondListenerToSkipButton()
+    {
+        _secondArticle.GetComponent<ArticleGameObject>().OnSkip.AddListener(() => {
+            SkippedArticle();
+            ToChoice(new Vector2Int(7, 0));
+        });
+    }
+
     public void AddListenerToReadButton()
     {
         foreach (ArticleGameObject article in _articles)
@@ -485,8 +520,6 @@ public class TutorialController : MonoBehaviour
         {
             StartCoroutine(ShowMessages());
             if (DEBUGGING_TUTORIAL) _currentStepText.SetText("CHOICE: " + _currentChoice + " STEP: " + _currentStep);
-
-            _lastStepWasLinear = true;
         }
         else
         {
