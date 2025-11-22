@@ -215,6 +215,7 @@ public class ArticleGameObject : MonoBehaviour
     private void ActivateButton(Button bt, bool active)
     {
         bt.gameObject.SetActive(active);
+        RebuildAllLayouts();
     }
 
     public void ActivateReadButton(bool active)
@@ -318,6 +319,8 @@ public class ArticleGameObject : MonoBehaviour
 
         if (_body != null) _body.StringReference.SetReference("Translation", Data.articleBody);
         else _bodyText.text = Data.articleBody;
+
+        RebuildAllLayouts();
     }
 
     public void DestroyArticle()

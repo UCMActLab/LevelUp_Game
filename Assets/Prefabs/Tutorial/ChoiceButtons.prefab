@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 289.11688, y: -75.555}
+  m_AnchoredPosition: {x: 289.11688, y: -97.66}
   m_SizeDelta: {x: 578.23376, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7640294014436107344
@@ -131,7 +131,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 15, y: 15, z: 15, w: 15}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -166,7 +166,6 @@ GameObject:
   - component: {fileID: 6076443457701802407}
   - component: {fileID: 4294774466596302200}
   - component: {fileID: 3284125167924334764}
-  - component: {fileID: 6604927770694370544}
   m_Layer: 5
   m_Name: ChoiceButtons
   m_TagString: Untagged
@@ -231,7 +230,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1.5
+  m_PixelsPerUnitMultiplier: 3
 --- !u!114 &7788618567029611841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,18 +347,3 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &6604927770694370544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5156431758119740124}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 1, g: 1, b: 1, a: 0.22352941}
-  m_EffectDistance: {x: 20, y: 20}
-  m_UseGraphicAlpha: 1

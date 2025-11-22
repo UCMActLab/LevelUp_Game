@@ -25,6 +25,7 @@ public class TutorialController : MonoBehaviour
         public Vector2Int toChoiceStep;
         public bool hasChoice;
         public Choice[] buttons;
+        public bool goNextOnActionDone;
         public SerializedCallback<bool> nextStepCondition;
         public UnityEvent onMessagesStart;
         public UnityEvent onMessagesEnd;
@@ -171,6 +172,7 @@ public class TutorialController : MonoBehaviour
         while (i < messages.Count)
         {
             // Show message after time
+            ActivateNextStepButton(true);
             yield return new WaitUntil(WasButtonPressed);
             ShowNewMessage(messages[i]);
 
@@ -207,9 +209,17 @@ public class TutorialController : MonoBehaviour
 
         _nextStepButton.onClick.RemoveAllListeners();
 
-        ActivateNextStepButton(true);
+        if(stepMessages.goNextOnActionDone || stepMessages.hasChoice)
+        {
+            NextStep();
+        }
+        else
+        {
+            ActivateNextStepButton(true);
 
-        _nextStepButton.onClick.AddListener(NextStep);
+            _nextStepButton.onClick.AddListener(NextStep);
+        }
+
     }
 
     public void SetUpChoiceButtons(Choice[] buttons)
