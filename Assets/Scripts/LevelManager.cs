@@ -61,6 +61,7 @@ public class LevelManager : Singleton<LevelManager>
 
         _levels = new List<List<ArticleData>>();
         int currentLevel = 0;
+        int numArticlesTotal = 0;
 
         foreach(LevelInfo level in _levelsInfo)
         {
@@ -71,8 +72,11 @@ public class LevelManager : Singleton<LevelManager>
                 data.RemoveAt(0);
             }
 
+            numArticlesTotal += level.numArticles;
             currentLevel++;
         }
+
+        ScoreManager.Instance.SetMaxScore(numArticlesTotal);
 
         if (_startOnAwake)
         {
@@ -82,6 +86,12 @@ public class LevelManager : Singleton<LevelManager>
 
     public void ShowNextArticle()
     {
+        if(_currentLevel >= _levels.Count)
+        {
+            EndLevel();
+            return;
+        }
+
         if (_articleObject != null)
         {
             _articleData.OnSkip.RemoveAllListeners();
@@ -90,26 +100,19 @@ public class LevelManager : Singleton<LevelManager>
 
         if (_currentArticle >= _levels[_currentLevel].Count)
         {
+            _testLogic.SetTest(_levelsInfo[_currentLevel].test, true);
             _currentLevel++;
             _currentArticle = 0;
-
-            // ScoreManager.Instance.ShowPoints();
-            if (_currentLevel >= _levels.Count)
-            {
-                EndLevel();
-            }
-            else
-            {
-                _testLogic.SetTest(_levelsInfo[_currentLevel].test, true);
-            }
-
         }
         else
         {
+            if(_currentArticle == 0) ScoreManager.Instance.SetLevelInfo(_levelsInfo[_currentLevel].numArticles);
+
             _articleObject = Instantiate(_articlePrefab, _articleFeed.transform);
             _articleData = _articleObject.GetComponent<ArticleGameObject>();
             _articleData.OnSkip.AddListener(ShowNextArticle);
             _articleData.SetArticleData(Instantiate(_levels[_currentLevel][_currentArticle++]));
+
         }
     }
 

@@ -3,10 +3,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System;
 using UnityEngine.Events;
 using UnityEngine.Localization.Components;
 using System.Collections;
+
 public class ArticleGameObject : MonoBehaviour
 {
     [Header("General Info")]
@@ -37,9 +37,11 @@ public class ArticleGameObject : MonoBehaviour
     public event Action<Choice> OnShareChoice;
     public event Action<Choice> AnswerClicked;
 
-    bool _isFirstShare = true;
     bool _hasReadArticle;
     public bool HasReadArticle {  get { return _hasReadArticle; } }
+
+    bool _hasSharedArticle;
+    public bool HasSharedArticle { get { return _hasSharedArticle; } }
 
     [HideInInspector]
     public UnityEvent OnSkip;
@@ -110,6 +112,7 @@ public class ArticleGameObject : MonoBehaviour
             
             bt.transform.parent.gameObject.SetActive(!_sharedWithGroups[i - 1]);
 
+
             int tempInt = i;
             Conversation conversation = null;
             if(Data.conversation != null && Data.conversation.Count > i - 1) { conversation = Data.conversation[i - 1]; }
@@ -136,6 +139,12 @@ public class ArticleGameObject : MonoBehaviour
     IEnumerator SkipArticle_Wait()
     {
         yield return new WaitForSeconds(1.25f);
+
+        if(ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.CalculateArticlePoints(this);
+        }
+
         InvokeOnSkip();
     }
 
@@ -146,17 +155,6 @@ public class ArticleGameObject : MonoBehaviour
 
     private void ShareArticle(int groupID, GameObject shareButtons, Conversation conv = null)
     {
-        if(Data.convType != ConversationType.TUTORIAL)
-        {
-            if(_isFirstShare && !Data.isTrue)
-            {
-                ScoreManager.Instance.SharedFalseArticle(_hasReadArticle);
-            }
-            else if(Data.isTrue && !_hasReadArticle)
-            {
-                ScoreManager.Instance.SharedUnreadArticle(Data.isTrue);
-            }
-        }
         _convManager.ChangeGroup(groupID);
         // Data should be an instance
         _convManager.SendArticle(Data);
@@ -172,7 +170,7 @@ public class ArticleGameObject : MonoBehaviour
 
         _sharedWithGroups[groupID - 1] = true;
 
-        _isFirstShare = false;
+        _hasSharedArticle = true;
     }
 
     public void ReadArticle()
@@ -212,6 +210,27 @@ public class ArticleGameObject : MonoBehaviour
         _shareButton.gameObject.SetActive(active);
 
         RebuildAllLayouts();
+    }
+
+    private void ActivateButton(Button bt, bool active)
+    {
+        bt.gameObject.SetActive(active);
+        RebuildAllLayouts();
+    }
+
+    public void ActivateReadButton(bool active)
+    {
+        ActivateButton(_readButton, active);
+    }
+
+    public void ActivateSkipButton(bool active)
+    {
+        ActivateButton(_skipButton, active);
+    }
+
+    public void ActivateShareButton(bool active)
+    {
+        ActivateButton(_shareButton, active);
     }
     #endregion
 
@@ -300,6 +319,8 @@ public class ArticleGameObject : MonoBehaviour
 
         if (_body != null) _body.StringReference.SetReference("Translation", Data.articleBody);
         else _bodyText.text = Data.articleBody;
+
+        RebuildAllLayouts();
     }
 
     public void DestroyArticle()

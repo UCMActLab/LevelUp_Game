@@ -94,13 +94,13 @@ public class EndGameStep : MonoBehaviour
 
     private void EnterOnFrame()
     {
-        Transform[] tr = { _body.transform, _titleText.transform };
+        Transform[] tr = { _body.transform.parent };
         StartCoroutine(ReachXPointAnimation(tr, _startAnimationPosX, _centerAnimationPosX));
     }
 
     private void LeaveFrame()
     {
-        Transform[] tr = { _body.transform, _titleText.transform };
+        Transform[] tr = { _body.transform.parent };
         StartCoroutine(ReachXPointAnimation(tr, _centerAnimationPosX, _endAnimationPosX));
     }
 
