@@ -8,6 +8,7 @@ public class ArticleData : ScriptableObject
     public Sprite articleImage;
     public string articleTitle;
     public string articleBody;
+    public string ID;
 
     public ConversationType convType = ConversationType.NONE;
     public System.Collections.Generic.List<Conversation> conversation;

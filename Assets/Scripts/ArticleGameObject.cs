@@ -6,6 +6,7 @@ using System;
 using UnityEngine.Events;
 using UnityEngine.Localization.Components;
 using System.Collections;
+using Unity.Services.Analytics;
 
 public class ArticleGameObject : MonoBehaviour
 {
@@ -145,6 +146,13 @@ public class ArticleGameObject : MonoBehaviour
             ScoreManager.Instance.CalculateArticlePoints(this);
         }
 
+        CustomEvent newEvent = new CustomEvent("Skip_Action")
+        {
+            {"IsTrue", Data.isTrue },
+            {"NewsID", Data.ID }
+        };
+        AnalyticsManager.Instance.SubmitEvent(newEvent);
+
         InvokeOnSkip();
     }
 
@@ -155,6 +163,14 @@ public class ArticleGameObject : MonoBehaviour
 
     private void ShareArticle(int groupID, GameObject shareButtons, Conversation conv = null)
     {
+        CustomEvent newEvent = new CustomEvent("Share_Action")
+        {
+            {"ToWhom", groupID },
+            {"IsTrue", Data.isTrue },
+            {"NewsID", Data.ID }
+        };
+        AnalyticsManager.Instance.SubmitEvent(newEvent);
+
         _convManager.ChangeGroup(groupID);
         // Data should be an instance
         _convManager.SendArticle(Data);
@@ -183,6 +199,13 @@ public class ArticleGameObject : MonoBehaviour
         RebuildAllLayouts();
 
         OnRead.Invoke();
+
+        CustomEvent newEvent = new CustomEvent("Read_Action")
+        {
+            {"IsTrue", Data.isTrue },
+            {"NewsID", Data.ID }
+        };
+        AnalyticsManager.Instance.SubmitEvent(newEvent);
     }
 
     public void VerifyArticle()
@@ -192,6 +215,13 @@ public class ArticleGameObject : MonoBehaviour
 
         // activate feedback prefab
         _verificationFeedbackGO.SetActive(true);
+
+        CustomEvent newEvent = new CustomEvent("Verify_Action")
+        {
+            {"IsTrue", Data.isTrue },
+            {"NewsID", Data.ID }
+        };
+        AnalyticsManager.Instance.SubmitEvent(newEvent);
     }
     #endregion
 

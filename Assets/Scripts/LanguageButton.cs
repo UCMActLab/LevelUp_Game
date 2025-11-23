@@ -1,3 +1,4 @@
+using Unity.Services.Analytics;
 using UnityEngine;
 
 public class LanguageButton : MonoBehaviour
@@ -6,5 +7,12 @@ public class LanguageButton : MonoBehaviour
     {
         LanguageSelection.chosenLanguage = (Language)newLanguage;
         TranslationManager.Instance.ChangeLanguage(newLanguage);
+
+        CustomEvent newEvent = new CustomEvent("LANGUAGE_SELECTOR")
+        {
+            { "chosenLanguage", newLanguage }
+        };
+
+        AnalyticsManager.Instance.SubmitEvent(newEvent);
     }
 }

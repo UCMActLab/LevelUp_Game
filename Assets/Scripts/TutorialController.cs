@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.Services.Analytics;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Localization.Components;
@@ -174,6 +175,9 @@ public class TutorialController : MonoBehaviour
             // Show message after time
             ActivateNextStepButton(true);
             yield return new WaitUntil(WasButtonPressed);
+            // action was made
+            SubmitTutorialInteractionEvent();
+
             ShowNewMessage(messages[i]);
 
             // Activate button after time
@@ -206,6 +210,7 @@ public class TutorialController : MonoBehaviour
             _lastStepWasLinear = true;
             yield return new WaitUntil(() => stepMessages.nextStepCondition.Invoke());
         }
+        SubmitTutorialInteractionEvent();
 
         _nextStepButton.onClick.RemoveAllListeners();
 
@@ -518,9 +523,19 @@ public class TutorialController : MonoBehaviour
         }
     }
 
+    private void SubmitTutorialInteractionEvent()
+    {
+        CustomEvent customEvent = new CustomEvent("TUTORIAL_INTERACTIONS")
+        {
+            { "Tutorial_Step", _currentChoice.ToString() + "_" + _currentStep.ToString() }
+        };
+        AnalyticsManager.Instance.SubmitEvent(customEvent);
+    }
 
     private void NextStep()
     {
+        SubmitTutorialInteractionEvent();
+
         if (_lastStepWasLinear && ++_currentStep < _choicesMessageSteps[_currentChoice].steps.Count)
         {
             if (DEBUGGING_TUTORIAL) _currentStepText.SetText("CHOICE: " + _currentChoice + " STEP: " + _currentStep);

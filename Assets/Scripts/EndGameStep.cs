@@ -26,6 +26,7 @@ public class EndGameStep : MonoBehaviour
     [SerializeField] GameObject _body = null;
     [SerializeField] LocalizeStringEvent _bodyText = null;
     [SerializeField] Button _nextButton;
+    [SerializeField] string _invokedEvent = "WelcomeNext";
 
     private UnityEvent _onAnimationEnd;
 
@@ -48,6 +49,9 @@ public class EndGameStep : MonoBehaviour
     {
         _nextButton.interactable = false;
         _nextButton.onClick.AddListener(PressedNextButton);
+        _nextButton.onClick.AddListener(() => {
+            AnalyticsManager.Instance.SubmitEvent(new Unity.Services.Analytics.CustomEvent(_invokedEvent));
+        });
         
         if(ChangeText())
         {

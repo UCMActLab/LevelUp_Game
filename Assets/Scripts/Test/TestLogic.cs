@@ -127,7 +127,7 @@ public class TestLogic : MonoBehaviour
 					break;
 			}
 		}
-		AnalyticsManager.Instance.SubmitTestResults(_test, results);
+		// AnalyticsManager.Instance.SubmitTestResults(_test, results);
 	}
 
 	public void DisplayEnd()

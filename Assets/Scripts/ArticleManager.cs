@@ -1,4 +1,3 @@
-using DA_Assets.FCU.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -77,6 +76,8 @@ public class ArticleManager : Singleton<ArticleManager>
         //    sprites.Add(texture.name, Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), Vector2.zero));
         //}
 
+        int i = 0;
+
         foreach(ArticleJSONRoot root in articles)
         {
             if(root.data.data == null)
@@ -95,6 +96,7 @@ public class ArticleManager : Singleton<ArticleManager>
                 else if (data.Language == "en") { parsedLanguage = 2; }
                 else continue;
 
+                article.ID = "art_" + i.ToString();
                 article.isTrue = data.isTrue;
                 article.articleTitle = data.Headline;
                 article.articleBody = data.Body;
@@ -160,6 +162,8 @@ public class ArticleManager : Singleton<ArticleManager>
                 }
 
                 _articlesByLanguage[parsedLanguage].Add(article);
+
+                ++i;
             }
         }
 

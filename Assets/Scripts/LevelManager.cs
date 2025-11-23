@@ -2,6 +2,7 @@ using DA_Assets.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Services.Analytics;
 using UnityEngine;
 
 [Serializable]
@@ -47,6 +48,9 @@ public class LevelManager : Singleton<LevelManager>
         StartCoroutine(GetArticlesFromResources());
 
         if (!_testLogic) _testLogic = GameObject.FindFirstObjectByType<TestLogic>();
+
+        CustomEvent newEvent = new CustomEvent("FreeMode_Start");
+        AnalyticsManager.Instance.SubmitEvent(newEvent);
     }
 
     private IEnumerator GetArticlesFromResources()
@@ -119,5 +123,7 @@ public class LevelManager : Singleton<LevelManager>
     private void EndLevel()
     {
         SceneChanger.Instance.ChangeScene("EndGame");
+
+        AnalyticsManager.Instance.SubmitEvent("FreeMode_End");
     }
 }

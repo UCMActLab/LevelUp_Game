@@ -1,8 +1,7 @@
 using AYellowpaper.SerializedCollections;
-using NUnit.Framework;
 using System;
-using Unity.VisualScripting;
 using UnityEditor;
+using Unity.Services.Analytics;
 using UnityEngine;
 
 public enum Score
@@ -125,6 +124,18 @@ public class ScoreManager : Singleton<ScoreManager>
     private void AddPoints(int points)
     {
         _currentScore += points;
+
+        SubmitScoreEvent();
+    }
+
+    private void SubmitScoreEvent()
+    {
+        CustomEvent newEvent = new CustomEvent("Score_Check")
+        {
+            {"Score", _currentScore },
+            {"MaxScore", MaxScore }
+        };
+        AnalyticsManager.Instance.SubmitEvent(newEvent);
     }
 
     public void ShowPoints()
@@ -133,6 +144,8 @@ public class ScoreManager : Singleton<ScoreManager>
         _pointsMenu.gameObject.SetActive(true);
         
         _pointsMenu.ShowScore(_numArticlesForCurrentLevel, _numArticlesReadForCurrentLevel, _numTrueArticlesSharedForCurrentLevel, _numTrueArticles, _numFalseArticlesSharedForCurrentLevel, _numArticlesForCurrentLevel - _numTrueArticles);
+
+        SubmitScoreEvent();
     }
 
     public void RestartScore()
