@@ -44,7 +44,7 @@ public class ScoreManager : Singleton<ScoreManager>
     private int _numFalseArticlesSharedForCurrentLevel = 0;
 
     public int Score { get { return _currentScore; } }
-    public int MaxScore { get { return _initialScore; } }
+    public int MaxScore { get { return _maxScore; } }
 
     private void Start()
     {
@@ -96,7 +96,7 @@ public class ScoreManager : Singleton<ScoreManager>
         }
         else if (!data.HasSharedArticle)
         {
-            AwardPointsIdentifyingArticle(false);
+            // AwardPointsIdentifyingArticle(false);
         }
         else
         {
@@ -104,10 +104,10 @@ public class ScoreManager : Singleton<ScoreManager>
         }
     }
 
-    public void SetMaxScore(int numArticles)
+    public void SetMaxScore(int numArticles, int numTrueArticles)
     {
         // Cada artículo tiene 2 variables que cuentan puntitos
-        _maxScore = numArticles * 2;
+        _maxScore = numArticles + numTrueArticles;
         _pointsMenu.SetTotalScore(_maxScore);
         CalculateScoreState();
     }

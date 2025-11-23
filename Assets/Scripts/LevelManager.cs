@@ -66,6 +66,7 @@ public class LevelManager : Singleton<LevelManager>
         _levels = new List<List<ArticleData>>();
         int currentLevel = 0;
         int numArticlesTotal = 0;
+        int numTrueArticles = 0;
 
         foreach(LevelInfo level in _levelsInfo)
         {
@@ -73,6 +74,7 @@ public class LevelManager : Singleton<LevelManager>
             for (int i = 0; i < level.numArticles; ++i)
             {
                 _levels[currentLevel].Add(data[0]);
+                if (data[0].isTrue) numTrueArticles++;
                 data.RemoveAt(0);
             }
 
@@ -80,7 +82,7 @@ public class LevelManager : Singleton<LevelManager>
             currentLevel++;
         }
 
-        ScoreManager.Instance.SetMaxScore(numArticlesTotal);
+        ScoreManager.Instance.SetMaxScore(numArticlesTotal, numTrueArticles);
 
         if (_startOnAwake)
         {

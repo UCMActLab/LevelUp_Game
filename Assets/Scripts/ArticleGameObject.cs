@@ -350,6 +350,11 @@ public class ArticleGameObject : MonoBehaviour
         if (_body != null) _body.StringReference.SetReference("Translation", Data.articleBody);
         else _bodyText.text = Data.articleBody;
 
+        if(_bodyText.text == string.Empty)
+        {
+            ActivateReadButton(false);
+        }
+
         RebuildAllLayouts();
     }
 

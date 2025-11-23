@@ -1,4 +1,5 @@
 using System;
+using Unity.Services.Analytics;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -126,7 +127,18 @@ public class TestLogic : MonoBehaviour
 					Debug.Log("Answer submitted: Unknown type");
 					break;
 			}
+
+			CustomEvent customEvent = new CustomEvent("Old_Question_Answer")
+			{
+				{ "QuestionType", (int)results[i].resultType },
+				{ "Result_MC", (int)results[i].bitmaskScore },
+				{ "QuestionID", _test.questions[i].name }
+			};
+
+			AnalyticsManager.Instance.SubmitEvent(customEvent);
 		}
+
+
 		// AnalyticsManager.Instance.SubmitTestResults(_test, results);
 	}
 
