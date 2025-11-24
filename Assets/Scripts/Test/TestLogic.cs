@@ -1,3 +1,4 @@
+using DA_Assets.Extensions;
 using System;
 using Unity.Services.Analytics;
 using UnityEngine;
@@ -70,6 +71,7 @@ public class TestLogic : MonoBehaviour
 		questionLogics = new IQuestionLogic[_test.questions.Length];
 		results = new EvaluationResult[_test.questions.Length];
 
+		_testContainer.DestroyChilds();
 		// TODO encontrar alternativa para evitar GetComponent
         for (int i = 0; i < _test.questions.Length; i++)
         {
@@ -148,6 +150,7 @@ public class TestLogic : MonoBehaviour
 		//  _testButtons.SetActive(false);
         // _closingQuestion.SetActive(true);
         _parentUI.SetActive(false);
+		_currentQuestionIndex = 0;
 
 		OnTestEnd.Invoke();
     }

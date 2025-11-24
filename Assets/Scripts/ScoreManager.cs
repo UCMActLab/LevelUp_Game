@@ -37,11 +37,24 @@ public class ScoreManager : Singleton<ScoreManager>
     private int _currentScore = 0;
     private Score _currentState = global::Score.NONE;
 
+    public Score State { get { return _currentState; } }
+
     private int _numArticlesForCurrentLevel = 0;
     private int _numArticlesReadForCurrentLevel = 0;
     private int _numTrueArticlesSharedForCurrentLevel = 0;
     private int _numTrueArticles = 0;
     private int _numFalseArticlesSharedForCurrentLevel = 0;
+
+    private int _numArticlesReadTotal = 0;
+    private int _numFalseSharedTotal = 0;
+    private int _numTrueSharedTotal = 0;
+    private int _totalArticles = 0;
+
+    public int TotalArticles { get { return _totalArticles; } }
+
+    public int TotalRead { get { return _numArticlesReadTotal; } }
+    public int TotalTrueShared { get { return _numTrueSharedTotal; } }
+    public int TotalFalseShared { get { return _numFalseSharedTotal; } }
 
     public int Score { get { return _currentScore; } }
     public int MaxScore { get { return _maxScore; } }
@@ -83,6 +96,7 @@ public class ScoreManager : Singleton<ScoreManager>
     {
         if(data.HasReadArticle)
         {
+            _numArticlesReadTotal++;
             AwardPointsReadArticle();
         }
 
@@ -91,6 +105,7 @@ public class ScoreManager : Singleton<ScoreManager>
             _numTrueArticles++;
             if(data.HasSharedArticle)
             {
+                _numTrueSharedTotal++;
                 AwardPointsIdentifyingArticle(true);
             }
         }
@@ -101,12 +116,14 @@ public class ScoreManager : Singleton<ScoreManager>
         else
         {
             _numFalseArticlesSharedForCurrentLevel++;
+            _numFalseSharedTotal++;
         }
     }
 
     public void SetMaxScore(int numArticles, int numTrueArticles)
     {
         // Cada artículo tiene 2 variables que cuentan puntitos
+        _totalArticles = numArticles;
         _maxScore = numArticles + numTrueArticles;
         _pointsMenu.SetTotalScore(_maxScore);
         CalculateScoreState();
