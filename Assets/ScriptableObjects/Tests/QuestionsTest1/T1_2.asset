@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questionText: TD_1_Q
   showFeedback: 1
-  explanation: You should have paid attention in class
-  allowMultipleSelections: 1
+  explanation: TD_1_EXP
+  allowMultipleSelections: 0
+  optionsAsButtons: 1
   answerOptions:
   - optionText: TD_1_0OPT
     isCorrect: 1
   - optionText: TD_1_1OPT
-    isCorrect: 1
+    isCorrect: 0
   - optionText: TD_1_2OPT
     isCorrect: 0

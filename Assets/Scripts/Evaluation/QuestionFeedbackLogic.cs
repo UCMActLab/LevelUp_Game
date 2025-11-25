@@ -33,6 +33,13 @@ public class QuestionFeedbackLogic : MonoBehaviour
             _headerText.color = _incorrectColor;
 			_correctResponseText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "INCORRECT_OPTIONS") + " " + correctOptions;
 		}
-        _explanationText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", explanation);
+        try
+        {
+            _explanationText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", explanation);
+        }
+        catch
+        {
+			_explanationText.text = explanation;
+		}
     }
 }
