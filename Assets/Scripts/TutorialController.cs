@@ -235,7 +235,7 @@ public class TutorialController : MonoBehaviour
         foreach (Choice button in buttons)
         {
             Button newButton = Instantiate(_choiceButtonPrefab, _choiceButtons.transform).GetComponent<Button>();
-            newButton.GetComponentInChildren<TextMeshProUGUI>().SetText(button.button);
+            newButton.GetComponentInChildren<LocalizeStringEvent>().StringReference.SetReference("Translation", button.button);
             Vector2Int choice = button.toChoiceStep;
             newButton.onClick.AddListener(() =>
             {

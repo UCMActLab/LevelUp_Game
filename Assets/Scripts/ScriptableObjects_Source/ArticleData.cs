@@ -3,6 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName ="ArticleData", menuName ="ScriptableObjects/ArticleData")]
 public class ArticleData : ScriptableObject
 {
+    public bool needsTranslation;
+
     public Sprite companyLogo;
     public string companyName;
     public Sprite articleImage;

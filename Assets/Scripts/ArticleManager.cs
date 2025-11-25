@@ -89,6 +89,8 @@ public class ArticleManager : Singleton<ArticleManager>
             {
                 ArticleData article = ScriptableObject.CreateInstance("ArticleData") as ArticleData;
 
+                article.needsTranslation = false;
+
                 int parsedLanguage = 0;
                 if (data.Language == "es") { parsedLanguage = 3; }
                 else if (data.Language == "cz") { parsedLanguage = 1; }
@@ -190,7 +192,7 @@ public class ArticleManager : Singleton<ArticleManager>
         catch (Exception e)
         {
             Debug.LogWarning("COULD NOT LOAD JSON FROM DATA BASE. LOADING BACK UP.\nEXCEPTION: " + e.Message);
-            TextAsset json = Resources.Load<TextAsset>("Backup/articles");
+            TextAsset json = Resources.Load<TextAsset>("Backup/articles_25.11");
             data = new List<ArticleJSONRoot>();
             data.Add(JsonConvert.DeserializeObject<ArticleJSONRoot>(json.text));
         }

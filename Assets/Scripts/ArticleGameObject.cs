@@ -341,15 +341,19 @@ public class ArticleGameObject : MonoBehaviour
         _articleImage.sprite = Data.articleImage;
         _articleImage.gameObject.SetActive(_articleImage.sprite != null);
 
-        if (_company != null) _company.StringReference.SetReference("Translation", Data.companyName);
-        else _companyText.text = Data.companyName;
+        if(_company == null) _company = _companyText.GetComponent<LocalizeStringEvent>();
+        _company.StringReference.SetReference("Translation", "SOURCE/" + Data.companyName.ToUpper());
 
-        if (_title != null) _title.StringReference.SetReference("Translation", Data.articleTitle);
-        else _articleTitle.text = Data.articleTitle;
-
-        if (_body != null) _body.StringReference.SetReference("Translation", Data.articleBody);
-        else _bodyText.text = Data.articleBody;
-
+        if (Data.needsTranslation)
+        {
+            _title.StringReference.SetReference("Translation", Data.articleTitle);
+            _body.StringReference.SetReference("Translation", Data.articleBody);
+        }
+        else { 
+            _articleTitle.text = Data.articleTitle;
+            _bodyText.text = Data.articleBody;
+        } 
+        
         if(_bodyText.text == string.Empty)
         {
             ActivateReadButton(false);

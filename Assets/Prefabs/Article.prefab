@@ -568,6 +568,7 @@ GameObject:
   - component: {fileID: 1244024702893682982}
   - component: {fileID: 9155992538471812636}
   - component: {fileID: 665947678189386530}
+  - component: {fileID: 5486970158269642677}
   m_Layer: 5
   m_Name: Source
   m_TagString: Untagged
@@ -727,6 +728,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &5486970158269642677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391193505294139974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9155992538471812636}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &2220649467536828880
 GameObject:
   m_ObjectHideFlags: 0
@@ -890,7 +931,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 360.5, y: -1751.02}
+  m_AnchoredPosition: {x: 360.5, y: -1589.52}
   m_SizeDelta: {x: 689, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4541360520026125862
@@ -2857,7 +2898,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 360.5, y: -1185.48}
+  m_AnchoredPosition: {x: 360.5, y: -1104.73}
   m_SizeDelta: {x: 689, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3811063412819365295
