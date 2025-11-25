@@ -144,6 +144,7 @@ public class ArticleManager : Singleton<ArticleManager>
                         foreach (MessagesJSON message in conversationJSON.Messages)
                         {
                             Messages msg = ScriptableObject.CreateInstance("Messages") as Messages;
+                            msg.NeedsTranslation = false;
                             msg.Name = message.Sender;
                             msg.MessageList = message.MessageList;
                             conversation.Messages.Add(msg);

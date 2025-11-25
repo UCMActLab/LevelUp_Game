@@ -143,7 +143,7 @@ public class ChatManager : MonoBehaviour
                 _chatScrollAnimation?.PlayAnimation();
 
                 MessageView newMessage = Instantiate(_messagePrefab, _currentChat.transform).GetComponent<MessageView>();
-                if(_currentConversation.Type == ConversationType.NONE)
+                if(!currentMessages.NeedsTranslation && _currentConversation.Type == ConversationType.NONE)
                 {
                     newMessage.Setup(currentMessages.Name, currentMessages.GetNextMessage());
                 }

@@ -173,7 +173,7 @@ public class ArticleGameObject : MonoBehaviour
 
         _convManager.ChangeGroup(groupID);
         // Data should be an instance
-        _convManager.SendArticle(Data);
+        _convManager.SendArticle(Instantiate(Data));
 
         if(conv == null)
         {
@@ -346,6 +346,14 @@ public class ArticleGameObject : MonoBehaviour
 
         if (Data.needsTranslation)
         {
+            if(_title == null)
+            {
+                _title = _articleTitle.GetComponent<LocalizeStringEvent>();
+            }
+            if(_body == null)
+            {
+                _body = _bodyText.GetComponent<LocalizeStringEvent>();
+            }
             _title.StringReference.SetReference("Translation", Data.articleTitle);
             _body.StringReference.SetReference("Translation", Data.articleBody);
         }

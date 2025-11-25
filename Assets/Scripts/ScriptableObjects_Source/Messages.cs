@@ -4,6 +4,8 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName ="Messages",menuName ="ScriptableObjects/Conversation/Messages")]
 public class Messages : ScriptableObject
 {
+    public bool NeedsTranslation;
+
     [Header("Sender")]
     [SerializeField]
     private string _name;
