@@ -51,6 +51,7 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 			Debug.LogError("MCLogic: Question is not of type QuestionMC!");
 			return;
 		}
+		Debug.Log(_questionMC.questionText);
 		_questionText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionMC.questionText);
 
 		_numberOfOptions = _questionMC.answerOptions.Length;
@@ -75,12 +76,14 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 		{
 			GameObject option = Instantiate(optionPrefab, _optionsParent.transform);
 
-			option.transform.localPosition = new Vector3(0, -i * _optionSpacing, 0);
+			// option.transform.localPosition = new Vector3(0, -i * _optionSpacing, 0);
 
 			// TODO encontrar alternativa para evitar GetComponent
 			MCOptionValue mcVal = option.GetComponent<MCOptionValue>();
 			mcVal.SetMCLogic(this);
-			mcVal.SetValue(i, TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionMC.answerOptions[i].optionText));
+
+            Debug.Log(_questionMC.answerOptions[i].optionText);
+            mcVal.SetValue(i, TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionMC.answerOptions[i].optionText));
 
 			if (_optionsAsButtons)
 			{
@@ -91,6 +94,8 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 				_optionToggles[i] = option.GetComponent<Toggle>();
 			}
 		}
+
+		LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
 	}
 
 	public EvaluationResult GetResults()

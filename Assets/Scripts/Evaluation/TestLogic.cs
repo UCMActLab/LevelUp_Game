@@ -38,7 +38,7 @@ public class TestLogic : MonoBehaviour
 
 	private int _currentQuestionIndex = 0;
 
-	private GameObject[] _questions;
+	private GameObject[] _questions = null;
 
 	private IQuestionLogic[] _questionLogics;
 
@@ -54,6 +54,7 @@ public class TestLogic : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+		_questions = null;
         if (_setUpOnAwake) SetUp();
     }
 
@@ -74,11 +75,13 @@ public class TestLogic : MonoBehaviour
 
 		if (!_parentUI.activeSelf) _parentUI.SetActive(true);
 
+		if(_questions != null) foreach (GameObject go in _questions) { Destroy(go); }
+
 		_questions = new GameObject[_test.questions.Length];
 		_questionLogics = new IQuestionLogic[_test.questions.Length];
 		_results = new EvaluationResult[_test.questions.Length];
 
-		_testContainer.DestroyChilds();
+		// _testContainer.DestroyChilds();
 		// TODO encontrar alternativa para evitar GetComponent
         for (int i = 0; i < _test.questions.Length; i++)
         {
@@ -139,19 +142,18 @@ public class TestLogic : MonoBehaviour
 
 			CustomEvent customEvent = new CustomEvent("Old_Question_Answer")
 			{
-				{ "QuestionType", (int)results[i].resultType },
-				{ "Result_MC", (int)results[i].bitmaskScore },
+				{ "QuestionType", (int)_results[i].resultType },
+				{ "Result_MC", (int)_results[i].bitmaskScore },
 				{ "QuestionID", _test.questions[i].name }
 			};
 
 			AnalyticsManager.Instance.SubmitEvent(customEvent);
 		}
-		AnalyticsManager.Instance.SubmitTestResults(_test, _results);
 	}
 
 	public void DisplayEnd()
 	{
-		questions[_currentQuestionIndex].SetActive(false);
+		_questions[_currentQuestionIndex].SetActive(false);
 		//  _testButtons.SetActive(false);
         // _closingQuestion.SetActive(true);
         _parentUI.SetActive(false);
