@@ -24,23 +24,25 @@ public class LikertLogic : MonoBehaviour, IQuestionLogic
 	[SerializeField]
     private Slider _likertSlider;
 
+	private QuestionLikert _questionLikert;
+
     public void SetUp(Question question)
     {
-        QuestionLikert questionLikert = question as QuestionLikert;
-		if (questionLikert == null)
+        _questionLikert = question as QuestionLikert;
+		if (_questionLikert == null)
 		{
 			Debug.LogError("MCLogic: Question is not of type QuestionLikert!");
 			return;
 		}
-		_questionText.text = question.questionText;
+        _questionText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionLikert.questionText);
 
-        _leftValue = questionLikert.leftValue;
-        _rightValue = questionLikert.rightValue;
+		_leftValue = _questionLikert.leftValue;
+        _rightValue = _questionLikert.rightValue;
 
-        _leftText.text = questionLikert.leftLablel;
-        _rightText.text = questionLikert.rightLabel;
+		_leftText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionLikert.leftLablel);
+		_rightText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionLikert.rightLabel);
 
-		_likertSlider.value = questionLikert.defaultValue;
+		_likertSlider.value = _questionLikert.defaultValue;
 
 		SetUpSlider();
     }
@@ -63,5 +65,20 @@ public class LikertLogic : MonoBehaviour, IQuestionLogic
     public void UpdateSliderHandle()
     {
         _sliderHandleText.text = _likertSlider.value.ToString();
+	}
+
+	public void LockQuestion()
+	{
+		_likertSlider.interactable = false;
+	}
+
+	public bool IsCorrect()
+	{
+		return _questionLikert.correctValue == (int)_likertSlider.value;
+	}
+
+	public string GetCorrectResponse()
+	{
+		return _questionLikert.correctValue.ToString();
 	}
 }

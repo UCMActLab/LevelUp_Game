@@ -16,6 +16,8 @@ public class MCOptionValue : MonoBehaviour
     {
         _optionID = id;
         _optionText.text = text;
+        Debug.Log(text);
+        Debug.Log(_optionText.text);
     }
 
 	public void SetMCLogic(MCLogic logic)

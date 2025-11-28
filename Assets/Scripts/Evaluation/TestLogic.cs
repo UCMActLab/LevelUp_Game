@@ -28,6 +28,9 @@ public class TestLogic : MonoBehaviour
     private GameObject _openQuestionPrefab;
 
 	[SerializeField]
+	private GameObject _feedbackQuestion;
+
+	[SerializeField]
 	private GameObject _closingQuestion;
 
 	[SerializeField]
@@ -35,11 +38,16 @@ public class TestLogic : MonoBehaviour
 
 	private int _currentQuestionIndex = 0;
 
-	private GameObject[] questions;
+	private GameObject[] _questions;
 
-	private IQuestionLogic[] questionLogics;
+	private IQuestionLogic[] _questionLogics;
 
-	private EvaluationResult[] results;
+	[SerializeField]
+	private QuestionFeedbackLogic _feedbackLogic;
+
+	private EvaluationResult[] _results;
+
+	private bool _showingFeedback = false;
 
 	public UnityEvent OnTestEnd = new UnityEvent();
 
@@ -58,7 +66,6 @@ public class TestLogic : MonoBehaviour
 
     public void SetUp()
     {
-
         if(_test == null)
         {
 			Debug.LogError("TestLogic: No test assigned!");
@@ -66,10 +73,10 @@ public class TestLogic : MonoBehaviour
 		}
 
 		if (!_parentUI.activeSelf) _parentUI.SetActive(true);
-		
-		questions = new GameObject[_test.questions.Length];
-		questionLogics = new IQuestionLogic[_test.questions.Length];
-		results = new EvaluationResult[_test.questions.Length];
+
+		_questions = new GameObject[_test.questions.Length];
+		_questionLogics = new IQuestionLogic[_test.questions.Length];
+		_results = new EvaluationResult[_test.questions.Length];
 
 		_testContainer.DestroyChilds();
 		// TODO encontrar alternativa para evitar GetComponent
@@ -80,27 +87,27 @@ public class TestLogic : MonoBehaviour
             {
 				case Question.QuestionType.LIKERT:
 					question = Instantiate(_likertQuestionPrefab, _testContainer.transform);
-					questionLogics[i] = question.GetComponent<LikertLogic>();
+					_questionLogics[i] = question.GetComponent<LikertLogic>();
 					break;
 				case Question.QuestionType.MULTIPLE_CHOICE:
 					question = Instantiate(_MCQuestionPrefab, _testContainer.transform);
-					questionLogics[i] = question.GetComponent<MCLogic>();
-
+					_questionLogics[i] = question.GetComponent<MCLogic>();
+					(_questionLogics[i] as MCLogic).SetTestLogic(this);
 					break;
 				case Question.QuestionType.OPEN_ENDED:
 					question = Instantiate(_openQuestionPrefab, _testContainer.transform);
-					questionLogics[i] = question.GetComponent<OpenQuestionLogic>();
+					_questionLogics[i] = question.GetComponent<OpenQuestionLogic>();
 					break;
 				default:
 					Debug.LogWarning("Question - Type: Unknown");
 					break;
 			}
-			questionLogics[i].SetUp(_test.questions[i]);
-			questions[i] = question;
+			_questionLogics[i].SetUp(_test.questions[i]);
+			_questions[i] = question;
 		}
 
-		if(questions[_currentQuestionIndex] != null)
-			questions[_currentQuestionIndex].SetActive(true);
+		if(_questions[_currentQuestionIndex] != null)
+			_questions[_currentQuestionIndex].SetActive(true);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(_parentUI.transform as RectTransform);
         foreach (Transform tr in _parentUI.GetComponentsInChildren<Transform>(true))
@@ -113,17 +120,17 @@ public class TestLogic : MonoBehaviour
 	{
 		for (int i = 0; i < _test.questions.Length; i++)
 		{
-			results[i] = questionLogics[i].GetResults();
-			switch (results[i].resultType)
+			_results[i] = _questionLogics[i].GetResults();
+			switch (_results[i].resultType)
 			{
 				case EvaluationResult.ResultType.INT:
-					Debug.Log("Answer submitted (int): " + results[i].resultScore);
+					Debug.Log("Answer submitted (int): " + _results[i].resultScore);
 					break;
 				case EvaluationResult.ResultType.BIT_MASK:
-					Debug.Log("Answer submitted (bitmask): " + Convert.ToString(results[i].bitmaskScore, 2).PadLeft(8, '0'));
+					Debug.Log("Answer submitted (bitmask): " + Convert.ToString(_results[i].bitmaskScore, 2).PadLeft(8, '0'));
 					break;
 				case EvaluationResult.ResultType.STRING:
-					Debug.Log("Answer submitted (string): " + results[i].resultText);
+					Debug.Log("Answer submitted (string): " + _results[i].resultText);
 					break;
 				default:
 					Debug.Log("Answer submitted: Unknown type");
@@ -139,9 +146,7 @@ public class TestLogic : MonoBehaviour
 
 			AnalyticsManager.Instance.SubmitEvent(customEvent);
 		}
-
-
-		// AnalyticsManager.Instance.SubmitTestResults(_test, results);
+		AnalyticsManager.Instance.SubmitTestResults(_test, _results);
 	}
 
 	public void DisplayEnd()
@@ -157,11 +162,11 @@ public class TestLogic : MonoBehaviour
 
 	public void ReturnToTest()
 	{
-		if (_currentQuestionIndex < questions.Length && _currentQuestionIndex > 0)
+		if (_currentQuestionIndex < _questions.Length && _currentQuestionIndex > 0)
 		{
 			_closingQuestion.SetActive(false);
 			_testButtons.SetActive(true);
-			questions[_currentQuestionIndex].SetActive(true);
+			_questions[_currentQuestionIndex].SetActive(true);
 		}
 		else
 		{
@@ -169,13 +174,38 @@ public class TestLogic : MonoBehaviour
 		}
 	}
 
+	public void DisplayFeedback()
+	{
+		_showingFeedback = true;
+		_questions[_currentQuestionIndex].SetActive(false);
+		_questionLogics[_currentQuestionIndex].LockQuestion();
+
+		IQuestionLogic currentLogic = _questionLogics[_currentQuestionIndex];
+
+		_feedbackLogic.SetUp(currentLogic.IsCorrect(), currentLogic.GetCorrectResponse(), _test.questions[_currentQuestionIndex].explanation);
+
+		_feedbackQuestion.SetActive(true);
+	}
+
 	public void NextQuestion()
 	{
-		if (_currentQuestionIndex < questions.Length - 1)
+		if (_test.questions[_currentQuestionIndex].showFeedback && !_showingFeedback)
 		{
-			questions[_currentQuestionIndex].SetActive(false);
+			DisplayFeedback();
+			return;
+		}
+
+		if (_showingFeedback)
+		{
+			_showingFeedback = false;
+			_feedbackQuestion.SetActive(false);
+		}
+
+		if (_currentQuestionIndex < _questions.Length - 1)
+		{
+			_questions[_currentQuestionIndex].SetActive(false);
 			_currentQuestionIndex++;
-			questions[_currentQuestionIndex].SetActive(true);
+			_questions[_currentQuestionIndex].SetActive(true);
 		}
 		else
 		{
@@ -185,11 +215,19 @@ public class TestLogic : MonoBehaviour
 
 	public void PreviousQuestion()
 	{
+		if (_showingFeedback)
+		{
+			_showingFeedback = false;
+			_feedbackQuestion.SetActive(false);
+			_currentQuestionIndex++;
+		}
+
 		if (_currentQuestionIndex > 0)
 		{
-			questions[_currentQuestionIndex].SetActive(false);
+			if(_currentQuestionIndex < _questions.Length)
+				_questions[_currentQuestionIndex].SetActive(false);
 			_currentQuestionIndex--;
-			questions[_currentQuestionIndex].SetActive(true);
+			_questions[_currentQuestionIndex].SetActive(true);
 		}
 	}
 }
