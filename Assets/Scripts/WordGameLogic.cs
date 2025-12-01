@@ -91,8 +91,6 @@ public class WordGameLogic : MonoBehaviour
 
 	public bool OnOptionSelected(string selectedLetter, WordGameOptionLogic wgOptionLogic)
     {
-		Debug.Log("Selected Letter: " + selectedLetter);
-
         if (currentSolutionIndex >= wordMiniGame.targetWord.Length)
         {
             Debug.LogWarning("All solution slots are already filled.");
