@@ -12,16 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d86550f7842240d499cd019c2ea9d421, type: 3}
   m_Name: WordMiniGame_Experto
   m_EditorClassIdentifier: 
-  targetWord: Experto
-  hint: "Persona con conocimientos s\xF3lidos en un tema; identificarlos ayuda a
-    no caer en opiniones disfrazadas de autoridad. "
-  options:
-  - E
-  - X
-  - P
-  - E
-  - R
-  - T
-  - O
-  - S
-  - ING
+  targetWordTableKey: G1_WORD
+  hintTableKey: G1_HINT
+  optionsTableKey: G1_OPTS

@@ -1,3 +1,5 @@
+using Ink.Parsed;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,6 +31,9 @@ public class WordGameLogic : MonoBehaviour
     private string defaultSolutionText = "_";
 
     [SerializeField]
+    private string optionsSeparator = "/";
+
+    [SerializeField]
     private int maxAttempts = 3;
 
     [SerializeField]
@@ -40,7 +45,19 @@ public class WordGameLogic : MonoBehaviour
 
     private WordGameSolutionPieceLogic[] solutionPieces;
 
-    int currentSolutionIndex = 0;
+    private int currentSolutionIndex = 0;
+
+    private string submittedSolution = "";
+
+    [Header("Localization")]
+    [SerializeField]
+    private TMP_Text hintHeader;
+
+    [SerializeField]
+    private TMP_Text submitButtonText;
+
+    [SerializeField]
+	private TMP_Text clearButtonText;
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
@@ -48,17 +65,13 @@ public class WordGameLogic : MonoBehaviour
         SetUp();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void SetUp()
     {
-        hint.text = wordMiniGame.hint;
+        submittedSolution = TranslationManager.Instance.GetLocalizedStringValue("WORD_MINIGAME", wordMiniGame.targetWordTableKey).ToLowerInvariant();
 
-        int wordLength = wordMiniGame.targetWord.Length;
+		hint.text = TranslationManager.Instance.GetLocalizedStringValue("WORD_MINIGAME", wordMiniGame.hintTableKey);
+
+        int wordLength = submittedSolution.Length;
 
 		solutionPieces = new WordGameSolutionPieceLogic[wordLength];
 
@@ -72,7 +85,11 @@ public class WordGameLogic : MonoBehaviour
 
         refOptionsInSolution = new WordGameOptionLogic[wordLength];
 
-        int numOptions = wordMiniGame.options.Length;
+        string translatedOptions = TranslationManager.Instance.GetLocalizedStringValue("WORD_MINIGAME", wordMiniGame.optionsTableKey);
+
+        string[] options = translatedOptions.Split(optionsSeparator.ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries);
+
+        int numOptions = options.Length;
 
         for (int i = 0; i < numOptions; i++)
         {
@@ -83,15 +100,19 @@ public class WordGameLogic : MonoBehaviour
             }
 			GameObject option = Instantiate(optionPrefab, parent.transform);
 
-			option.GetComponentInChildren<WordGameOptionLogic>().SetUp(wordMiniGame.options[i], this);
+			option.GetComponentInChildren<WordGameOptionLogic>().SetUp(options[i], this);
 		}
 
-		attemptsText.text = "Number of Attempts: " + currentAttempts + " / " + maxAttempts;
+		attemptsText.text = TranslationManager.Instance.GetLocalizedStringValue("WORD_MINIGAME", "ATTEMPTS") + currentAttempts + " / " + maxAttempts;
+
+        hintHeader.text = TranslationManager.Instance.GetLocalizedStringValue("WORD_MINIGAME", "HINT");
+		submitButtonText.text = TranslationManager.Instance.GetLocalizedStringValue("WORD_MINIGAME", "SUBMIT");
+        clearButtonText.text = TranslationManager.Instance.GetLocalizedStringValue("WORD_MINIGAME", "CLEAR");
 	}
 
 	public bool OnOptionSelected(string selectedLetter, WordGameOptionLogic wgOptionLogic)
     {
-        if (currentSolutionIndex >= wordMiniGame.targetWord.Length)
+        if (currentSolutionIndex >= submittedSolution.Length)
         {
             Debug.LogWarning("All solution slots are already filled.");
             return false;
@@ -107,7 +128,7 @@ public class WordGameLogic : MonoBehaviour
 
     public bool RemoveOptionFromSolution(int index)
     {
-        if(index < 0 || index >= wordMiniGame.targetWord.Length)
+        if(index < 0 || index >= submittedSolution.Length)
         {
 			Debug.LogWarning("Index outside of boundaries.");
 			return false;
@@ -152,7 +173,7 @@ public class WordGameLogic : MonoBehaviour
     public void SubmitSoultion()
     {
         // TODO: must it be filled completely to submit?
-        if(currentSolutionIndex < wordMiniGame.targetWord.Length)
+        if(currentSolutionIndex < submittedSolution.Length)
         {
             Debug.LogWarning("Solution is not complete.");
             return;
@@ -166,7 +187,7 @@ public class WordGameLogic : MonoBehaviour
 
         string result = "";
 
-        for(int i = 0; i < wordMiniGame.targetWord.Length; i++)
+        for(int i = 0; i < submittedSolution.Length; i++)
         {
 			result += solutionPieces[i].GetValue();
 		}
@@ -175,18 +196,18 @@ public class WordGameLogic : MonoBehaviour
 
         Debug.Log("Submitted Solution: " + result);
 
-        if(result == wordMiniGame.targetWord.ToLower())
+        if(result == submittedSolution)
         {
             Debug.Log("Correct Solution!");
         }
         else
         {
             currentAttempts++;
-            attemptsText.text = "Number of Attempts: " + currentAttempts + " / " + maxAttempts;
+            attemptsText.text = TranslationManager.Instance.GetLocalizedStringValue("WORD_MINIGAME", "ATTEMPTS") + currentAttempts + " / " + maxAttempts;
 
             if(currentAttempts >= maxAttempts)
             {
-				Debug.Log("Maximum number of attempts reached. The correct word was: " + wordMiniGame.targetWord);
+				Debug.Log("Maximum number of attempts reached. The correct word was: " + submittedSolution);
 			}
 			else
             {
