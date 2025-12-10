@@ -212,6 +212,7 @@ MonoBehaviour:
   _avatarClothesContainer: {fileID: 2294491435732487628}
   _avatarSelectorPrefab: {fileID: 373954253258227185, guid: 38be747b5d16734449a4e08b6e22ce9a, type: 3}
   _colorImage: {fileID: 21300000, guid: 3a2aa117e42a15a40a9f844d5095cf73, type: 3}
+  _avatar: {fileID: 295944814}
   _avatarFace: {fileID: 1711715413}
   _avatarHair: {fileID: 1965883893}
   _avatarEyes: {fileID: 1984765469}
@@ -296,7 +297,7 @@ GameObject:
   - component: {fileID: 295944817}
   - component: {fileID: 295944816}
   m_Layer: 0
-  m_Name: Frame
+  m_Name: Avatar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -321,10 +322,10 @@ RectTransform:
   - {fileID: 1965883892}
   - {fileID: 1466505866}
   - {fileID: 720642299}
-  m_Father: {fileID: 5031342030205358571}
+  m_Father: {fileID: 3693163054305747255}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 140, y: 140}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -345,8 +346,8 @@ MonoBehaviour:
   angle: 0
   gradient:
     serializedVersion: 2
-    key0: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
-    key1: {r: 0.7830189, g: 0.7830189, b: 0.7830189, a: 1}
+    key0: {r: 0.0754717, g: 0.0754717, b: 0.0754717, a: 1}
+    key1: {r: 0.735849, g: 0.735849, b: 0.735849, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
@@ -2314,9 +2315,9 @@ Material:
     - _UseUIAlphaClip: 0
     m_Colors:
     - _OuterUV: {r: 0, g: 0, b: 1, a: 1}
-    - _halfSize: {r: 181, g: 0, b: 0, a: 0}
-    - _r: {r: 0, g: 0, b: 0, a: 0}
-    - _rect2props: {r: 0.000030517578, g: 0, b: 127.986336, a: 127.986336}
+    - _halfSize: {r: 181, g: 183.705, b: 0, a: 0}
+    - _r: {r: 24, g: 24, b: 0, a: 0}
+    - _rect2props: {r: 0.000015258789, g: -12.0000305, b: 249.40012, a: 249.40012}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!1 &1965883891
@@ -2582,9 +2583,9 @@ Material:
     - _UseUIAlphaClip: 0
     m_Colors:
     - _OuterUV: {r: 0, g: 0, b: 1, a: 1}
-    - _halfSize: {r: 181, g: 0, b: 0, a: 0}
-    - _r: {r: 0, g: 0, b: 0, a: 0}
-    - _rect2props: {r: 0.000030517578, g: 0, b: 127.986336, a: 127.986336}
+    - _halfSize: {r: 181, g: 71.105, b: 0, a: 0}
+    - _r: {r: 71, g: 71, b: 71, a: 71}
+    - _rect2props: {r: 0.000015258789, g: 0, b: 128.06058, a: 128.06058}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &8197099725536655
@@ -2831,7 +2832,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 180.9987, y: -26.6}
+  m_AnchoredPosition: {x: 180.99992, y: -26.6}
   m_SizeDelta: {x: 48, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &133339151341201682
@@ -14221,6 +14222,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5031342030205358571}
+  - {fileID: 295944815}
   - {fileID: 6584278495425625471}
   m_Father: {fileID: 6229106294065283182}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -17543,7 +17545,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &4685052624530219081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17674,7 +17676,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 180.9987, y: -26.6}
+  m_AnchoredPosition: {x: 180.99992, y: -26.6}
   m_SizeDelta: {x: 48, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &4695221143562000833
@@ -19250,13 +19252,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 295944815}
+  m_Children: []
   m_Father: {fileID: 3693163054305747255}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 70, y: -218}
   m_SizeDelta: {x: 140, y: 140}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5042122863914142702
@@ -25751,7 +25752,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   independent: 1
   radiiSerialized: {x: 24, y: 24, z: 0, w: 0}
-  rect2props: {x: 0.000030517578, y: 0, z: 127.986336, w: 127.986336}
+  rect2props: {x: 0.000015258789, y: -12.0000305, z: 249.40012, w: 249.40012}
   image: {fileID: 7156817044050239797}
 --- !u!114 &7156817044050239797
 MonoBehaviour:

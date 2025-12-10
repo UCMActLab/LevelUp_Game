@@ -31,6 +31,9 @@ public class AvatarLogic : MonoBehaviour
 	[Header("Avatar")]
 
 	[SerializeField]
+	private GameObject _avatar;
+
+	[SerializeField]
 	private Image _avatarFace;
 
 	[SerializeField]
@@ -396,5 +399,12 @@ public class AvatarLogic : MonoBehaviour
 			_currentGameObject.SetActive(false);
 		_avatarClothesContainer.SetActive(true);
 		_currentGameObject = _avatarClothesContainer;
+	}
+
+	public GameObject SubmitAvatar()
+	{
+		// TODO depends on how we construct or save the avatar during game, this is a temporary solution until the necessity comes forth
+		// Copies the GameObject and returns it for it to be manipulated as necessary
+		return Instantiate(_avatar);
 	}
 }
