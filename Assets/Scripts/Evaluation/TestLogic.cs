@@ -110,12 +110,23 @@ public class TestLogic : MonoBehaviour
 		}
 
 		if(_questions[_currentQuestionIndex] != null)
+		{
 			_questions[_currentQuestionIndex].SetActive(true);
+			ActivateTestButtonsIfOptionsAreNotButtons();
+		}
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(_parentUI.transform as RectTransform);
         foreach (Transform tr in _parentUI.GetComponentsInChildren<Transform>(true))
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(tr as RectTransform);
+        }
+    }
+
+	private void ActivateTestButtonsIfOptionsAreNotButtons()
+	{
+        if (_questionLogics[_currentQuestionIndex] is MCLogic)
+        {
+            _testButtons.SetActive(!(_questionLogics[_currentQuestionIndex] as MCLogic).OptionsAsButtons);
         }
     }
 
@@ -206,7 +217,10 @@ public class TestLogic : MonoBehaviour
 		if (_currentQuestionIndex < _questions.Length - 1)
 		{
 			_questions[_currentQuestionIndex].SetActive(false);
+
 			_currentQuestionIndex++;
+
+			ActivateTestButtonsIfOptionsAreNotButtons();
 			_questions[_currentQuestionIndex].SetActive(true);
 		}
 		else

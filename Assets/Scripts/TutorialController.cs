@@ -47,6 +47,7 @@ public class TutorialController : MonoBehaviour
     [Tooltip("The greater the value, the greater the time you'll have to wait for the NextStep button to activate"), 
         SerializeField, Range(0.00f, 0.1f)] private float _waitFactor = .01f;
 
+    [SerializeField] private int _initialStepIndex = 12;
     [SerializeField] private GameObject _articlePrefab;
     [SerializeField] private GameObject _choiceButtons;
     [SerializeField] private GameObject _choiceButtonPrefab;
@@ -106,6 +107,8 @@ public class TutorialController : MonoBehaviour
 
     private void InitialSetup()
     {
+        _currentChoice = _initialStepIndex;
+
         _messageToUserLocalized = _messageToUser.GetComponent<LocalizeStringEvent>();
 
         _scrollContent = _scrollRect.content.gameObject;

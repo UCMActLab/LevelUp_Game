@@ -8,8 +8,6 @@ using UnityEngine;
 /// WARNING: No tener objetos hijos de Singleton que sean relevantes para otros objeto
 /// diferentes al propio Singleton
 /// 
-/// Si el Singleton es hijo de algún objeto, se persistirá todo el objeto
-/// Deberíamos evitar esta práctica ^
 /// </summary>
 /// <typeparam name="T"> El tipo que heredará de Singleton </typeparam>
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
@@ -28,16 +26,24 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
             // Si tenemos un Singleton hijo de algo,
             // hacemos que ese algo persista, para no perder el
             // singleton
-            Transform current = transform;
-            while (current.parent != null)
-            {
-                current = current.parent;
-            }
-            if (!_destroyOnLoad) DontDestroyOnLoad(current.gameObject);
+            //Transform current = transform;
+            //while (current.parent != null)
+            //{
+            //    current = current.parent;
+            //}
+            if (!_destroyOnLoad) DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if(_instance == this as T)
+        {
+            _instance = null;
+        } 
     }
 }

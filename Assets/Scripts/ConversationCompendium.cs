@@ -14,6 +14,12 @@ public class ConversationCompendium : Singleton<ConversationCompendium>
     Dictionary<ConversationType, List<Conversation>> _conversations = new Dictionary<ConversationType, List<Conversation>>();
     List<List<LocalizedString>> _verifications = new List<List<LocalizedString>>();
 
+    protected override void Awake()
+    {
+        _destroyOnLoad = true;
+        base.Awake();
+    }
+
     private void Start()
     {
         foreach(Conversation cv in _allAvaliableConversations)
@@ -50,8 +56,8 @@ public class ConversationCompendium : Singleton<ConversationCompendium>
     {
         LocalizedString message = null;
 
-        int index = 0;
-        if (isTrue) index = 1;
+        int index = 1;
+        if (isTrue) index = 0;
 
         message = _verifications[index][Random.Range(0, _verifications[index].Count)];
 

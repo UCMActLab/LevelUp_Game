@@ -592,6 +592,35 @@ MonoBehaviour:
     m_Key: SKIP_TUTORIAL
     m_Metadata:
       m_Items: []
+  - m_Id: 19949382909267968
+    m_Key: END_LEVEL/TITLE
+    m_Metadata:
+      m_Items:
+      - rid: 8656567430927876489
+  - m_Id: 19949383009931264
+    m_Key: END_LEVEL/SUBTITLE
+    m_Metadata:
+      m_Items:
+      - rid: 8656567430927876490
+  - m_Id: 19989448662683648
+    m_Key: SCORE/FEEDBACK/READ
+    m_Metadata:
+      m_Items:
+      - rid: 8656567435832066155
+  - m_Id: 19989448721403904
+    m_Key: SCORE/FEEDBACK/SHARE_TRUE
+    m_Metadata:
+      m_Items:
+      - rid: 8656567435832066156
+  - m_Id: 19989448721403905
+    m_Key: SCORE/FEEDBACK/SHARE_FALSE
+    m_Metadata:
+      m_Items:
+      - rid: 8656567435832066157
+  - m_Id: 20016544571166720
+    m_Key: SCORE/FEEDBACK/BUTTON
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
@@ -943,3 +972,23 @@ MonoBehaviour:
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
         m_CommentText: MAX_CHARACTERS=24
+    - rid: 8656567430927876489
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=24
+    - rid: 8656567430927876490
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=120
+    - rid: 8656567435832066155
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=50
+    - rid: 8656567435832066156
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=70
+    - rid: 8656567435832066157
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=80

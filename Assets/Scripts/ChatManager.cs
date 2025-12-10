@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ChatManager : MonoBehaviour
@@ -33,6 +34,8 @@ public class ChatManager : MonoBehaviour
     [SerializeField] private bool _playOnAwake = false;
 
     IEnumerator _displayConvCoroutine = null;
+
+    public UnityEvent<int> OnChatChanged = new UnityEvent<int>();
 
     private void StartConversation()
     {
@@ -100,8 +103,10 @@ public class ChatManager : MonoBehaviour
             _currentChat.GetComponent<GroupSettings>().ActivateGroupInfo(true);
             if(_header!=null)_header.SetActive(false);
         }
-    }
 
+        OnChatChanged.Invoke(groupID);
+    }
+        
     public void ChangeToMainChat()
     {
         if (_currentChat == _mainChat) return;

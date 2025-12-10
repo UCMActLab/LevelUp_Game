@@ -116,8 +116,8 @@ public class ServerManager : MonoBehaviour
             www.SetRequestHeader("Authorization", serverLoginInfo.data.token);
 
             yield return www.SendWebRequest();
-
-            maxPages = Int32.Parse(www.downloadHandler.text.Split("\"totalPages\":")[1].Substring(0, 1));
+            string[] split = www.downloadHandler.text.Split("\"totalPages\":");
+            maxPages = Int32.Parse(split[1].Split(',')[0]);
 
             if (www.result != UnityWebRequest.Result.Success)
             {

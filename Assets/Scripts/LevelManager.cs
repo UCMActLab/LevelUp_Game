@@ -35,12 +35,21 @@ public class LevelManager : Singleton<LevelManager>
     [SerializeField]
     private GameObject _loadingAnimation = null;
 
+    [SerializeField]
+    private GameObject _endLevelScreen = null;
+
     private GameObject _articleObject = null;
     private ArticleGameObject _articleData = null;
     private int _currentArticle = 0;
 
     [SerializeField]
     private TestLogic _testLogic = null;
+
+    protected override void Awake()
+    {
+        _destroyOnLoad = true;
+        base.Awake();
+    }
 
     private void Start()
     {
@@ -70,15 +79,17 @@ public class LevelManager : Singleton<LevelManager>
 
         foreach(LevelInfo level in _levelsInfo)
         {
+            int numArticlesCantRead = 0;
             _levels.Add(new List<ArticleData>());
             for (int i = 0; i < level.numArticles; ++i)
             {
                 _levels[currentLevel].Add(data[0]);
                 if (data[0].isTrue) numTrueArticles++;
+                if (data[0].articleBody == string.Empty) numArticlesCantRead++;
                 data.RemoveAt(0);
             }
 
-            numArticlesTotal += level.numArticles;
+            numArticlesTotal += level.numArticles - numArticlesCantRead;
             currentLevel++;
         }
 
@@ -88,6 +99,28 @@ public class LevelManager : Singleton<LevelManager>
         {
             ShowNextArticle();
         }
+    }
+
+    public void SkipArticleIfCantShare()
+    {
+        if(_articleData.HasSharedWithAllGroups)
+        {
+            ScoreManager.Instance.CalculateArticlePoints(_articleData);
+            ShowNextArticle();
+        }
+    }
+
+    public void ShowTest()
+    {
+        _testLogic.SetTest(_levelsInfo[_currentLevel].test, true);
+        _currentLevel++;
+        _currentArticle = 0;
+        _endLevelScreen.SetActive(false);
+    }
+
+    public void ShowEndLevel()
+    {
+        _endLevelScreen.SetActive(true);
     }
 
     public void ShowNextArticle()
@@ -106,13 +139,19 @@ public class LevelManager : Singleton<LevelManager>
 
         if (_currentArticle >= _levels[_currentLevel].Count)
         {
-            _testLogic.SetTest(_levelsInfo[_currentLevel].test, true);
-            _currentLevel++;
-            _currentArticle = 0;
+            ShowEndLevel();
         }
         else
         {
-            if(_currentArticle == 0) ScoreManager.Instance.SetLevelInfo(_levelsInfo[_currentLevel].numArticles);
+            if (_currentArticle == 0) {
+                int numArticlesToRead = _levelsInfo[_currentLevel].numArticles;
+                foreach (ArticleData data in _levels[_currentLevel])
+                {
+                    if(data.articleBody == string.Empty) { numArticlesToRead--; }
+                }
+                ScoreManager.Instance.SetLevelInfo(_levelsInfo[_currentLevel].numArticles, numArticlesToRead);
+            
+            }
 
             _articleObject = Instantiate(_articlePrefab, _articleFeed.transform);
             _articleData = _articleObject.GetComponent<ArticleGameObject>();

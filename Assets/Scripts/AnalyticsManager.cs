@@ -1,7 +1,5 @@
-using System;
 using Unity.Services.Analytics;
 using Unity.Services.Core;
-using UnityEngine;
 
 public class AnalyticsManager : Singleton<AnalyticsManager>
 {

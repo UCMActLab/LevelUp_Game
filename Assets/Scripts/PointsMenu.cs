@@ -1,7 +1,6 @@
-using DA_Assets.Extensions;
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,50 +28,79 @@ public class PointsMenu : MonoBehaviour
 
     [Header("Button")]
     [SerializeField] private Button _okButton = null;
-    [SerializeField] private float _enableOkButtonAfterSeconds = 3.0f;
     
+    [Header("Feedback")]
+    [SerializeField] private GameObject _feedback = null;
+    private TextMeshProUGUI _feedbackText = null;
 
     private Animator _animator;
-    private ScoreManager _scoreManager;
+
+    private bool _medalAnimationEnded = false;
 
     void Awake()
     {
         _animator = GetComponent<Animator>();
         _generalSlider.value = 0;
+
+        _feedbackText = _feedback.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     private void OnEnable()
     {
-        _okButton.gameObject.SetActive(false);
-        StartCoroutine(EnableAfterSeconds(_okButton.gameObject, _enableOkButtonAfterSeconds));
+        _medalAnimationEnded = true;
+        ActivateOKButton(false);
+        StartCoroutine(ActivateOKButtonOnEnd());
+    }
+
+    private IEnumerator ActivateOKButtonOnEnd()
+    {
+        yield return new WaitUntil(() => _generalSlider.value == ScoreManager.Instance.Score && _medalAnimationEnded);
+        ActivateOKButton(true);
     }
 
     private void OnDisable()
     {
-        _okButton.gameObject.SetActive(false);
+        ActivateOKButton(false);
         if(_newMedal != null) ChangeMedalDuringAnimation();
     }
 
-    IEnumerator EnableAfterSeconds(GameObject gameObject, float time)
-    {
-        yield return new WaitForSeconds(time);
-        gameObject.SetActive(true);
-    }
-
-    public void ShowScore(int numArticles, int articlesRead, int articlesTrue, int totalArticlesTrue, int articlesFalseShared, int totalArticlesFalse)
+    public void ShowScore(int numArticles, int numArticlesCanRead, int articlesRead, int articlesTrue, int totalArticlesTrue, int articlesFalseShared, int totalArticlesFalse)
     {
         _readArticlesSlider.value = 0.0f;
         _falseArticlesSlider.value = 0.0f;
         _trueArticlesSlider.value = 0.0f;
 
-        // Aquí una función de SetSlider que haga la animación y todo esto jej
-        SetValues(_readArticlesObject, _readArticlesSlider, _readArticlesText, articlesRead, numArticles, 1.25f);
+        string feedback = string.Empty;
 
-        // Aquí una función de SetSlider que haga la animación y todo esto jej
+        if(articlesRead < numArticlesCanRead)
+        {
+            feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/READ");
+        }
+        SetValues(_readArticlesObject, _readArticlesSlider, _readArticlesText, articlesRead, numArticlesCanRead, 1.25f);
+
+        if(articlesTrue < totalArticlesTrue)
+        {
+            if (feedback != string.Empty) feedback += '\n';
+            feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_TRUE");
+        }
         SetValues(_trueArticlesObject, _trueArticlesSlider, _trueArticlesText, articlesTrue, totalArticlesTrue, 1.25f);
 
-        // Aquí una función de SetSlider que haga la animación y todo esto jej
+        if (articlesFalseShared > 0)
+        {
+            if (feedback != string.Empty) feedback += '\n';
+            feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_FALSE");
+        }
         SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, articlesFalseShared, totalArticlesFalse, 1.25f);
+
+        _feedbackText.SetText(feedback);
+    }
+
+    public void RebuildLayouts()
+    {
+        foreach (Transform child in transform.GetComponentInChildren<Transform>())
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(child as RectTransform);
+        }
     }
 
     public void SetTotalScore(int maxScore)
@@ -82,6 +110,7 @@ public class PointsMenu : MonoBehaviour
 
     public void ChangeMedal(Sprite newSprite)
     {
+        _medalAnimationEnded = false;
         _newMedal = newSprite;
         _animator.SetTrigger("ChangeMedal");
     }
@@ -90,6 +119,16 @@ public class PointsMenu : MonoBehaviour
     {
         _medal.sprite = _newMedal;
         _newMedal = null;
+    }
+
+    public void MedalAnimationEnded()
+    {
+        _medalAnimationEnded = true;
+    }
+
+    public void ActivateOKButton(bool activate)
+    {
+        _okButton.gameObject.SetActive(activate);
     }
 
     private void SetValues(GameObject targetObject, Slider target, TextMeshProUGUI text, int value, int maxValue, float time)

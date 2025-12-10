@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +18,6 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 
 	[SerializeField]
 	private GameObject _singleOptionPrefab;
-
 
 	[SerializeField]
 	private int _selectedOptionID = -1;
@@ -42,6 +40,8 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 	private QuestionMC _questionMC;
 
 	private TestLogic _testLogic = null;
+
+	public bool OptionsAsButtons { get { return _optionsAsButtons; } }
 
 	public void SetUp(Question question)
 	{

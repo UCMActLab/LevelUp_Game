@@ -29,7 +29,7 @@ public class ScoreManager : Singleton<ScoreManager>
     [SerializeField] private int _pointsForReadingArticle = 1;
 
     [Header("References")]
-    [SerializeField] private PointsMenu _pointsMenu = null;
+    private PointsMenu _pointsMenu = null;
 
     [SerializeField]
     SerializedDictionary<global::Score, ScoreInfo> _pointsForEachCategory = null;
@@ -40,6 +40,7 @@ public class ScoreManager : Singleton<ScoreManager>
     public Score State { get { return _currentState; } }
 
     private int _numArticlesForCurrentLevel = 0;
+    private int _numArticlesCanReadForCurrentLevel = 0;
     private int _numArticlesReadForCurrentLevel = 0;
     private int _numTrueArticlesSharedForCurrentLevel = 0;
     private int _numTrueArticles = 0;
@@ -58,11 +59,16 @@ public class ScoreManager : Singleton<ScoreManager>
 
     public int Score { get { return _currentScore; } }
     public int MaxScore { get { return _maxScore; } }
-
+        
     private void Start()
     {
         _currentScore = _initialScore;
         _currentState = global::Score.NONE;
+    }
+    
+    private void FindPointsMenu()
+    {
+        _pointsMenu = GameObject.FindAnyObjectByType<PointsMenu>(FindObjectsInactive.Include);
     }
 
     public void CalculateScoreState()
@@ -123,18 +129,22 @@ public class ScoreManager : Singleton<ScoreManager>
     public void SetMaxScore(int numArticles, int numTrueArticles)
     {
         // Cada artículo tiene 2 variables que cuentan puntitos
+        RestartScore();
         _totalArticles = numArticles;
         _maxScore = numArticles + numTrueArticles;
+        FindPointsMenu();
         _pointsMenu.SetTotalScore(_maxScore);
         CalculateScoreState();
     }
 
-    public void SetLevelInfo(int numArticles)
+    public void SetLevelInfo(int numArticles, int numArticlesToRead)
     {
         _numArticlesForCurrentLevel = numArticles;
+        _numArticlesCanReadForCurrentLevel = numArticlesToRead;
 
         _numArticlesReadForCurrentLevel = 0;
         _numTrueArticlesSharedForCurrentLevel = 0;
+        _numFalseArticlesSharedForCurrentLevel = 0;
         _numTrueArticles = 0;
     }
 
@@ -160,7 +170,7 @@ public class ScoreManager : Singleton<ScoreManager>
         // poner los puntos y eso
         _pointsMenu.gameObject.SetActive(true);
         
-        _pointsMenu.ShowScore(_numArticlesForCurrentLevel, _numArticlesReadForCurrentLevel, _numTrueArticlesSharedForCurrentLevel, _numTrueArticles, _numFalseArticlesSharedForCurrentLevel, _numArticlesForCurrentLevel - _numTrueArticles);
+        _pointsMenu.ShowScore(_numArticlesForCurrentLevel, _numArticlesCanReadForCurrentLevel, _numArticlesReadForCurrentLevel, _numTrueArticlesSharedForCurrentLevel, _numTrueArticles, _numFalseArticlesSharedForCurrentLevel, _numArticlesForCurrentLevel - _numTrueArticles);
 
         SubmitScoreEvent();
     }
@@ -168,6 +178,13 @@ public class ScoreManager : Singleton<ScoreManager>
     public void RestartScore()
     {
         _currentScore = _initialScore;
+
+        _totalArticles = 0;
+        _numArticlesReadTotal = 0;
+        _numFalseSharedTotal = 0;
+        _numTrueSharedTotal = 0;
+
+        _currentState = global::Score.NONE;
     }
 
     public void DeactivateMenu()

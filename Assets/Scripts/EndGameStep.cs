@@ -91,7 +91,6 @@ public class EndGameStep : MonoBehaviour
 
     private void End() 
     {
-        gameObject.SetActive(false);
         _onEnd?.Invoke();
     }
 

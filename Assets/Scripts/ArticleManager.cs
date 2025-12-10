@@ -68,14 +68,6 @@ public class ArticleManager : Singleton<ArticleManager>
     {
         Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
 
-        // TODO: Guardar las imágenes descargadas en streaming assets o algo así
-        //Texture2D[] textures = Resources.LoadAll<Texture2D>("Articles/Images");
-
-        //foreach(Texture2D texture in textures)
-        //{
-        //    sprites.Add(texture.name, Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), Vector2.zero));
-        //}
-
         int i = 0;
 
         foreach(ArticleJSONRoot root in articles)
@@ -98,10 +90,14 @@ public class ArticleManager : Singleton<ArticleManager>
                 else if (data.Language == "en") { parsedLanguage = 2; }
                 else continue;
 
+                string headline = data.Headline.Trim(' ');
+
+                if (headline == string.Empty) { continue; }
+
                 article.ID = "art_" + i.ToString();
                 article.isTrue = data.isTrue;
                 article.articleTitle = data.Headline;
-                article.articleBody = data.Body;
+                article.articleBody = data.Body.Trim(' ');
 
                 // article.image = data.Multimedia; TODO: Tratamiento de imágenes
                 if(_loadImages && data.Multimedia != null && data.Multimedia != "")
@@ -112,7 +108,12 @@ public class ArticleManager : Singleton<ArticleManager>
                     }
                     else
                     {
-                        string driveURL = "https://drive.google.com/uc?export=download&id=" + data.Multimedia.Replace("image:", "");
+                        string imageID = data.Multimedia.Replace("https://drive.google.com/file/d/", "");
+                        imageID = imageID.Replace("/view?usp=sharing", "");
+                        imageID = imageID.Replace("/view?usp=drive_link", "");
+                        imageID = imageID.Replace("image:", "");
+
+                        string driveURL = "https://drive.google.com/uc?export=download&id=" + imageID;
                         UnityWebRequest request = UnityWebRequestTexture.GetTexture(driveURL);
 
                         yield return request.SendWebRequest();
@@ -131,7 +132,14 @@ public class ArticleManager : Singleton<ArticleManager>
                     }
                 }
 
-                article.companyName = data.Source;
+                string source = data.Source;
+                if(source != "newspaper" || source != "social" || source != "web" || source != "blog")
+                {
+                    if (data.isTrue) { source = "newspaper"; }
+                    else source = "social";
+                }
+
+                article.companyName = source;
                 if (data.Conversation.Count != 0) {
                     article.conversation = new List<Conversation>();
                     foreach (ConversationJSON conversationJSON in data.Conversation)
@@ -178,6 +186,8 @@ public class ArticleManager : Singleton<ArticleManager>
         for (int i = 0; i < jsonData.Count; ++i)
         {
             jsonData[i] = jsonData[i].Replace("\"Conversation\":{}", "\"Conversation\":[]");
+            jsonData[i] = jsonData[i].Replace("\"Conversation\":\"{}\"", "\"Conversation\":[]");
+            jsonData[i] = jsonData[i].Replace("\"Conversation\":\"[]\"", "\"Conversation\":[]");
             jsonData[i] = jsonData[i].Replace("\"Conversation\":{\"Messages\":[]}", "\"Conversation\":[]");
         }
 

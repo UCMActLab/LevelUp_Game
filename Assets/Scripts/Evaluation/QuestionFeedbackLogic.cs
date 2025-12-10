@@ -18,6 +18,9 @@ public class QuestionFeedbackLogic : MonoBehaviour
 	[SerializeField]
     private TMP_Text _explanationText;
 
+    [SerializeField]
+    private GameObject _explanationBody;
+
     public void SetUp(bool correct, string correctOptions, string explanation)
     {
         if(correct)
@@ -31,7 +34,7 @@ public class QuestionFeedbackLogic : MonoBehaviour
         {
             _headerText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "INCORRECT");
             _headerText.color = _incorrectColor;
-			_correctResponseText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "INCORRECT_OPTIONS") + " " + correctOptions;
+			_correctResponseText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "INCORRECT_OPTIONS") + "\n\"<b>" + correctOptions + "\"<b>";
 		}
         try
         {
@@ -41,5 +44,7 @@ public class QuestionFeedbackLogic : MonoBehaviour
         {
 			_explanationText.text = explanation;
 		}
+
+        _explanationBody.SetActive(_explanationText.text != string.Empty);
     }
 }

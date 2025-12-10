@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.Localization.Components;
 using System.Collections;
 using Unity.Services.Analytics;
+using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
 
 public class ArticleGameObject : MonoBehaviour
 {
@@ -64,6 +65,19 @@ public class ArticleGameObject : MonoBehaviour
 
     GameObject _shareArticleButtons = null;
     public bool IsTrue { get { return Data.isTrue; } }
+
+    public bool HasSharedWithAllGroups { get
+        {
+            bool sharedAll = true;
+            foreach (bool b in _sharedWithGroups)
+            {
+                sharedAll &= b;
+                if (!sharedAll) break;
+            }
+
+            return sharedAll;
+        } 
+    }
 
     private void Start()
     {
@@ -191,8 +205,12 @@ public class ArticleGameObject : MonoBehaviour
 
     public void ReadArticle()
     {
+        ChatScrollAnimation anim = GameObject.FindAnyObjectByType<ChatScrollAnimation>();
+
         _articleBody.SetActive(true);
         _readButton.interactable = false;
+
+        anim.PlayAnimation(0.75f);
 
         _hasReadArticle = true;
 
@@ -215,6 +233,9 @@ public class ArticleGameObject : MonoBehaviour
 
         // activate feedback prefab
         _verificationFeedbackGO.SetActive(true);
+
+        ChatScrollAnimation anim = FindAnyObjectByType<ChatScrollAnimation>();
+        if(anim != null) anim.PlayAnimation(1.0f);
 
         CustomEvent newEvent = new CustomEvent("Verify_Action")
         {
@@ -362,7 +383,7 @@ public class ArticleGameObject : MonoBehaviour
             _bodyText.text = Data.articleBody;
         } 
         
-        if(_bodyText.text == string.Empty)
+        if(Data.articleBody == string.Empty)
         {
             ActivateReadButton(false);
         }
