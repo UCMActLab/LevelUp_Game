@@ -37,7 +37,12 @@ public class WordGameLogic : MonoBehaviour
     private int maxAttempts = 3;
 
     [SerializeField]
-    private TMP_Text attemptsText;
+    private GameObject attemptsParent;
+
+    [SerializeField]
+    private GameObject attemptsPrefab;
+
+    private Image[] attemptsImage;
 
     private int currentAttempts = 0;
 
@@ -79,7 +84,7 @@ public class WordGameLogic : MonoBehaviour
         {
 			GameObject letterSlot = Instantiate(solutionPiecePrefab, solutionContainer.transform);
 
-			solutionPieces[i] = letterSlot.GetComponentInChildren<WordGameSolutionPieceLogic>();
+			solutionPieces[i] = letterSlot.GetComponent<WordGameSolutionPieceLogic>();
             solutionPieces[i].SetUp(defaultSolutionText, i, this);
 		}
 
@@ -100,10 +105,17 @@ public class WordGameLogic : MonoBehaviour
             }
 			GameObject option = Instantiate(optionPrefab, parent.transform);
 
-			option.GetComponentInChildren<WordGameOptionLogic>().SetUp(options[i], this);
+			option.GetComponent<WordGameOptionLogic>().SetUp(options[i], this);
 		}
 
-		attemptsText.text = TranslationManager.Instance.GetLocalizedStringValue("WORD_MINIGAME", "ATTEMPTS") + currentAttempts + " / " + maxAttempts;
+        attemptsImage = new Image[maxAttempts];
+        
+        for (int i = 0;i < maxAttempts; i++)
+        {
+            GameObject attempt = Instantiate(attemptsPrefab, attemptsParent.transform);
+
+            attemptsImage[i] = attempt.GetComponent<Image>();
+        }
 
         hintHeader.text = TranslationManager.Instance.GetLocalizedStringValue("WORD_MINIGAME", "HINT");
 		submitButtonText.text = TranslationManager.Instance.GetLocalizedStringValue("WORD_MINIGAME", "SUBMIT");
@@ -202,8 +214,8 @@ public class WordGameLogic : MonoBehaviour
         }
         else
         {
+            attemptsImage[currentAttempts].color = Color.red;
             currentAttempts++;
-            attemptsText.text = TranslationManager.Instance.GetLocalizedStringValue("WORD_MINIGAME", "ATTEMPTS") + currentAttempts + " / " + maxAttempts;
 
             if(currentAttempts >= maxAttempts)
             {
