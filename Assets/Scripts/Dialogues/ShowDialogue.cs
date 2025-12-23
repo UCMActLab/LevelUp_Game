@@ -1,17 +1,31 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class ShowDialog : MonoBehaviour
+public class ShowDialogue : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _text;
-    [SerializeField] private bool _waitForInteraction = false;
-    [SerializeField] private float _waitTimeForNext = 1.5f;
+    public bool waitForInteraction = false;
+    public float waitTimeForNext = 1.5f;
 
-    [SerializeField] FMODUnity.EventReference _fmodEvent;
+    [Header("Writing Sounds")]
+    [SerializeField] FMODUnity.EventReference _writeCharacterEvent;
+    [SerializeField] int _writeSoundFrequence = 2;
+
+    [SerializeField] FMODUnity.EventReference _endWritingEvent;
+
+    [Header("Erase Sounds")]
+    [SerializeField] FMODUnity.EventReference _eraseCharacterEvent;
+    [SerializeField] int _eraseSoundFrequence = 4;
+
+    [Header("Unity Events")]
+    public UnityEvent onDialogueEnd = new UnityEvent();
+    public UnityEvent onLineEnded = new UnityEvent();
 
     private bool _textEnded;
     private bool _canGoNext = false;
+    private bool _skipCurrent = false;
 
     DialogSettings _settings;
 
@@ -20,7 +34,7 @@ public class ShowDialog : MonoBehaviour
     private const string HTML_ALPHA_NULL = "<alpha=#00>";
     private const string HTML_ALPHA_FULL = "<alpha=#FF>";
 
-    public void SetSettings(DialogSettings settings) { this._settings = settings; }
+    public void SetSettings(DialogSettings settings) { this._settings = settings; _currentText = 0; }
 
     private void Start()
     {
@@ -35,10 +49,18 @@ public class ShowDialog : MonoBehaviour
 
     public void Update()
     {
-        if (_textEnded && ((_waitForInteraction && _canGoNext) || !_waitForInteraction))
+        if ((_textEnded && ((waitForInteraction && _canGoNext) || !waitForInteraction)) || _skipCurrent)
         {
+            StopAllCoroutines();
             ShowText();
         }
+    }
+
+    public void QuitSkip()
+    {
+        _skipCurrent = false;
+        _text.text = _text.text.Replace(HTML_ALPHA_NULL, string.Empty);
+        _text.text = _text.text.Replace(HTML_ALPHA_FULL, string.Empty);
     }
 
     public void GoToNextText()
@@ -46,9 +68,15 @@ public class ShowDialog : MonoBehaviour
         _canGoNext = true;
     }
 
+    public void SkipCurrentText()
+    {
+        _skipCurrent = true;
+    }
+
     private void EndDialog()
     {
         Debug.Log("Dialogue End");
+        onDialogueEnd.Invoke();
     }
 
     public void ShowText()
@@ -57,6 +85,7 @@ public class ShowDialog : MonoBehaviour
         _canGoNext = false;
         if(_currentText >= _settings.texts.Count)
         {
+            QuitSkip();
             EndDialog();
         }
         else
@@ -68,7 +97,7 @@ public class ShowDialog : MonoBehaviour
 
     IEnumerator WriteNewText(string text, bool isLastText)
     {
-        if(_text.text != string.Empty)
+        if(_text.text != string.Empty && !_skipCurrent)
         {
             //int[] rangeArray = Enumerable.Range(0, _text.text.Length - 1).ToArray();
             //rangeArray.Shuffle();
@@ -82,19 +111,35 @@ public class ShowDialog : MonoBehaviour
                 displayText = displayText.Insert(i + HTML_ALPHA_NULL.Length, HTML_ALPHA_FULL);
                 _text.text = displayText;
 
+                if (i % _eraseSoundFrequence == 0) { PlayErasingSound(); }
+
                 yield return new WaitForSeconds(_settings.speed / 4);
             }
         }
 
+        _skipCurrent = false;
         StartCoroutine(AnimText(text, isLastText));
 
     }
 
     private void PlayWritingSound()
     {
-        // FMODUnity.RuntimeManager.PlayOneShot("event:/WriteCharacter");
-        
-        FMODUnity.RuntimeManager.PlayOneShot(_fmodEvent);
+        PlaySound(_writeCharacterEvent);
+    }
+
+    private void PlayErasingSound()
+    {
+        PlaySound(_eraseCharacterEvent);
+    }
+
+    private void PlayEndWritingSound()
+    {
+        PlaySound(_endWritingEvent);
+    }
+
+    private void PlaySound(FMODUnity.EventReference sound)
+    {
+        FMODUnity.RuntimeManager.PlayOneShot(sound);
     }
 
     IEnumerator AnimText(string messageToShow, bool isLastMessage)
@@ -114,17 +159,20 @@ public class ShowDialog : MonoBehaviour
             displayText = _text.text.Insert(alphaIndex, HTML_ALPHA_NULL);
             _text.text = displayText;
 
-            PlayWritingSound();
+            if (alphaIndex % _writeSoundFrequence == 0) { PlayWritingSound(); }
 
             yield return new WaitForSeconds(_settings.speed);
             if (!isLastMessage && alphaIndex >= messageToShow.Length - 3) break;
         }
-        
-        if (!_waitForInteraction)
+
+        PlayEndWritingSound();
+        onLineEnded.Invoke();
+
+        if (!waitForInteraction)
         {
             if(!isLastMessage)
             {
-                yield return new WaitForSeconds(_waitTimeForNext / 4);
+                yield return new WaitForSeconds(waitTimeForNext / 4);
 
                 for (int i = 0; i < 3; ++i)
                 {
@@ -134,12 +182,12 @@ public class ShowDialog : MonoBehaviour
                     displayText = _text.text.Insert(alphaIndex, HTML_ALPHA_NULL);
                     _text.text = displayText;
 
-                    yield return new WaitForSeconds(_waitTimeForNext / 4);
+                    yield return new WaitForSeconds(waitTimeForNext / 4);
                 }
             }
             else
             {
-                yield return new WaitForSeconds(_waitTimeForNext);
+                yield return new WaitForSeconds(waitTimeForNext);
             }
         }
 
