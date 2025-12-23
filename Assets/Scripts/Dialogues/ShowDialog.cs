@@ -8,6 +8,8 @@ public class ShowDialog : MonoBehaviour
     [SerializeField] private bool _waitForInteraction = false;
     [SerializeField] private float _waitTimeForNext = 1.5f;
 
+    [SerializeField] FMODUnity.EventReference _fmodEvent;
+
     private bool _textEnded;
     private bool _canGoNext = false;
 
@@ -46,7 +48,7 @@ public class ShowDialog : MonoBehaviour
 
     private void EndDialog()
     {
-
+        Debug.Log("Dialogue End");
     }
 
     public void ShowText()
@@ -80,8 +82,6 @@ public class ShowDialog : MonoBehaviour
                 displayText = displayText.Insert(i + HTML_ALPHA_NULL.Length, HTML_ALPHA_FULL);
                 _text.text = displayText;
 
-                PlayWritingSound();
-
                 yield return new WaitForSeconds(_settings.speed / 4);
             }
         }
@@ -92,7 +92,9 @@ public class ShowDialog : MonoBehaviour
 
     private void PlayWritingSound()
     {
-        FMODUnity.RuntimeManager.PlayOneShot("event:/WriteCharacter");
+        // FMODUnity.RuntimeManager.PlayOneShot("event:/WriteCharacter");
+        
+        FMODUnity.RuntimeManager.PlayOneShot(_fmodEvent);
     }
 
     IEnumerator AnimText(string messageToShow, bool isLastMessage)
@@ -111,7 +113,9 @@ public class ShowDialog : MonoBehaviour
 
             displayText = _text.text.Insert(alphaIndex, HTML_ALPHA_NULL);
             _text.text = displayText;
-            
+
+            PlayWritingSound();
+
             yield return new WaitForSeconds(_settings.speed);
             if (!isLastMessage && alphaIndex >= messageToShow.Length - 3) break;
         }
