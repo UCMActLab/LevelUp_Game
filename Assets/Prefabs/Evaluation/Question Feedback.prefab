@@ -35,8 +35,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 290.7895, y: -80.275}
-  m_SizeDelta: {x: 360.75, y: 0}
+  m_AnchoredPosition: {x: 290.7895, y: -111.315994}
+  m_SizeDelta: {x: 372.61, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5178198473206491645
 CanvasRenderer:
@@ -188,7 +188,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 211.956, y: -228.66}
-  m_SizeDelta: {x: 423.912, y: 0}
+  m_SizeDelta: {x: 423.912, y: 457.32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3725828058875791450
 CanvasRenderer:
@@ -411,7 +411,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 211.956, y: -228.66}
-  m_SizeDelta: {x: 423.912, y: 0}
+  m_SizeDelta: {x: 423.912, y: 457.32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6085587968251526644
 CanvasRenderer:
@@ -587,7 +587,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 241.956, y: -258.66}
-  m_SizeDelta: {x: 423.912, y: 0}
+  m_SizeDelta: {x: 423.912, y: 457.32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &869443001826850765
 CanvasRenderer:
@@ -656,7 +656,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8558855255208569419
 RectTransform:
   m_ObjectHideFlags: 0
@@ -674,8 +674,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 290.7895, y: -566.578}
-  m_SizeDelta: {x: 483.912, y: 0}
+  m_AnchoredPosition: {x: 290.7895, y: -572.688}
+  m_SizeDelta: {x: 483.912, y: 517.32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2431908013664316952
 CanvasRenderer:
@@ -796,7 +796,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -300, y: -300.583}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5618575562487491879
 CanvasRenderer:
@@ -853,6 +853,7 @@ MonoBehaviour:
   _incorrectColor: {r: 1, g: 0, b: 0, a: 1}
   _correctResponseText: {fileID: 7744406104448102286}
   _explanationText: {fileID: 4344335898909384998}
+  _explanationBody: {fileID: 7036963142409793779}
 --- !u!114 &929212943570286377
 MonoBehaviour:
   m_ObjectHideFlags: 0

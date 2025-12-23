@@ -42,9 +42,10 @@ public class QuestionFeedbackLogic : MonoBehaviour
         }
         catch
         {
+            bool hasExplanation = explanation != string.Empty;
+            _explanationBody.SetActive(hasExplanation);
 			_explanationText.text = explanation;
 		}
 
-        _explanationBody.SetActive(_explanationText.text != string.Empty);
     }
 }

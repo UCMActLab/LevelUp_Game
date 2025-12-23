@@ -17,6 +17,14 @@ public class TutorialController : MonoBehaviour
     {
         public string button;
         public Vector2Int toChoiceStep;
+        public Color color;
+
+        Choice(string name, Vector2Int choice, Color buttonColor)
+        {
+            button = name;
+            toChoiceStep = choice;
+            color = buttonColor;
+        }
     }
     [Serializable]
     public struct TutorialStepMessages
@@ -288,6 +296,9 @@ public class TutorialController : MonoBehaviour
         art.ActivateShareButton(false);
         art.SetUpButtons();
         art.OnRead.AddListener(() => _hasReadAnArticle = true);
+
+        _articles = new ArticleGameObject[1];
+        _articles[0] = art;
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(art.transform as RectTransform);
 

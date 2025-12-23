@@ -109,11 +109,24 @@ public class ServerManager : MonoBehaviour
         int nPage = 1;
         int maxPages = int.MaxValue;
         List<string> jsons = new List<string>();
+
+        bool connectionFailed = false;
+
         while (nPage <= maxPages)
         {
             UnityWebRequest www = UnityWebRequest.Get("https://levelup.fundacionmaldita.es/api/resources?page=" + nPage);
 
-            www.SetRequestHeader("Authorization", serverLoginInfo.data.token);
+            try
+            {
+                www.SetRequestHeader("Authorization", serverLoginInfo.data.token);
+
+            }
+            catch(Exception e)
+            {
+                Debug.Log(www.error);
+                connectionFailed = true;
+                break;
+            }
 
             yield return www.SendWebRequest();
             string[] split = www.downloadHandler.text.Split("\"totalPages\":");
@@ -131,7 +144,11 @@ public class ServerManager : MonoBehaviour
             nPage++;
         }
 
-        OnJsonReceived.Invoke(jsons);
+        if (!connectionFailed) OnJsonReceived.Invoke(jsons);
+        else
+        {
+            ConnectionFailed();
+        }
     }
 
     void processServerAnswer()

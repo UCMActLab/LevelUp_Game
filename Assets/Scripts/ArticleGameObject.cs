@@ -115,7 +115,7 @@ public class ArticleGameObject : MonoBehaviour
         buttons[0].onClick.AddListener(() =>
         {
             _convManager.ChangeToMainChat();
-            LevelManager.Instance.ShowNextArticle();
+            // LevelManager.Instance.ShowNextArticle();
             // EnableButtonsInteraction(false);
             
             Destroy(_shareArticleButtons);

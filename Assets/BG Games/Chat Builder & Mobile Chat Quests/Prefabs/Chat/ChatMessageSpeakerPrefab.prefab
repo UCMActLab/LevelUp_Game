@@ -125,7 +125,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f662735f891a65841b740fe7609c1559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _freeImagText: Free
   _background: {fileID: 5073294876347383915}
   _messageLayout: {fileID: 4142609298988808792}
   _nameText: {fileID: 6462355083808525865}
@@ -1385,8 +1384,6 @@ MonoBehaviour:
   _imageTransform: {fileID: 4453871053587094041}
   _parentTransform: {fileID: 5656815201959414296}
   _onStart: 0
-  _anchorOnTop: 1
-  _anchorOnBottom: 0
 --- !u!1 &5322254462895178320
 GameObject:
   m_ObjectHideFlags: 0
@@ -1494,8 +1491,6 @@ MonoBehaviour:
   _imageTransform: {fileID: 6967653103686062276}
   _parentTransform: {fileID: 6270258963140979046}
   _onStart: 0
-  _anchorOnTop: 1
-  _anchorOnBottom: 0
 --- !u!1 &5920546510133190876
 GameObject:
   m_ObjectHideFlags: 0
@@ -1811,8 +1806,6 @@ MonoBehaviour:
   _imageTransform: {fileID: 3485717953541910130}
   _parentTransform: {fileID: 6206025328829227847}
   _onStart: 0
-  _anchorOnTop: 1
-  _anchorOnBottom: 0
 --- !u!1 &7201013436203420271
 GameObject:
   m_ObjectHideFlags: 0
@@ -2285,9 +2278,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 48265ce777d82cf4b96a587b812809fc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7358ccfd92689764a99d054ea486a9c1, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
