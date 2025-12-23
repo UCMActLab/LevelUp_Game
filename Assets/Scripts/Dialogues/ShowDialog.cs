@@ -80,12 +80,19 @@ public class ShowDialog : MonoBehaviour
                 displayText = displayText.Insert(i + HTML_ALPHA_NULL.Length, HTML_ALPHA_FULL);
                 _text.text = displayText;
 
+                PlayWritingSound();
+
                 yield return new WaitForSeconds(_settings.speed / 4);
             }
         }
 
         StartCoroutine(AnimText(text, isLastText));
 
+    }
+
+    private void PlayWritingSound()
+    {
+        FMODUnity.RuntimeManager.PlayOneShot("event:/WriteCharacter");
     }
 
     IEnumerator AnimText(string messageToShow, bool isLastMessage)
