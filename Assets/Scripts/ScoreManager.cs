@@ -3,6 +3,8 @@ using System;
 using UnityEditor;
 using Unity.Services.Analytics;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 public enum Score
 {
@@ -29,7 +31,8 @@ public class ScoreManager : Singleton<ScoreManager>
     [SerializeField] private int _pointsForReadingArticle = 1;
 
     [Header("References")]
-    private PointsMenu _pointsMenu = null;
+    private ScoreMenu _scoreMenu = null;
+    private Slider _generalScoreSlider = null;
 
     [SerializeField]
     SerializedDictionary<global::Score, ScoreInfo> _pointsForEachCategory = null;
@@ -59,7 +62,7 @@ public class ScoreManager : Singleton<ScoreManager>
 
     public int Score { get { return _currentScore; } }
     public int MaxScore { get { return _maxScore; } }
-        
+
     private void Start()
     {
         _currentScore = _initialScore;
@@ -68,7 +71,12 @@ public class ScoreManager : Singleton<ScoreManager>
     
     private void FindPointsMenu()
     {
-        _pointsMenu = GameObject.FindAnyObjectByType<PointsMenu>(FindObjectsInactive.Include);
+        _scoreMenu = GameObject.FindAnyObjectByType<ScoreMenu>(FindObjectsInactive.Include);
+    }
+
+    public void SetGeneralScoreSlider(Slider general)
+    {
+        _generalScoreSlider = general;
     }
 
     public void CalculateScoreState()
@@ -82,7 +90,7 @@ public class ScoreManager : Singleton<ScoreManager>
             _currentState = (global::Score)nextState;
 
             // change something (?)
-            _pointsMenu.ChangeMedal(_pointsForEachCategory[_currentState].Sprite);
+            _scoreMenu.ChangeMedal(_pointsForEachCategory[_currentState].Sprite);
         }
     }
 
@@ -132,10 +140,20 @@ public class ScoreManager : Singleton<ScoreManager>
         RestartScore();
         _totalArticles = numArticles;
         _maxScore = numArticles + numTrueArticles;
-        FindPointsMenu();
-        _pointsMenu.SetTotalScore(_maxScore);
+        
+        SetMaxScoreToUIElements();
+        
         CalculateScoreState();
     }
+
+    private void SetMaxScoreToUIElements()
+    {
+        FindPointsMenu();
+        _scoreMenu.SetTotalScore(_maxScore);
+        _generalScoreSlider.maxValue = _maxScore;
+        _generalScoreSlider.value = _currentScore;
+    }
+
 
     public void SetLevelInfo(int numArticles, int numArticlesToRead)
     {
@@ -168,9 +186,9 @@ public class ScoreManager : Singleton<ScoreManager>
     public void ShowPoints()
     {
         // poner los puntos y eso
-        _pointsMenu.gameObject.SetActive(true);
+        _scoreMenu.gameObject.SetActive(true);
         
-        _pointsMenu.ShowScore(_numArticlesForCurrentLevel, _numArticlesCanReadForCurrentLevel, _numArticlesReadForCurrentLevel, _numTrueArticlesSharedForCurrentLevel, _numTrueArticles, _numFalseArticlesSharedForCurrentLevel, _numArticlesForCurrentLevel - _numTrueArticles);
+        _scoreMenu.ShowScore(_numArticlesForCurrentLevel, _numArticlesCanReadForCurrentLevel, _numArticlesReadForCurrentLevel, _numTrueArticlesSharedForCurrentLevel, _numTrueArticles, _numFalseArticlesSharedForCurrentLevel, _numArticlesForCurrentLevel - _numTrueArticles);
 
         SubmitScoreEvent();
     }
@@ -189,12 +207,12 @@ public class ScoreManager : Singleton<ScoreManager>
 
     public void DeactivateMenu()
     {
-        _pointsMenu.gameObject.SetActive(false);
+        _scoreMenu.gameObject.SetActive(false);
     }
 
     public void ToggleMenu()
     {
-        _pointsMenu.gameObject.SetActive(!_pointsMenu.gameObject.activeSelf);
+        _scoreMenu.gameObject.SetActive(!_scoreMenu.gameObject.activeSelf);
     }
 }
 

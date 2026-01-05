@@ -57,6 +57,9 @@ public class ArticleManager : Singleton<ArticleManager>
     {
         base.Awake();
         ArticlesCreated = false;
+#if UNITY_EDITOR
+        _loadImages = false;
+#endif
     }
 
     public void CreateArticles(List<ArticleJSONRoot> articles)

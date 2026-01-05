@@ -1,4 +1,5 @@
 using DA_Assets.Extensions;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,8 +14,10 @@ public class MaskDisplacementAnimation : MonoBehaviour
     Vector2 _initialPos;
     Vector2 _endPos;
 
-    private void Start()
+    IEnumerator WaitTimeToSetup(float time)
     {
+        yield return new WaitForSeconds(time);
+
         _childs = new System.Collections.Generic.List<RectTransform>();
         for (int i = 0; i < transform.childCount; ++i)
         {
@@ -30,15 +33,43 @@ public class MaskDisplacementAnimation : MonoBehaviour
         Debug.Log(_childs.Count);
         Debug.Log(width);
 
-        for(int i = 0; i < _childs.Count; ++i)
+        for (int i = 0; i < _childs.Count; ++i)
         {
             _childs[i].position = _initialPos + Vector2.right * widthOffset * i;
             _childs[i].sizeDelta = new Vector2(_childs[i].sizeDelta.x, 400);
         }
     }
 
+    private void _clean()
+    {
+        if (!(_childs != null && _childs.Count > 0)) return;
+
+        foreach (RectTransform go in _childs)
+        {
+            Destroy(go.gameObject);
+        }
+
+        _childs.Clear();
+        _childs = null;
+
+        StopAllCoroutines();
+    }
+
+    private void OnEnable()
+    {
+        _clean();
+        StartCoroutine(WaitTimeToSetup(0.5f));
+    }
+
+    private void OnDisable()
+    {
+        _clean();
+    }
+
     private void Animation()
     {
+        if (!(_childs != null && _childs.Count > 0)) return;
+
         foreach (RectTransform child in _childs)
         {
             child.Translate(Time.deltaTime * Vector2.right * _speed, Space.World);

@@ -101,7 +101,7 @@ public class ChatManager : MonoBehaviour
             GameObject group = _groupChats[groupID];
             ChangeCurrentChat(group);
             _currentChat.GetComponent<GroupSettings>().ActivateGroupInfo(true);
-            if(_header!=null)_header.SetActive(false);
+            if(_header!=null) _header?.SetActive(false);
         }
 
         OnChatChanged.Invoke(groupID);
@@ -169,6 +169,8 @@ public class ChatManager : MonoBehaviour
     void Start()
     {
         InitializeReferences();
+
+        ChangeToMainChat();
 
         if (_playOnAwake) StartConversation();
     }

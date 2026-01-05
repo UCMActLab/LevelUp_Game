@@ -114,7 +114,7 @@ public class ServerManager : MonoBehaviour
 
         while (nPage <= maxPages)
         {
-            UnityWebRequest www = UnityWebRequest.Get("https://levelup.fundacionmaldita.es/api/resources?page=" + nPage);
+            UnityWebRequest www = UnityWebRequest.Get("https://levelup-game.fundacionmaldita.es/api/resources?page=" + nPage);
 
             try
             {
@@ -132,10 +132,9 @@ public class ServerManager : MonoBehaviour
             string[] split = www.downloadHandler.text.Split("\"totalPages\":");
             maxPages = Int32.Parse(split[1].Split(',')[0]);
 
-            if (www.result != UnityWebRequest.Result.Success)
+            if (www.result != UnityWebRequest.Result.Success || www.downloadHandler.text.Contains("\"data\":[]"))
             {
-                Debug.Log(www.error);
-                ConnectionFailed();
+                connectionFailed = true;
             }
             else
             {

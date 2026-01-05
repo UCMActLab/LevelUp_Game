@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PointsMenu : MonoBehaviour
+public class ScoreMenu : MonoBehaviour
 {
     [Header("Scores Object")]
     [SerializeField] private GameObject _readArticlesObject = null;
