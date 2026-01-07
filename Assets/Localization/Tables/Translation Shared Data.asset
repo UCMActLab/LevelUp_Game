@@ -80,6 +80,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 4330159918517846138
+  - m_Id: 30210070742183936
+    m_Key: SHAREBUTTONS/TEXT
+    m_Metadata:
+      m_Items:
+      - rid: 3936882922569859483
   - m_Id: 427584111697920
     m_Key: ARTICLE/PLAYER_MESSAGE
     m_Metadata:
@@ -597,6 +602,16 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 8656567435832066157
+  - m_Id: 30210070788321280
+    m_Key: SCORE/FEEDBACK/NEXT_LEVEL
+    m_Metadata:
+      m_Items:
+      - rid: 3936882922569859484
+  - m_Id: 30210070788321281
+    m_Key: SCORE/FEEDBACK/GOOD_JOB
+    m_Metadata:
+      m_Items:
+      - rid: 3936882922569859485
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
@@ -604,6 +619,18 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 3936882922569859483
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=50
+    - rid: 3936882922569859484
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=24
+    - rid: 3936882922569859485
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=24
     - rid: 4330159737373982794
       type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
       data:

@@ -71,25 +71,34 @@ public class ScoreMenu : MonoBehaviour
 
         string feedback = string.Empty;
 
-        if(articlesRead < numArticlesCanRead)
+        bool badReading = articlesRead < numArticlesCanRead;
+        bool badTrueSharing = articlesTrue < totalArticlesTrue;
+        bool badFalseSharing = articlesFalseShared > 0;
+
+        if (badReading)
         {
             feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/READ");
         }
         SetValues(_readArticlesObject, _readArticlesSlider, _readArticlesText, articlesRead, numArticlesCanRead, 1.25f);
 
-        if(articlesTrue < totalArticlesTrue)
+        if (badTrueSharing)
         {
             if (feedback != string.Empty) feedback += '\n';
             feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_TRUE");
         }
         SetValues(_trueArticlesObject, _trueArticlesSlider, _trueArticlesText, articlesTrue, totalArticlesTrue, 1.25f);
 
-        if (articlesFalseShared > 0)
+        if (badFalseSharing)
         {
             if (feedback != string.Empty) feedback += '\n';
             feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_FALSE");
         }
         SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, articlesFalseShared, totalArticlesFalse, 1.25f);
+
+        if(!badFalseSharing  && !badTrueSharing && !badReading)
+        {
+            feedback = TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/GOOD_JOB");
+        }
 
         _feedbackText.SetText(feedback);
     }
