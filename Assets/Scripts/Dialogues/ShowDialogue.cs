@@ -81,6 +81,7 @@ public class ShowDialogue : MonoBehaviour
 
     public void ShowText()
     {
+        StopAllCoroutines();
         _textEnded = false;
         _canGoNext = false;
         if(_currentText >= _settings.texts.Count)

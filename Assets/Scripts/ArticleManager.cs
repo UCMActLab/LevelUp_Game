@@ -42,7 +42,6 @@ public struct ArticleJSONRoot
 public struct ArticlesJSONRoot
 {
     public List<ArticleJSONData> data;
-
 }
 
 public class ArticleManager : Singleton<ArticleManager>
@@ -58,7 +57,7 @@ public class ArticleManager : Singleton<ArticleManager>
         base.Awake();
         ArticlesCreated = false;
 #if UNITY_EDITOR
-        _loadImages = false;
+        // _loadImages = false;
 #endif
     }
 
@@ -80,11 +79,16 @@ public class ArticleManager : Singleton<ArticleManager>
                 continue;
             }
 
-            foreach (ArticleJSONData data in root.data.data)
-            {
-                ArticleData article = ScriptableObject.CreateInstance("ArticleData") as ArticleData;
+            Queue<ArticleJSONData> articleQueue = new Queue<ArticleJSONData>(root.data.data);
 
-                article.needsTranslation = false;
+            bool prioritizeChosenLanguage = true;
+            int counter = 0;
+            while(articleQueue.Count > 0)
+            {
+                yield return new WaitForEndOfFrame();
+                int count = articleQueue.Count;
+                prioritizeChosenLanguage = counter != count && !ArticlesCreated;
+                ArticleJSONData data = articleQueue.Dequeue();
 
                 int parsedLanguage = 0;
                 if (data.Language == "es") { parsedLanguage = 3; }
@@ -92,6 +96,27 @@ public class ArticleManager : Singleton<ArticleManager>
                 else if (data.Language == "bg") { parsedLanguage = 0; }
                 else if (data.Language == "en") { parsedLanguage = 2; }
                 else continue;
+
+                if (prioritizeChosenLanguage && (int)LanguageSelection.chosenLanguage != parsedLanguage)
+                {
+                    articleQueue.Enqueue(data);
+                    counter++;
+                    Debug.Log("Prioritizing Chosen Language. " + counter.ToString() + "/" + count.ToString());
+                    continue;
+                }
+                else if (prioritizeChosenLanguage)
+                {
+                    counter = 0;
+                }
+                else
+                {
+                    counter = 0;
+                    ArticlesCreated = true;
+                }
+
+                ArticleData article = ScriptableObject.CreateInstance("ArticleData") as ArticleData;
+                
+                article.needsTranslation = false;
 
                 string headline = data.Headline.Trim(' ');
 

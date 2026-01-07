@@ -61,6 +61,9 @@ public class LevelManager : Singleton<LevelManager>
     {
         _gameProgressSlider = generalProgress;
 
+        if (_numLevels == 0)
+            _numLevels = _levelsInfo.Count;
+
         _gameProgressSlider.maxValue = _numLevels;
         _gameProgressSlider.value = _currentLevel;
     }
