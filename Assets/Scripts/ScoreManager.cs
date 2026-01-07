@@ -32,7 +32,6 @@ public class ScoreManager : Singleton<ScoreManager>
 
     [Header("References")]
     private ScoreMenu _scoreMenu = null;
-    private Slider _generalScoreSlider = null;
 
     [SerializeField]
     SerializedDictionary<global::Score, ScoreInfo> _pointsForEachCategory = null;
@@ -72,11 +71,6 @@ public class ScoreManager : Singleton<ScoreManager>
     private void FindPointsMenu()
     {
         _scoreMenu = GameObject.FindAnyObjectByType<ScoreMenu>(FindObjectsInactive.Include);
-    }
-
-    public void SetGeneralScoreSlider(Slider general)
-    {
-        _generalScoreSlider = general;
     }
 
     public void CalculateScoreState()
@@ -150,8 +144,6 @@ public class ScoreManager : Singleton<ScoreManager>
     {
         FindPointsMenu();
         _scoreMenu.SetTotalScore(_maxScore);
-        _generalScoreSlider.maxValue = _maxScore;
-        _generalScoreSlider.value = _currentScore;
     }
 
 

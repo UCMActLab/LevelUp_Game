@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class ScoreTracker : MonoBehaviour
+public class GameProgressTracker : MonoBehaviour
 {
     [SerializeField] SliderFillAnimation _slider;
     public void UpdateValue()
     {
-        _slider.SetNewValue(ScoreManager.Instance.Score);
+        _slider.SetNewValue(LevelManager.Instance.CurrentLevel);
     }
 }

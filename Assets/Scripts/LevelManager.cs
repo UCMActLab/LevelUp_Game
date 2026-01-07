@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Analytics;
 using UnityEngine;
+using UnityEngine.UI;
 
 [Serializable]
 public struct LevelInfo
@@ -24,6 +25,7 @@ public class LevelManager : Singleton<LevelManager>
     //[SerializeField] private int _maxLevels = 5;
 
     int _currentLevel = 0;
+    public int CurrentLevel { get { return _currentLevel; } }
     List<List<ArticleData>> _levels;
 
     [SerializeField]
@@ -45,14 +47,28 @@ public class LevelManager : Singleton<LevelManager>
     [SerializeField]
     private TestLogic _testLogic = null;
 
+    int _numLevels = 0;
+
+    Slider _gameProgressSlider = null;
+
     protected override void Awake()
     {
         _destroyOnLoad = true;
         base.Awake();
     }
 
+    public void SetGameProgressSlider(Slider generalProgress)
+    {
+        _gameProgressSlider = generalProgress;
+
+        _gameProgressSlider.maxValue = _numLevels;
+        _gameProgressSlider.value = _currentLevel;
+    }
+
     private void Start()
     {
+        _numLevels = _levelsInfo.Count;
+
         _loadingAnimation?.SetActive(false);
         StartCoroutine(GetArticlesFromResources());
 
