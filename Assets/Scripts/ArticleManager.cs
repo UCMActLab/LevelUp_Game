@@ -1,3 +1,4 @@
+using DA_Assets.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -56,8 +57,11 @@ public class ArticleManager : Singleton<ArticleManager>
     {
         base.Awake();
         ArticlesCreated = false;
+
 #if UNITY_EDITOR
-        // _loadImages = false;
+
+#else 
+        _loadImages = true;
 #endif
     }
 
@@ -72,50 +76,57 @@ public class ArticleManager : Singleton<ArticleManager>
 
         int i = 0;
 
-        foreach(ArticleJSONRoot root in articles)
+        Dictionary<string, List<ArticleJSONData>> unprocessedArticlesByLanguage = new Dictionary<string, List<ArticleJSONData>>();
+        foreach (ArticleJSONRoot root in articles)
         {
-            if(root.data.data == null)
+            List<ArticleJSONData> data = root.data.data;
+            if (data == null) continue;
+            
+            foreach (ArticleJSONData article in data)
             {
+                if (!unprocessedArticlesByLanguage.ContainsKey(article.Language))
+                {
+                    unprocessedArticlesByLanguage.Add(article.Language, new List<ArticleJSONData>());
+                }
+                unprocessedArticlesByLanguage[article.Language].Add(article);
+            }
+        }
+
+        Queue<KeyValuePair<string, List<ArticleJSONData>>> queue = new Queue<KeyValuePair<string, List<ArticleJSONData>>>(unprocessedArticlesByLanguage);
+
+        bool processedPrioritaryArticles = false;
+        while (queue.Count > 0)
+        {
+            KeyValuePair<string, List<ArticleJSONData>> pair = queue.Dequeue();
+            string language = pair.Key;
+            int parsedLanguage = 0;
+            if (language == "es") { parsedLanguage = 3; }
+            else if (language == "cz") { parsedLanguage = 1; }
+            else if (language == "bg") { parsedLanguage = 0; }
+            else if (language == "en") { parsedLanguage = 2; }
+            else continue; // quitamos idiomas no reconocidos
+
+            if (!processedPrioritaryArticles && parsedLanguage != (int)LanguageSelection.chosenLanguage)
+            {
+                queue.Enqueue(pair);
                 continue;
             }
 
-            Queue<ArticleJSONData> articleQueue = new Queue<ArticleJSONData>(root.data.data);
+            pair.Value.Shuffle();
 
-            bool prioritizeChosenLanguage = true;
-            int counter = 0;
-            while(articleQueue.Count > 0)
+            Debug.Log(pair.Value.Count + " Artículos '" + language + "' están siendo procesados. ");
+
+            foreach (ArticleJSONData data in pair.Value)
             {
                 yield return new WaitForEndOfFrame();
-                int count = articleQueue.Count;
-                prioritizeChosenLanguage = counter != count && !ArticlesCreated;
-                ArticleJSONData data = articleQueue.Dequeue();
 
-                int parsedLanguage = 0;
-                if (data.Language == "es") { parsedLanguage = 3; }
-                else if (data.Language == "cz") { parsedLanguage = 1; }
-                else if (data.Language == "bg") { parsedLanguage = 0; }
-                else if (data.Language == "en") { parsedLanguage = 2; }
-                else continue;
-
-                if (prioritizeChosenLanguage && (int)LanguageSelection.chosenLanguage != parsedLanguage)
+                if (parsedLanguage !=  (int)LanguageSelection.chosenLanguage && !processedPrioritaryArticles)
                 {
-                    articleQueue.Enqueue(data);
-                    counter++;
-                    Debug.Log("Prioritizing Chosen Language. " + counter.ToString() + "/" + count.ToString());
-                    continue;
-                }
-                else if (prioritizeChosenLanguage)
-                {
-                    counter = 0;
-                }
-                else
-                {
-                    counter = 0;
-                    ArticlesCreated = true;
+                    break;
                 }
 
                 ArticleData article = ScriptableObject.CreateInstance("ArticleData") as ArticleData;
-                
+
                 article.needsTranslation = false;
 
                 string headline = data.Headline.Trim(' ');
@@ -128,9 +139,9 @@ public class ArticleManager : Singleton<ArticleManager>
                 article.articleBody = data.Body.Trim(' ');
 
                 // article.image = data.Multimedia; TODO: Tratamiento de imágenes
-                if(_loadImages && data.Multimedia != null && data.Multimedia != "")
+                if (_loadImages && data.Multimedia != null && data.Multimedia != "")
                 {
-                    if(sprites.ContainsKey(data.Multimedia))
+                    if (sprites.ContainsKey(data.Multimedia))
                     {
                         article.articleImage = sprites[data.Multimedia];
                     }
@@ -154,21 +165,23 @@ public class ArticleManager : Singleton<ArticleManager>
                             article.articleImage = spr;
                             sprites.Add(data.Multimedia, spr);
                         }
-                        else { 
+                        else
+                        {
                             Debug.LogError("No se ha podido cargar la textura: " + request.result);
                         }
                     }
                 }
 
                 string source = data.Source;
-                if(source != "newspaper" || source != "social" || source != "web" || source != "blog")
+                if (source != "newspaper" || source != "social" || source != "web" || source != "blog")
                 {
                     if (data.isTrue) { source = "newspaper"; }
                     else source = "social";
                 }
 
                 article.companyName = source;
-                if (data.Conversation.Count != 0) {
+                if (data.Conversation.Count != 0)
+                {
                     article.conversation = new List<Conversation>();
                     foreach (ConversationJSON conversationJSON in data.Conversation)
                     {
@@ -189,13 +202,13 @@ public class ArticleManager : Singleton<ArticleManager>
                         // Al final sí que hacemos distinción por grupos... hihi, tengo que decírselo a andrea
                         article.conversation.Add(conversation);
                     }
-                } 
+                }
                 else
                 {
                     article.convType = article.isTrue ? ConversationType.REACTION_GOOD_ARTICLE : ConversationType.REACTION_BAD_ARTICLE;
                 }
 
-                if (!_articlesByLanguage.ContainsKey(parsedLanguage)) 
+                if (!_articlesByLanguage.ContainsKey(parsedLanguage))
                 {
                     _articlesByLanguage.Add(parsedLanguage, new List<ArticleData>());
                 }
@@ -204,6 +217,12 @@ public class ArticleManager : Singleton<ArticleManager>
 
                 ++i;
             }
+
+            Debug.Log(_articlesByLanguage[parsedLanguage].Count + " Artículos '" + language + "' procesados. ");
+
+            if (parsedLanguage == (int)LanguageSelection.chosenLanguage) processedPrioritaryArticles = true;
+
+            if (processedPrioritaryArticles) ArticlesCreated = true;
         }
 
         ArticlesCreated = true;

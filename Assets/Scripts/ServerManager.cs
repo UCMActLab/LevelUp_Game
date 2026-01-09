@@ -83,7 +83,7 @@ public class ServerManager : MonoBehaviour
     {
         string message = "{\n\"user\": \"" + userID + "\",\n\"password\":\"" + userPassword + "\"\n}";
 
-        using (UnityWebRequest www = UnityWebRequest.Post("https://levelup.fundacionmaldita.es/api/login", message, "application/json"))
+        using (UnityWebRequest www = UnityWebRequest.Post("https://levelup-game.fundacionmaldita.es/api/login", message, "application/json"))
         {
             yield return www.SendWebRequest();
 

@@ -63,7 +63,7 @@ public class ScoreMenu : MonoBehaviour
         if(_newMedal != null) ChangeMedalDuringAnimation();
     }
 
-    public void ShowScore(int numArticles, int numArticlesCanRead, int articlesRead, int articlesTrue, int totalArticlesTrue, int articlesFalseShared, int totalArticlesFalse)
+    public void ShowScore(LevelScore score)
     {
         _readArticlesSlider.value = 0.0f;
         _falseArticlesSlider.value = 0.0f;
@@ -71,29 +71,29 @@ public class ScoreMenu : MonoBehaviour
 
         string feedback = string.Empty;
 
-        bool badReading = articlesRead < numArticlesCanRead;
-        bool badTrueSharing = articlesTrue < totalArticlesTrue;
-        bool badFalseSharing = articlesFalseShared > 0;
+        bool badReading = score.readArticles < score.readableArticles;
+        bool badTrueSharing = score.trueArticlesShared < score.trueArticles;
+        bool badFalseSharing = score.falseArticlesShared > 0;
 
         if (badReading)
         {
             feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/READ");
         }
-        SetValues(_readArticlesObject, _readArticlesSlider, _readArticlesText, articlesRead, numArticlesCanRead, 1.25f);
+        SetValues(_readArticlesObject, _readArticlesSlider, _readArticlesText, score.readArticles, score.readableArticles, 1.25f);
 
         if (badTrueSharing)
         {
             if (feedback != string.Empty) feedback += '\n';
             feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_TRUE");
         }
-        SetValues(_trueArticlesObject, _trueArticlesSlider, _trueArticlesText, articlesTrue, totalArticlesTrue, 1.25f);
+        SetValues(_trueArticlesObject, _trueArticlesSlider, _trueArticlesText, score.trueArticlesShared, score.trueArticles, 1.25f);
 
         if (badFalseSharing)
         {
             if (feedback != string.Empty) feedback += '\n';
             feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_FALSE");
         }
-        SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, articlesFalseShared, totalArticlesFalse, 1.25f);
+        SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, score.falseArticlesShared, score.falseArticles, 1.25f);
 
         if(!badFalseSharing  && !badTrueSharing && !badReading)
         {

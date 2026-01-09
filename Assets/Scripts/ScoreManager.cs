@@ -3,8 +3,7 @@ using System;
 using UnityEditor;
 using Unity.Services.Analytics;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
+using System.Collections.Generic;
 
 public enum Score
 {
@@ -21,10 +20,43 @@ public struct ScoreInfo
     public float NeededScore;
 }
 
+public struct LevelScore
+{
+    // type of articles
+    public int totalArticles;
+    public int trueArticles;
+    public int falseArticles;
+
+    // how many can the user actually read
+    public int readableArticles;
+
+    // how many has the user read
+    public int readArticles;
+
+    // how many has the user shared
+    public int trueArticlesShared;
+    public int falseArticlesShared;
+
+    public int MaxScore { get { return readableArticles + trueArticles; } }
+}
+
+//// Esto es exactamente lo mismo que lo de LevelScore... Cambiar
+//public struct GeneralScore
+//{
+//    public int totalArticles;
+//    public int totalTrueArticles;
+//    public int totalFalseArticles;
+//    public int totalReadableArticles;
+
+//    public int totalReadArticles;
+//    public int totalTrueArticlesShared;
+//    public int totalFalseArticlesShared;
+
+//    public int MaxScore { get { return totalReadableArticles + totalTrueArticles; } }
+// }
 public class ScoreManager : Singleton<ScoreManager>
 {
     [Header("Score")]
-    private int _maxScore;
     private int _initialScore = 0;
 
     [SerializeField] private int _pointsForIdentifyingTrueArticle = 1;
@@ -41,26 +73,22 @@ public class ScoreManager : Singleton<ScoreManager>
 
     public Score State { get { return _currentState; } }
 
-    private int _numArticlesForCurrentLevel = 0;
-    private int _numArticlesCanReadForCurrentLevel = 0;
-    private int _numArticlesReadForCurrentLevel = 0;
-    private int _numTrueArticlesSharedForCurrentLevel = 0;
-    private int _numTrueArticles = 0;
-    private int _numFalseArticlesSharedForCurrentLevel = 0;
+    LevelScore _score;
+    public LevelScore ScoreStats { get { return _score; } }
 
-    private int _numArticlesReadTotal = 0;
-    private int _numFalseSharedTotal = 0;
-    private int _numTrueSharedTotal = 0;
-    private int _totalArticles = 0;
-
-    public int TotalArticles { get { return _totalArticles; } }
-
-    public int TotalRead { get { return _numArticlesReadTotal; } }
-    public int TotalTrueShared { get { return _numTrueSharedTotal; } }
-    public int TotalFalseShared { get { return _numFalseSharedTotal; } }
+    LevelScore[] _levelsScore = null;
+    int _levelScoreIndex = 0;
 
     public int Score { get { return _currentScore; } }
-    public int MaxScore { get { return _maxScore; } }
+    public int MaxScore { get { return _score.MaxScore; } }
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        _levelsScore = null;
+        _levelScoreIndex = 0;
+    }
 
     private void Start()
     {
@@ -79,7 +107,7 @@ public class ScoreManager : Singleton<ScoreManager>
         // reached max score
         if (nextState >= _pointsForEachCategory.Count) return;
 
-        if(_currentScore >= _maxScore * _pointsForEachCategory[(global::Score)nextState].NeededScore)
+        if(_currentScore >= _score.MaxScore * _pointsForEachCategory[(global::Score)nextState].NeededScore)
         {
             _currentState = (global::Score)nextState;
 
@@ -91,50 +119,40 @@ public class ScoreManager : Singleton<ScoreManager>
     private void AwardPointsReadArticle()
     {
         AddPoints(_pointsForReadingArticle);
-        _numArticlesReadForCurrentLevel++;
+        _levelsScore[_levelScoreIndex].readArticles++;
+        _score.readArticles++;
     }
 
-    private void AwardPointsIdentifyingArticle(bool wasTrue)
+    private void AwardPointsForSharingTrueArticle()
     {
         AddPoints(_pointsForIdentifyingTrueArticle);
-        if(wasTrue) _numTrueArticlesSharedForCurrentLevel++;
+        _levelsScore[_levelScoreIndex].trueArticlesShared++;
+        _score.trueArticlesShared++;
     }
 
     public void CalculateArticlePoints(ArticleGameObject data)
     {
         if(data.HasReadArticle)
         {
-            _numArticlesReadTotal++;
             AwardPointsReadArticle();
         }
 
-        if(data.IsTrue)
+        if(data.IsTrue) // true article
         {
-            _numTrueArticles++;
             if(data.HasSharedArticle)
             {
-                _numTrueSharedTotal++;
-                AwardPointsIdentifyingArticle(true);
+                AwardPointsForSharingTrueArticle();
             }
         }
-        else if (!data.HasSharedArticle)
+        else if (data.HasSharedArticle) // false article shared
         {
-            // AwardPointsIdentifyingArticle(false);
-        }
-        else
-        {
-            _numFalseArticlesSharedForCurrentLevel++;
-            _numFalseSharedTotal++;
+            _levelsScore[_levelScoreIndex].falseArticlesShared++;
+            _score.falseArticlesShared++;
         }
     }
 
-    public void SetMaxScore(int numArticles, int numTrueArticles)
+    public void SetMaxScore()
     {
-        // Cada artículo tiene 2 variables que cuentan puntitos
-        RestartScore();
-        _totalArticles = numArticles;
-        _maxScore = numArticles + numTrueArticles;
-        
         SetMaxScoreToUIElements();
         
         CalculateScoreState();
@@ -143,19 +161,42 @@ public class ScoreManager : Singleton<ScoreManager>
     private void SetMaxScoreToUIElements()
     {
         FindPointsMenu();
-        _scoreMenu.SetTotalScore(_maxScore);
+        _scoreMenu.SetTotalScore(_score.MaxScore);
     }
 
-
-    public void SetLevelInfo(int numArticles, int numArticlesToRead)
+    public void SetNumLevels(int numLevels)
     {
-        _numArticlesForCurrentLevel = numArticles;
-        _numArticlesCanReadForCurrentLevel = numArticlesToRead;
+        RestartScore();
 
-        _numArticlesReadForCurrentLevel = 0;
-        _numTrueArticlesSharedForCurrentLevel = 0;
-        _numFalseArticlesSharedForCurrentLevel = 0;
-        _numTrueArticles = 0;
+        _levelsScore = new LevelScore[numLevels];
+    }
+
+    public void SetLevelInfo(int levelIndex, int numArticles, int numArticlesToRead, int numArticlesTrue)
+    {
+        LevelScore current = _levelsScore[levelIndex];
+
+        current.totalArticles = numArticles;
+        _score.totalArticles += current.totalArticles;
+
+        current.trueArticles = numArticlesTrue;
+        _score.trueArticles += current.trueArticles;
+
+        current.falseArticles = current.totalArticles - current.trueArticles;
+        _score.falseArticles += current.falseArticles;
+
+        current.readableArticles = numArticlesToRead;
+        _score.readableArticles += current.readableArticles;
+
+        current.readArticles = 0;
+        current.trueArticlesShared = 0;
+        current.falseArticlesShared = 0;
+
+        _levelsScore[levelIndex] = current;
+    }
+
+    public void ReachedNewLevel(int level)
+    {
+        _levelScoreIndex = level;
     }
 
     private void AddPoints(int points)
@@ -179,8 +220,8 @@ public class ScoreManager : Singleton<ScoreManager>
     {
         // poner los puntos y eso
         _scoreMenu.gameObject.SetActive(true);
-        
-        _scoreMenu.ShowScore(_numArticlesForCurrentLevel, _numArticlesCanReadForCurrentLevel, _numArticlesReadForCurrentLevel, _numTrueArticlesSharedForCurrentLevel, _numTrueArticles, _numFalseArticlesSharedForCurrentLevel, _numArticlesForCurrentLevel - _numTrueArticles);
+
+        _scoreMenu.ShowScore(_levelsScore[_levelScoreIndex]);
 
         SubmitScoreEvent();
     }
@@ -189,10 +230,15 @@ public class ScoreManager : Singleton<ScoreManager>
     {
         _currentScore = _initialScore;
 
-        _totalArticles = 0;
-        _numArticlesReadTotal = 0;
-        _numFalseSharedTotal = 0;
-        _numTrueSharedTotal = 0;
+        _score = new LevelScore();
+
+        _score.totalArticles = 0;
+        _score.trueArticles = 0;
+        _score.trueArticlesShared = 0;
+        _score.falseArticles = 0;
+        _score.falseArticlesShared = 0;
+        _score.readableArticles = 0;
+        _score.readArticles = 0;
 
         _currentState = global::Score.NONE;
     }

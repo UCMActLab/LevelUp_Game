@@ -44,11 +44,6 @@ public class MaskDisplacementAnimation : MonoBehaviour
     {
         if (!(_childs != null && _childs.Count > 0)) return;
 
-        foreach (RectTransform go in _childs)
-        {
-            Destroy(go.gameObject);
-        }
-
         _childs.Clear();
         _childs = null;
 
