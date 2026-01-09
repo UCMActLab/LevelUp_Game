@@ -1,6 +1,9 @@
 using AYellowpaper.SerializedCollections;
+using System.Collections;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum GameAssistantState
 {
@@ -16,7 +19,7 @@ public class GameAssistant : MonoBehaviour
     ///     En caso de SÍ estar haciendo scroll, podemos poner más tiempo para decirle al juego que el jugador todavía
     ///     no está perdido. Si finalmente pasa X + Y tiempo y solo ha hecho scroll, se le avisa de la siguiente interacción posible
 
-    /// RESUMEN: Avisar al jugador de la siguiente interaccióntras X + Y tiempo, siendo X un valor serialiazdo e 
+    /// RESUMEN: Avisar al jugador de la siguiente interacción tras X + Y tiempo, siendo X un valor serialiazdo e 
     ///     Y = 0 si no ha hecho scroll o 
     ///     Y = Z si sí ha hecho scroll (siendo Z otro valor configurable)
 
@@ -40,9 +43,31 @@ public class GameAssistant : MonoBehaviour
     SerializedDictionary<GameAssistantState, Sprite> _spriteOnState = new SerializedDictionary<GameAssistantState, Sprite>();
 
     [Header("Scene References")]
-    [SerializeField] private UnityEngine.UI.Image _assistanteImage = null;
+    [SerializeField] private Image _assistanteImage = null;
+    [SerializeField] private ScrollRect _scroll = null;
+    [SerializeField] private GameObject _message = null;
+    private TextMeshProUGUI _messageText = null;
+    private Animator _messageAnimator = null;
+    
+    
+    // TODO: ADD SOUND TO MESSAGES
+
+
+    [SerializeField] private Button _okAssitantButton = null;
+
+    [Header("Parameters")]
+    [SerializeField] float noActionTimeUntilAdvice = 1.0f;
+    
+    // this depends on the current article title's length or body if the user has already started reading it.
+    float _additionalScrolledTime = 10.0f;
+
+    bool _hasScrolled = false;
+    bool _keepTrackOfTime = false;
 
     ScoreManager _scoreManager = null;
+    ArticleGameObject _articleData = null;
+
+    float _timer = 0.0f;
 
     private void Initialize()
     {
@@ -53,11 +78,80 @@ public class GameAssistant : MonoBehaviour
         else
         {
             _assistanteImage.enabled = true;
+
         }
+        Debug.Assert(_scroll != null, "Scroll was not set.");
+        Debug.Assert(_message != null, "Message was not set.");
+
+        _message.SetActive(false);
+        _messageText = _message.GetComponentInChildren<TextMeshProUGUI>();
+        _messageAnimator = _message.GetComponent<Animator>();
+
+        Debug.Assert(_messageText != null, "Message has no Text child object.");
+
+        Debug.Assert(_okAssitantButton != null, "OK Assistant button was not set.");
+        _okAssitantButton.onClick.AddListener(HideMessage);
 
         _scoreManager = ScoreManager.Instance;
 
+        LevelManager.Instance.onLevelStart.AddListener(OnLevelStart);
+        LevelManager.Instance.onLevelEnd.AddListener(OnLevelEnd);
+        LevelManager.Instance.onNewArticleSpawned.AddListener(GetNewArticle);
+
         ChangeState(INITIAL_STATE);
+    }
+
+    IEnumerator WaitToActivateScrollTracking()
+    {
+        yield return new WaitForSeconds(0.2f);
+        _scroll.onValueChanged.AddListener(HasScrolled);
+    }
+
+    private void OnLevelStart(int _)
+    {
+        _keepTrackOfTime = true; 
+        _hasScrolled = false;
+        _timer = 0.0f;
+
+        StartCoroutine(WaitToActivateScrollTracking());
+    }
+
+    private void OnLevelEnd(int _)
+    {
+        _keepTrackOfTime = false; 
+        _articleData = null;
+        _timer = 0.0f;
+
+        _scroll.onValueChanged.RemoveListener(HasScrolled);
+    }
+
+    private void GetNewArticle(ArticleGameObject article)
+    {
+        if (_articleData != null)
+        {
+            _articleData.OnSkip.RemoveListener(OnArticleSkip);
+        }
+
+        _articleData = article;
+        _articleData.OnSkip.AddListener(OnArticleSkip);
+
+        _timer = 0.0f;
+        _keepTrackOfTime = true;
+    }
+
+    private void OnArticleSkip()
+    {
+        _keepTrackOfTime = false;
+    }
+
+    private void HasScrolled(Vector2 _) 
+    {
+        if(!_hasScrolled)
+        {
+            Debug.Log("User scrolled!");
+            _hasScrolled = true; 
+            _timer = 0.0f; 
+        }
     }
     
     public void ChangeState(GameAssistantState newState)
@@ -69,10 +163,69 @@ public class GameAssistant : MonoBehaviour
     public void Start()
     {
         Initialize();
-
-
     }
 
+    private void Update()
+    {
+        if (_keepTrackOfTime)
+        {
+            _timer += Time.deltaTime;
+            if (!_hasScrolled && !_articleData.HasReadArticle && !_articleData.HasSharedArticle)
+            {
+                if (_timer > noActionTimeUntilAdvice)
+                {
+                    SuggestScroll();
+                    _keepTrackOfTime = false;
+                }
+            }
+            else
+            {
+                if (_timer > noActionTimeUntilAdvice + _additionalScrolledTime)
+                {
+                    if(!_articleData.HasReadArticle)
+                    {
+                        SuggestReadingArticle();
+                    }
+                    else if (!_articleData.HasSharedArticle)
+                    {
+                        SuggestSharingArticle();
+                    }
+                }
+            }
+        }
+    }
+
+    private void SuggestSharingArticle()
+    {
+        ShowMessage("Ahora puedes compartir el artículo o puedes ignorarlo pulsando el botón 'Saltar'");
+    }
+
+    private void SuggestReadingArticle()
+    {
+        ShowMessage("Puedes Leer el artículo pulsando el botón 'Leer'. O puedes ignorarlo pulsando el botón 'Saltar'");
+    }
+
+    private void SuggestScroll()
+    {
+        ShowMessage("¡Recuerda! Puedes utilizar el dedo para deslizar la pantalla");
+    }
+
+    private void ShowMessage(string msg)
+    {
+        _messageText.SetText(msg);
+        _message.SetActive(true);
+        _messageAnimator.SetTrigger("NewMessage");
+        _okAssitantButton.gameObject.SetActive(true);
+        _keepTrackOfTime = false;
+    }
+
+    public void HideMessage()
+    {
+        _message.SetActive(false);
+        _messageText.SetText(string.Empty);
+        _keepTrackOfTime = true;
+        _timer = 0.0f;
+    }
 }
 
 

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Services.Analytics;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 [Serializable]
@@ -44,6 +45,8 @@ public class LevelManager : Singleton<LevelManager>
     private ArticleGameObject _articleData = null;
     private int _currentArticle = 0;
 
+    public ArticleGameObject CurrentArticle { get { return _articleData; } }
+
     [SerializeField]
     private TestLogic _testLogic = null;
 
@@ -51,10 +54,18 @@ public class LevelManager : Singleton<LevelManager>
 
     Slider _gameProgressSlider = null;
 
+    public UnityEvent<int> onLevelStart = null;
+    public UnityEvent<int> onLevelEnd = null;
+    public UnityEvent<ArticleGameObject> onNewArticleSpawned = null;
+
     protected override void Awake()
     {
         _destroyOnLoad = true;
         base.Awake();
+
+        onLevelStart = new UnityEvent<int>();
+        onLevelEnd = new UnityEvent<int>();
+        onNewArticleSpawned = new UnityEvent<ArticleGameObject>();
     }
 
     public void SetGameProgressSlider(Slider generalProgress)
@@ -66,16 +77,21 @@ public class LevelManager : Singleton<LevelManager>
 
         _gameProgressSlider.maxValue = _numLevels;
         _gameProgressSlider.value = _currentLevel;
+
     }
 
     private void Start()
     {
+
         _numLevels = _levelsInfo.Count;
 
         _loadingAnimation?.SetActive(false);
         StartCoroutine(GetArticlesFromResources());
 
         if (!_testLogic) _testLogic = GameObject.FindFirstObjectByType<TestLogic>();
+
+        onLevelStart.AddListener(ScoreManager.Instance.ReachedNewLevel);
+        onLevelEnd.AddListener(ShowEndLevel);
 
         CustomEvent newEvent = new CustomEvent("FreeMode_Start");
         AnalyticsManager.Instance.SubmitEvent(newEvent);
@@ -153,7 +169,7 @@ public class LevelManager : Singleton<LevelManager>
         _endLevelScreen.SetActive(false);
     }
 
-    public void ShowEndLevel()
+    public void ShowEndLevel(int level)
     {
         _endLevelScreen.SetActive(true);
     }
@@ -174,19 +190,14 @@ public class LevelManager : Singleton<LevelManager>
 
         if (_currentArticle >= _levels[_currentLevel].Count)
         {
-            ShowEndLevel();
+            onLevelEnd.Invoke(_currentLevel);
         }
         else
         {
-            if (_currentArticle == 0) {
-                // tell ScoreManager that a new Level was reached 
-                ScoreManager.Instance.ReachedNewLevel(_currentLevel);
-            }
-
             _articleObject = Instantiate(_articlePrefab, _articleFeed.transform);
             _articleData = _articleObject.GetComponent<ArticleGameObject>();
             _articleData.OnSkip.AddListener(ShowNextArticle);
-            ArticleData data = Instantiate(_levels[_currentLevel][_currentArticle++]);
+            ArticleData data = Instantiate(_levels[_currentLevel][_currentArticle]);
 
 #if UNITY_EDITOR
             if (data.isTrue)
@@ -196,6 +207,12 @@ public class LevelManager : Singleton<LevelManager>
 #endif
             _articleData.SetArticleData(data);
 
+            if (_currentArticle++ == 0) {
+                // tell ScoreManager that a new Level was reached 
+                onLevelStart.Invoke(_currentLevel);
+            }
+
+            onNewArticleSpawned.Invoke(_articleData);
         }
     }
 
