@@ -60,14 +60,7 @@ public class AvatarSelector : MonoBehaviour
             _selectionImage.color = Color.white;
         }
         _selected = selected;
-		if (_outline != null)
-		{
-			_outline.effectColor = _selected ? _selectedColor : _deSelectedColor;
-		}
-		if (_badge != null)
-		{
-			_badge.gameObject.SetActive(_selected);
-		}
+		UpdateVisuals(_selected);
 	}
 
     public void ChangeColor(Color color)
@@ -81,18 +74,21 @@ public class AvatarSelector : MonoBehaviour
         UpdateVisuals(false);
     }
 
+    public void TurnOn()
+    {
+		_selected = true;
+		UpdateVisuals(true);
+	}
+
     public void OnSelection()
     {
         if(_logic != null)
         {
             _logic.UpdateSelection(_index, _category);
         }
+	}
 
-        _selected = !_selected;
-        UpdateVisuals(_selected);
-    }
-
-    private void UpdateVisuals(bool active)
+	private void UpdateVisuals(bool active)
     {
 		if (_outline != null)
 		{

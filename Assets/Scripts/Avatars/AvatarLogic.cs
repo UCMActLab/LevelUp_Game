@@ -28,6 +28,9 @@ public class AvatarLogic : MonoBehaviour
 	[SerializeField]
 	private Sprite _colorImage;
 
+	[SerializeField]
+	private GameObject _resultParent;
+
 	[Header("Avatar")]
 
 	[SerializeField]
@@ -66,12 +69,18 @@ public class AvatarLogic : MonoBehaviour
 
 	private int _selectedFace = 0;
 
+	[SerializeField]
+	private Color[] _faceColors;
+
 	private AvatarSelector[] _selectorFaceColor;
 
 	private int _selectedFaceColor = 0;
+	
+	[SerializeField]
+	private int _defaultFaceIndex = 0;
 
 	[SerializeField]
-	private Color[] _faceColors;
+	private int _defaultSkinColorIndex = 0;
 
 	[Header("Hair")]
 
@@ -94,6 +103,12 @@ public class AvatarLogic : MonoBehaviour
 	private AvatarSelector[] _selectorHairColor;
 
 	private int _selectedHairColor = 0;
+
+	[SerializeField]
+	private int _defaultHairIndex = 0;
+	
+	[SerializeField]
+	private int _defaultHairColorIndex = 0;
 
 	[Header("Face")]
 
@@ -127,7 +142,17 @@ public class AvatarLogic : MonoBehaviour
 
 	private int _selectedNose = 0;
 
+	[SerializeField]
+	private int _defaultEyesIndex = 0;
+
+	[SerializeField]
+	private int _defaultEyesColorIndex = 0;
+
+	[SerializeField]
+	private int _defaultNoseIndex = 0;
+
 	[Header("Clothes")]
+
 	[SerializeField]
 	private GameObject _clothesContainer;
 
@@ -157,6 +182,15 @@ public class AvatarLogic : MonoBehaviour
 	private AvatarSelector[] _accesories;
 
 	private int _selectedAccesory = 0;
+
+	[SerializeField]
+	private int _defaultClothesIndex = 0;
+
+	[SerializeField]
+	private int _defaultClothesColorIndex = 0;
+
+	[SerializeField]
+	private int _defaultAccesoriesIndex = 0;
 
 	public void Start()
 	{
@@ -285,6 +319,36 @@ public class AvatarLogic : MonoBehaviour
 		_avatarClothes.color = _clothesColors[0];
 		_avatarAcessory.sprite = _accesoriesShapes[0];
 		_avatarAcessory.SetNativeSize();
+
+		ResetToDefault();
+	}
+
+	public void ResetToDefault()
+	{
+		UpdateSelection(_defaultFaceIndex, AvatarSelector.SelectorCategory.Face);
+		UpdateSelection(_defaultSkinColorIndex, AvatarSelector.SelectorCategory.FaceColor);
+		UpdateSelection(_defaultHairIndex, AvatarSelector.SelectorCategory.Hair);
+		UpdateSelection(_defaultHairColorIndex, AvatarSelector.SelectorCategory.HairColor);
+		UpdateSelection(_defaultEyesIndex, AvatarSelector.SelectorCategory.Eyes);
+		UpdateSelection(_defaultEyesColorIndex, AvatarSelector.SelectorCategory.EyesColor);
+		UpdateSelection(_defaultNoseIndex, AvatarSelector.SelectorCategory.Noses);
+		UpdateSelection(_defaultClothesIndex, AvatarSelector.SelectorCategory.Clothes);
+		UpdateSelection(_defaultClothesColorIndex, AvatarSelector.SelectorCategory.ClothesColor);
+		UpdateSelection(_defaultAccesoriesIndex, AvatarSelector.SelectorCategory.Accesories);
+	}
+
+	public void Randomize()
+	{
+		UpdateSelection(Random.Range(0, _faces.Length), AvatarSelector.SelectorCategory.Face);
+		UpdateSelection(Random.Range(0, _faceColors.Length), AvatarSelector.SelectorCategory.FaceColor);
+		UpdateSelection(Random.Range(0, _hairs.Length), AvatarSelector.SelectorCategory.Hair);
+		UpdateSelection(Random.Range(0, _hairColors.Length), AvatarSelector.SelectorCategory.HairColor);
+		UpdateSelection(Random.Range(0, _eyes.Length), AvatarSelector.SelectorCategory.Eyes);
+		UpdateSelection(Random.Range(0, _eyesColors.Length), AvatarSelector.SelectorCategory.EyesColor);
+		UpdateSelection(Random.Range(0, _noses.Length), AvatarSelector.SelectorCategory.Noses);
+		UpdateSelection(Random.Range(0, _clothes.Length), AvatarSelector.SelectorCategory.Clothes);
+		UpdateSelection(Random.Range(0, _clothesColors.Length), AvatarSelector.SelectorCategory.ClothesColor);
+		UpdateSelection(Random.Range(0, _accesories.Length), AvatarSelector.SelectorCategory.Accesories);
 	}
 
 	public void UpdateSelection(int index, AvatarSelector.SelectorCategory category)
@@ -296,6 +360,7 @@ public class AvatarLogic : MonoBehaviour
 				_selectedFace = index;
 				_avatarFace.sprite = _faceShapes[_selectedFace];
 				_avatarFace.SetNativeSize();
+				_faces[_selectedFace].TurnOn();
 				break;
 			case AvatarSelector.SelectorCategory.FaceColor:
 				_selectorFaceColor[_selectedFaceColor].TurnOff();
@@ -305,12 +370,14 @@ public class AvatarLogic : MonoBehaviour
 					_faces[i].ChangeColor(_faceColors[_selectedFaceColor]);
 				}
 				_avatarFace.color = _faceColors[_selectedFaceColor];
+				_selectorFaceColor[_selectedFaceColor].TurnOn();
 				break;
 			case AvatarSelector.SelectorCategory.Hair:
 				_hairs[_selectedHair].TurnOff();
 				_selectedHair = index;
 				_avatarHair.sprite = _hairShapes[_selectedHair];
 				_avatarHair.SetNativeSize();
+				_hairs[_selectedHair].TurnOn();
 				break;
 			case AvatarSelector.SelectorCategory.HairColor:
 				_selectorHairColor[_selectedHairColor].TurnOff();
@@ -320,12 +387,14 @@ public class AvatarLogic : MonoBehaviour
 					_hairs[i].ChangeColor(_hairColors[_selectedHairColor]);
 				}
 				_avatarHair.color = _hairColors[_selectedHairColor];
+				_selectorHairColor[_selectedHairColor].TurnOn();
 				break;
 			case AvatarSelector.SelectorCategory.Eyes:
 				_eyes[_selectedEyes].TurnOff();
 				_selectedEyes = index;
 				_avatarEyes.sprite = _eyesShapes[_selectedEyes];
 				_avatarEyes.SetNativeSize();
+				_eyes[_selectedEyes].TurnOn();
 				break;
 			case AvatarSelector.SelectorCategory.EyesColor:
 				_selectorEyesColor[_selectedEyesColor].TurnOff();
@@ -335,18 +404,21 @@ public class AvatarLogic : MonoBehaviour
 					_eyes[i].ChangeColor(_eyesColors[_selectedEyesColor]);
 				}
 				_avatarEyes.color = _eyesColors[_selectedEyesColor];
+				_selectorEyesColor[_selectedEyesColor].TurnOn();
 				break;
 			case AvatarSelector.SelectorCategory.Noses:
 				_noses[_selectedNose].TurnOff();
 				_selectedNose = index;
 				_avatarNose.sprite = _nosesShapes[_selectedNose];
 				_avatarNose.SetNativeSize();
+				_noses[_selectedNose].TurnOn();
 				break;
 			case AvatarSelector.SelectorCategory.Clothes:
 				_clothes[_selectedClothes].TurnOff();
 				_selectedClothes = index;
 				_avatarClothes.sprite = _clothesShapes[_selectedClothes];
 				_avatarClothes.SetNativeSize();
+				_clothes[_selectedClothes].TurnOn();
 				break;
 			case AvatarSelector.SelectorCategory.ClothesColor:
 				_selectorClothesColor[_selectedClothesColor].TurnOff();
@@ -356,12 +428,14 @@ public class AvatarLogic : MonoBehaviour
 					_clothes[i].ChangeColor(_clothesColors[_selectedClothesColor]);
 				}
 				_avatarClothes.color = _clothesColors[_selectedClothesColor];
+				_selectorClothesColor[_selectedClothesColor].TurnOn();
 				break;
 			case AvatarSelector.SelectorCategory.Accesories:
 				_accesories[_selectedAccesory].TurnOff();
 				_selectedAccesory = index;
 				_avatarAcessory.sprite = _accesoriesShapes[_selectedAccesory];
 				_avatarAcessory.SetNativeSize();
+				_accesories[_selectedAccesory].TurnOn();
 				break;
 			default:
 				Debug.LogError("Type of avatar customization invalid: Index " + index);
@@ -401,10 +475,10 @@ public class AvatarLogic : MonoBehaviour
 		_currentGameObject = _avatarClothesContainer;
 	}
 
-	public GameObject SubmitAvatar()
+	public void SubmitAvatar()
 	{
 		// TODO depends on how we construct or save the avatar during game, this is a temporary solution until the necessity comes forth
 		// Copies the GameObject and returns it for it to be manipulated as necessary
-		return Instantiate(_avatar);
+		Instantiate(_avatar, _resultParent.transform);
 	}
 }
