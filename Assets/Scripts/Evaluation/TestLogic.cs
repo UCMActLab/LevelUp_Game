@@ -1,8 +1,10 @@
 using DA_Assets.Extensions;
 using System;
+using System.Collections.Generic;
 using Unity.Services.Analytics;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Localization.Tables;
 using UnityEngine.UI;
 
 public class TestLogic : MonoBehaviour
@@ -13,7 +15,8 @@ public class TestLogic : MonoBehaviour
 	[SerializeField]
     private Test _test;
 
-	[SerializeField] private GameObject _parentUI = null;
+	[SerializeField] 
+	private GameObject _parentUI = null;
 
 	[SerializeField]
 	private GameObject _testContainer;
@@ -51,10 +54,15 @@ public class TestLogic : MonoBehaviour
 
 	public UnityEvent OnTestEnd = new UnityEvent();
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+	Stack<QuestionMC> _trueFalseQuestions;
+	Stack<QuestionMC> _multipleChoiceQuestions;
+
     void Start()
     {
 		_questions = null;
+
+		CreateQuestions();
+
         if (_setUpOnAwake) SetUp();
     }
 
@@ -64,6 +72,118 @@ public class TestLogic : MonoBehaviour
 
 		if (startQuiz) SetUp();
 	}
+
+	private void CreateQuestions()
+	{
+		var allQuestions = TranslationManager.Instance.GetAllTableEntries("EVALUATION");
+
+        Dictionary<int, QuestionMC> questions = new Dictionary<int, QuestionMC>();
+
+        foreach (StringTableEntry v in allQuestions)
+        {
+            foreach (var metadata in v.MetadataEntries)
+            {
+                Debug.Log(metadata);
+            }
+
+            string key = v.Key;
+            string[] keySplitUnderscore = key.Split('_');
+            if (keySplitUnderscore[0] != "QUESTION") { continue; }
+            else
+            {
+                int id = int.Parse(keySplitUnderscore[1].Split('/')[0]);
+                string[] keySplitBar = key.Split('/');
+
+                QuestionMC question = null;
+                if (keySplitBar.Length == 1)
+                {
+                    question = ScriptableObject.CreateInstance("QuestionMC") as QuestionMC;
+					question.name = key;
+                    question.questionText = key;
+
+                    if (question.answerOptions == null) question.answerOptions = new List<OptionMC>();
+
+                    if (v.SharedEntry.Metadata.MetadataEntries.Count > 0)
+                    {
+                        OptionMC optionFalse = new OptionMC();
+                        optionFalse.optionText = "FALSE";
+                        optionFalse.isCorrect = v.SharedEntry.Metadata.MetadataEntries[0].ToString() == "FALSE";
+
+                        OptionMC optionTrue = new OptionMC();
+                        optionTrue.optionText = "TRUE";
+                        optionTrue.isCorrect = !optionFalse.isCorrect;
+
+                        question.answerOptions.Add(optionTrue);
+                        question.answerOptions.Add(optionFalse);
+                    }
+
+                    questions.Add(id, question);
+                }
+                else
+                {
+                    question = questions[id];
+                    string nature = keySplitBar[1];
+                    if (nature == "POSITIVE_FEEDBACK")
+                    {
+                        question.positiveExplanation = key;
+                    }
+                    else if (nature == "NEGATIVE_FEEDBACK")
+                    {
+                        question.negativeExplanation = key;
+                    }
+                    else
+                    {
+                        string answer = nature.Split('_')[0];
+                        if (answer == "ANSWER")
+                        {
+                            OptionMC option = new OptionMC();
+                            option.optionText = key;
+                            option.isCorrect = v.SharedEntry.Metadata.MetadataEntries[0].ToString() == "TRUE";
+
+                            question.answerOptions.Add(option);
+                        }
+                    }
+                }
+            }
+        }
+
+		List<QuestionMC> trueFalse = new List<QuestionMC>();
+		List<QuestionMC> multipleChoice = new List<QuestionMC>();
+
+        foreach (QuestionMC question in questions.Values)
+        {
+            question.showFeedback = true;
+            question.optionsAsButtons = true;
+            question.allowMultipleSelections = false;
+
+            int numCorrect = 0;
+            foreach (OptionMC option in question.answerOptions)
+            {
+                if (option.isCorrect) numCorrect++;
+
+                if (numCorrect > 1)
+                {
+                    question.optionsAsButtons = false;
+                    question.allowMultipleSelections = true;
+                    break;
+                }
+            }
+
+			if (numCorrect == 1 && question.answerOptions.Count == 2) trueFalse.Add(question);
+			else {
+				Debug.Log(question.questionText);
+				multipleChoice.Add(question);
+			}
+        }
+
+		trueFalse.Shuffle();
+		multipleChoice.Shuffle();
+
+        _trueFalseQuestions = new Stack<QuestionMC>(trueFalse);
+        _multipleChoiceQuestions = new Stack<QuestionMC>(multipleChoice);
+
+		Debug.Log("Number of questions created: True/False: " + _trueFalseQuestions.Count.ToString() + " Multiple Choice: " + _multipleChoiceQuestions.Count.ToString());
+    }
 
     public void SetUp()
     {
@@ -77,35 +197,29 @@ public class TestLogic : MonoBehaviour
 
 		if(_questions != null) foreach (GameObject go in _questions) { Destroy(go); }
 
-		_questions = new GameObject[_test.questions.Length];
-		_questionLogics = new IQuestionLogic[_test.questions.Length];
-		_results = new EvaluationResult[_test.questions.Length];
+		int totalQuestions = Mathf.Min(_test.TotalQuestions, _trueFalseQuestions.Count + _multipleChoiceQuestions.Count);
 
-		// _testContainer.DestroyChilds();
-		// TODO encontrar alternativa para evitar GetComponent
-        for (int i = 0; i < _test.questions.Length; i++)
+		_questions = new GameObject[totalQuestions];
+		_questionLogics = new IQuestionLogic[totalQuestions];
+		_results = new EvaluationResult[totalQuestions];
+
+		_test.questions = new Question[totalQuestions];
+        for (int i = 0; i < totalQuestions; i++)
         {
-			GameObject question = null;
-			switch (_test.questions[i].questionType)
-            {
-				case Question.QuestionType.LIKERT:
-					question = Instantiate(_likertQuestionPrefab, _testContainer.transform);
-					_questionLogics[i] = question.GetComponent<LikertLogic>();
-					break;
-				case Question.QuestionType.MULTIPLE_CHOICE:
-					question = Instantiate(_MCQuestionPrefab, _testContainer.transform);
-					_questionLogics[i] = question.GetComponent<MCLogic>();
-					(_questionLogics[i] as MCLogic).SetTestLogic(this);
-					break;
-				case Question.QuestionType.OPEN_ENDED:
-					question = Instantiate(_openQuestionPrefab, _testContainer.transform);
-					_questionLogics[i] = question.GetComponent<OpenQuestionLogic>();
-					break;
-				default:
-					Debug.LogWarning("Question - Type: Unknown");
-					break;
-			}
-			_questionLogics[i].SetUp(_test.questions[i]);
+			GameObject question = Instantiate(_MCQuestionPrefab, _testContainer.transform);
+
+			_questionLogics[i] = question.GetComponent<MCLogic>();
+			(_questionLogics[i] as MCLogic).SetTestLogic(this);
+
+			Question q = null;
+
+
+			if (_trueFalseQuestions.Count > 0 && (i < _test.numTrueFalseQuestions || _multipleChoiceQuestions.Count == 0)) q = _trueFalseQuestions.Pop();
+			else if (_multipleChoiceQuestions.Count > 0) q = _multipleChoiceQuestions.Pop();
+
+			_questionLogics[i].SetUp(q);
+			_test.questions[i] = q;
+
 			_questions[i] = question;
 		}
 
@@ -132,7 +246,7 @@ public class TestLogic : MonoBehaviour
 
 	public void SubmitAnswers()
 	{
-		for (int i = 0; i < _test.questions.Length; i++)
+		for (int i = 0; i < _test.TotalQuestions; i++)
 		{
 			_results[i] = _questionLogics[i].GetResults();
 			switch (_results[i].resultType)
@@ -165,8 +279,6 @@ public class TestLogic : MonoBehaviour
 	public void DisplayEnd()
 	{
 		_questions[_currentQuestionIndex].SetActive(false);
-		//  _testButtons.SetActive(false);
-        // _closingQuestion.SetActive(true);
         _parentUI.SetActive(false);
 		_currentQuestionIndex = 0;
 
@@ -195,7 +307,8 @@ public class TestLogic : MonoBehaviour
 
 		IQuestionLogic currentLogic = _questionLogics[_currentQuestionIndex];
 
-		_feedbackLogic.SetUp(currentLogic.IsCorrect(), currentLogic.GetCorrectResponse(), _test.questions[_currentQuestionIndex].explanation);
+		// CAMBIAR A MOSTRAR FEEDBACK
+		_feedbackLogic.SetUp(currentLogic.IsCorrect(), currentLogic.GetCorrectResponse(), _test.questions[_currentQuestionIndex].positiveExplanation);
 
 		_feedbackQuestion.SetActive(true);
 	}
@@ -222,6 +335,7 @@ public class TestLogic : MonoBehaviour
 
 			ActivateTestButtonsIfOptionsAreNotButtons();
 			_questions[_currentQuestionIndex].SetActive(true);
+			Debug.Log(_test.questions[_currentQuestionIndex].name);
 		}
 		else
 		{

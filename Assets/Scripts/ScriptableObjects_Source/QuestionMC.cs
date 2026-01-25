@@ -19,7 +19,7 @@ public class QuestionMC : Question
 	[Header("[Option As Buttons] overwrites [Allow Multiple Selection] and will only allow one response", order = 1)]
 	[Space(30, order = 2)]
 
-	public OptionMC[] answerOptions;
+	public System.Collections.Generic.List<OptionMC> answerOptions;
 
 	public QuestionMC()
 	{

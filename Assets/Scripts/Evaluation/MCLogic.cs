@@ -51,10 +51,9 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 			Debug.LogError("MCLogic: Question is not of type QuestionMC!");
 			return;
 		}
-		Debug.Log(_questionMC.questionText);
 		_questionText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionMC.questionText);
 
-		_numberOfOptions = _questionMC.answerOptions.Length;
+		_numberOfOptions = _questionMC.answerOptions.Count;
 
 		_multipleSelection = _questionMC.allowMultipleSelections;
 
@@ -82,7 +81,6 @@ public class MCLogic : MonoBehaviour, IQuestionLogic
 			MCOptionValue mcVal = option.GetComponent<MCOptionValue>();
 			mcVal.SetMCLogic(this);
 
-            Debug.Log(_questionMC.answerOptions[i].optionText);
             mcVal.SetValue(i, TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", _questionMC.answerOptions[i].optionText));
 
 			if (_optionsAsButtons)

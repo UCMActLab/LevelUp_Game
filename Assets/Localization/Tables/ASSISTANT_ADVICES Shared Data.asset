@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: ASSISTANT_ADVICES Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: ASSISTANT_ADVICES
+  m_TableCollectionNameGuidString: a2386069f033e25449721c41e84cb377
+  m_Entries:
+  - m_Id: 106963898368
+    m_Key: WORRIED/SHARED_FALSE/READED_ARTICLE/0/0
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521649
+  - m_Id: 107031007232
+    m_Key: WORRIED/SHARED_FALSE/READED_ARTICLE/0/1
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521650
+  - m_Id: 107031007233
+    m_Key: WORRIED/SHARED_FALSE/READED_ARTICLE/0/2
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521651
+  - m_Id: 107031007234
+    m_Key: WORRIED/SHARED_FALSE/READED_ARTICLE/0/3
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521652
+  - m_Id: 107031007235
+    m_Key: WORRIED/SHARED_FALSE/READED_ARTICLE/0/4
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521653
+  - m_Id: 107031007236
+    m_Key: WORRIED/SHARED_FALSE/DOESNT_READ/0/0
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521654
+  - m_Id: 107031007237
+    m_Key: WORRIED/SHARED_FALSE/DOESNT_READ/0/1
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521655
+  - m_Id: 107031007238
+    m_Key: WORRIED/SHARED_FALSE/DOESNT_READ/0/2
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521656
+  - m_Id: 107031007239
+    m_Key: WORRIED/SHARED_TRUE/DOESNT_READ/0/0
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521657
+  - m_Id: 107035201536
+    m_Key: WORRIED/SHARED_TRUE/DOESNT_READ/0/1
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521658
+  - m_Id: 107035201537
+    m_Key: WORRIED/SHARED_TRUE/DOESNT_READ/0/2
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521659
+  - m_Id: 107035201538
+    m_Key: WORRIED/SHARED_TRUE/DOESNT_READ/0/3
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521660
+  - m_Id: 107035201539
+    m_Key: WORRIED/SKIPPED/DOESNT_READ/0/0
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521661
+  - m_Id: 107035201540
+    m_Key: WORRIED/SKIPPED/DOESNT_READ/0/1
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521662
+  - m_Id: 107035201541
+    m_Key: WORRIED/SKIPPED/DOESNT_READ/0/2
+    m_Metadata:
+      m_Items:
+      - rid: 8408148443967521663
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8408148443967521648
+  references:
+    version: 2
+    RefIds:
+    - rid: 8408148443967521648
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1769178804834
+    - rid: 8408148443967521649
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521650
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521651
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521652
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521653
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521654
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521655
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521656
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521657
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521658
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521659
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521660
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521661
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521662
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150
+    - rid: 8408148443967521663
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=150

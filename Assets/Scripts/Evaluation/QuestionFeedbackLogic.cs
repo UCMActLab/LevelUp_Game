@@ -29,6 +29,8 @@ public class QuestionFeedbackLogic : MonoBehaviour
             _headerText.color = _correctColor;
             _correctResponseText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "CORRECT_OPTIONS");
 
+            ScoreManager.Instance.AnsweredQuestionRight();
+
 		}
         else
         {

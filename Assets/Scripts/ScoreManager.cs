@@ -37,7 +37,11 @@ public struct LevelScore
     public int trueArticlesShared;
     public int falseArticlesShared;
 
+    public int questionsRight;
+    public int totalQuestions;
+
     public int MaxScore { get { return readableArticles + trueArticles; } }
+
 }
 
 //// Esto es exactamente lo mismo que lo de LevelScore... Cambiar
@@ -151,6 +155,11 @@ public class ScoreManager : Singleton<ScoreManager>
         }
     }
 
+    public void AnsweredQuestionRight()
+    {
+        _levelsScore[_levelScoreIndex].questionsRight++;
+    }
+
     public void SetMaxScore()
     {
         SetMaxScoreToUIElements();
@@ -171,7 +180,7 @@ public class ScoreManager : Singleton<ScoreManager>
         _levelsScore = new LevelScore[numLevels];
     }
 
-    public void SetLevelInfo(int levelIndex, int numArticles, int numArticlesToRead, int numArticlesTrue)
+    public void SetLevelInfo(int levelIndex, int numArticles, int numArticlesToRead, int numArticlesTrue, int numQuestions)
     {
         LevelScore current = _levelsScore[levelIndex];
 
@@ -190,6 +199,9 @@ public class ScoreManager : Singleton<ScoreManager>
         current.readArticles = 0;
         current.trueArticlesShared = 0;
         current.falseArticlesShared = 0;
+
+        current.totalQuestions = numQuestions;
+        current.questionsRight = 0;
 
         _levelsScore[levelIndex] = current;
     }

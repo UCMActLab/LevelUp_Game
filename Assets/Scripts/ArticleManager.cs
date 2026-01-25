@@ -15,6 +15,7 @@ public struct ArticleJSONData {
     public string Multimedia;
     public string Source;
     public string Links;
+    public string Theme;
     public List<ConversationJSON> Conversation;
 }
 
@@ -130,15 +131,18 @@ public class ArticleManager : Singleton<ArticleManager>
                 article.needsTranslation = false;
 
                 string headline = data.Headline.Trim(' ');
+                string body = data.Body.Trim(' ');
 
-                if (headline == string.Empty) { continue; }
+                if (headline == string.Empty || body == string.Empty) { continue; }
 
                 article.ID = "art_" + i.ToString();
                 article.isTrue = data.isTrue;
-                article.articleTitle = data.Headline;
+                article.articleTitle = headline;
                 article.articleBody = data.Body.Trim(' ');
+                article.theme = data.Theme;
 
                 // article.image = data.Multimedia; TODO: Tratamiento de imágenes
+                Debug.Log("Load Images: " + _loadImages + data.Multimedia);
                 if (_loadImages && data.Multimedia != null && data.Multimedia != "")
                 {
                     if (sprites.ContainsKey(data.Multimedia))
@@ -152,7 +156,7 @@ public class ArticleManager : Singleton<ArticleManager>
                         imageID = imageID.Replace("/view?usp=drive_link", "");
                         imageID = imageID.Replace("image:", "");
 
-                        string driveURL = "https://drive.google.com/uc?export=download&id=" + imageID;
+                        string driveURL = "https://levelup-game.fundacionmaldita.es/api/proxy/gdrive?fileId=" + imageID;
                         UnityWebRequest request = UnityWebRequestTexture.GetTexture(driveURL);
 
                         yield return request.SendWebRequest();
@@ -168,6 +172,7 @@ public class ArticleManager : Singleton<ArticleManager>
                         else
                         {
                             Debug.LogError("No se ha podido cargar la textura: " + request.result);
+                            continue;
                         }
                     }
                 }

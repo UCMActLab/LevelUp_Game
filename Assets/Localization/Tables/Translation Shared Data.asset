@@ -213,6 +213,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 8373808564245364931
+  - m_Id: 36341147694239744
+    m_Key: SCORE/QUESTIONS_RIGHT
+    m_Metadata:
+      m_Items:
+      - rid: 8408148495834022193
   - m_Id: 1470815863758848
     m_Key: LANGUAGESELECTION/WELCOME
     m_Metadata:
@@ -582,11 +587,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 8656567430927876489
-  - m_Id: 19949383009931264
-    m_Key: END_LEVEL/SUBTITLE
+  - m_Id: 35870509787484160
+    m_Key: END_LEVEL/AVATAR_MESSAGE
     m_Metadata:
       m_Items:
-      - rid: 8656567430927876490
+      - rid: 8408148443967521584
   - m_Id: 19989448662683648
     m_Key: SCORE/FEEDBACK/READ
     m_Metadata:
@@ -612,6 +617,19 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 3936882922569859485
+  - m_Id: 36341147752960000
+    m_Key: SHARE/BUTTON/DONT_SHARE
+    m_Metadata:
+      m_Items:
+      - rid: 8408148495834022194
+  - m_Id: 36644566015381504
+    m_Key: DATA_GATHERING_MESSAGE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 36647627920216064
+    m_Key: ARTICLE/INCREASE_TEXT_SIZE_BUTTON
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
@@ -670,7 +688,7 @@ MonoBehaviour:
     - rid: 4330159918517846134
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_CommentText: MAX_CHARACTERS=6
+        m_CommentText: MAX_CHARACTERS=10
     - rid: 4330159918517846135
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
@@ -959,14 +977,22 @@ MonoBehaviour:
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
         m_CommentText: MAX_CHARACTERS=24
+    - rid: 8408148443967521584
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=120
+    - rid: 8408148495834022193
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=26
+    - rid: 8408148495834022194
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=24
     - rid: 8656567430927876489
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
         m_CommentText: MAX_CHARACTERS=24
-    - rid: 8656567430927876490
-      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
-      data:
-        m_CommentText: MAX_CHARACTERS=120
     - rid: 8656567435832066155
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:

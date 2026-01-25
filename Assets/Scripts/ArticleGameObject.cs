@@ -8,6 +8,7 @@ using UnityEngine.Localization.Components;
 using System.Collections;
 using Unity.Services.Analytics;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
+using DA_Assets.Extensions;
 
 public class ArticleGameObject : MonoBehaviour
 {
@@ -65,6 +66,11 @@ public class ArticleGameObject : MonoBehaviour
 
     GameObject _shareArticleButtons = null;
     public bool IsTrue { get { return Data.isTrue; } }
+
+    public bool[] HasSharedWithGroups
+    {
+        get {  return _sharedWithGroups; }
+    }
 
     public bool HasSharedWithAllGroups { get
         {
@@ -125,16 +131,28 @@ public class ArticleGameObject : MonoBehaviour
         for (int i = 1; i <  buttons.Length; i++) {
             Button bt = buttons[i];
             
-            bt.transform.parent.gameObject.SetActive(!_sharedWithGroups[i - 1]);
+            bt.interactable = !_sharedWithGroups[i - 1];
+            if (bt.interactable)
+            {
+                AddShareArticleListenerToButton(i, bt);
+            }
 
-
-            int tempInt = i;
-            Conversation conversation = null;
-            if(Data.conversation != null && Data.conversation.Count > i - 1) { conversation = Data.conversation[i - 1]; }
-            bt.onClick.AddListener(() => ShareArticle(tempInt, _shareArticleButtons, conversation));
+            //int tempInt = i;
+            //Conversation conversation = null;
+            //if(Data.conversation != null && Data.conversation.Count > i - 1) { conversation = Data.conversation[i - 1]; }
+            //bt.onClick.AddListener(() => ShareArticle(tempInt, _shareArticleButtons, conversation));
         }
 
-        OnShare.Invoke();
+        // OnShare.Invoke();
+    }
+
+    public void AddShareArticleListenerToButton(int group, Button button)
+    {
+        button.onClick.RemoveAllListeners();
+        int tempInt = group;
+        Conversation conversation = null;
+        if (Data.conversation != null && Data.conversation.Count > group - 1) { conversation = Data.conversation[group - 1]; }
+        button.onClick.AddListener(() => ShareArticle(tempInt, _shareArticleButtons, conversation));
     }
 
     /// <summary>
@@ -175,6 +193,18 @@ public class ArticleGameObject : MonoBehaviour
         OnSkip.Invoke();
     }
 
+    public void IncreaseBodySize()
+    {
+        _bodyText.fontSize *= 1.2f;
+        // _articleTitle.fontSize *= 1.2f;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+        foreach (Transform tr in transform.parent.GetComponentsInChildren<Transform>())
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(tr as RectTransform);
+        }
+        RebuildAllLayouts();
+    }
+
     private void ShareArticle(int groupID, GameObject shareButtons, Conversation conv = null)
     {
         CustomEvent newEvent = new CustomEvent("Share_Action")
@@ -187,11 +217,13 @@ public class ArticleGameObject : MonoBehaviour
 
         _convManager.ChangeGroup(groupID);
         // Data should be an instance
-        _convManager.SendArticle(Instantiate(Data));
+        ArticleData data = Instantiate(Data);
+        data.sharedWithGroups = _sharedWithGroups;
+        _convManager.SendArticle(data);
 
         if(conv == null)
         {
-            conv = ConversationCompendium.Instance.GetConversation(Data.convType);
+            conv = ConversationCompendium.Instance.GetConversation(groupID, data.companyName, data.theme, Data.convType);
         }
 
         _convManager.SetConversation(conv, true);
@@ -201,16 +233,15 @@ public class ArticleGameObject : MonoBehaviour
         _sharedWithGroups[groupID - 1] = true;
 
         _hasSharedArticle = true;
+    
+        OnShare.Invoke();
     }
 
     public void ReadArticle()
     {
-        ChatScrollAnimation anim = GameObject.FindAnyObjectByType<ChatScrollAnimation>();
-
         _articleBody.SetActive(true);
-        _readButton.interactable = false;
-
-        anim.PlayAnimation(0.75f);
+        //_readButton.interactable = false;
+        _readButton.gameObject.SetActive(false);
 
         _hasReadArticle = true;
 
@@ -388,6 +419,11 @@ public class ArticleGameObject : MonoBehaviour
             ActivateReadButton(false);
         }
 
+        if (Data.sharedWithGroups.Length == 3)
+        {
+            _sharedWithGroups = Data.sharedWithGroups;
+        }
+        
         RebuildAllLayouts();
     }
 

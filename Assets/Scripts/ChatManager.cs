@@ -26,8 +26,12 @@ public class ChatManager : MonoBehaviour
     [SerializeField] private Transform _shareButtonsParent = null;
     [SerializeField] private ChatScrollAnimation _chatScrollAnimation = null;
     [SerializeField] private GameObject _header = null;
-    [SerializeField] private GameObject _goBackButton = null;
+    [SerializeField] private GameObject _keepSharingButton = null;
+    [SerializeField] private GameObject _backToChatButton = null;
+
     private GameObject _currentChat;
+
+    private GameObject _lastSharedArticle = null;
 
     [Header("Parameters")]
     [SerializeField, Range(0.0f, 5.0f)] private float _waitingBetweenMessages = 0.1f;
@@ -68,8 +72,8 @@ public class ChatManager : MonoBehaviour
         GameObject prefabToUse = _articlePrefab;
         if (articleData.convType == ConversationType.TUTORIAL) prefabToUse = _tutorialArticlePrefab;
 
-        GameObject article = Instantiate(prefabToUse, _currentChat.transform);
-        ArticleGameObject setter = article.GetComponent<ArticleGameObject>();
+        _lastSharedArticle = Instantiate(prefabToUse, _currentChat.transform);
+        ArticleGameObject setter = _lastSharedArticle.GetComponent<ArticleGameObject>();
         articleData.articleBody = string.Empty;
         setter.SetArticleData(articleData);
         setter.DestroyButtons();
@@ -106,7 +110,7 @@ public class ChatManager : MonoBehaviour
 
         OnChatChanged.Invoke(groupID);
     }
-        
+    
     public void ChangeToMainChat()
     {
         if (_currentChat == _mainChat) return;
@@ -119,6 +123,9 @@ public class ChatManager : MonoBehaviour
         _currentChat.SetActive(true);
         _scrollRect.content = _currentChat.transform as RectTransform;
         _messageWritingAnimator.transform.SetParent(_currentChat.transform);
+
+        _keepSharingButton.SetActive(false);
+        _keepSharingButton.transform.parent = _currentChat.transform.parent;
     }
 
     IEnumerator DisplayConversation()
@@ -159,9 +166,38 @@ public class ChatManager : MonoBehaviour
             }
         }
 
-        if(_goBackButton != null)
+        if(_keepSharingButton != null)
         {
-            _goBackButton.SetActive(true);
+            ActivateKeepSharingButtons();
+        }
+    }
+
+    private void ActivateKeepSharingButtons()
+    {
+        ArticleGameObject article = _lastSharedArticle.GetComponent<ArticleGameObject>();
+        bool[] sharedWithGroups = article.HasSharedWithGroups;
+
+        bool canShare = !(sharedWithGroups[0] && sharedWithGroups[1] && sharedWithGroups[2]);
+
+        if(canShare)
+        {
+            _keepSharingButton.SetActive(true);
+            _keepSharingButton.transform.parent = _currentChat.transform;
+
+            Button[] buttons = _keepSharingButton?.GetComponentsInChildren<Button>();
+            _keepSharingButton.SetActive(true);
+            for (int i = 0; i < sharedWithGroups.Length; ++i) {
+                buttons[i].interactable = !sharedWithGroups[i];
+
+                if (buttons[i].interactable)
+                {
+                    article.AddShareArticleListenerToButton(i + 1, buttons[i]);
+                }
+            }
+        }
+        else
+        {
+            _backToChatButton.SetActive(true);
         }
     }
 

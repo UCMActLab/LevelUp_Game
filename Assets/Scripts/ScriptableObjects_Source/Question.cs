@@ -20,5 +20,6 @@ public class Question : ScriptableObject
 	public string questionText;
 
 	public bool showFeedback = false;
-	public string explanation = "";
+	public string positiveExplanation = "";
+	public string negativeExplanation = "";
 }

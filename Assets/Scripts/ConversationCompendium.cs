@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Localization;
+using System.Linq;
 
 public class ConversationCompendium : Singleton<ConversationCompendium>
 {
@@ -68,7 +68,7 @@ public class ConversationCompendium : Singleton<ConversationCompendium>
     /// This erases a conversation from the list
     /// </summary>
     /// <returns> a Conversation of the given Type </returns>
-    public Conversation GetConversation(ConversationType conversationType = ConversationType.NONE)
+    public Conversation GetConversation(int groupIndex, string source, string theme, ConversationType conversationType = ConversationType.NONE)
     {
         if(conversationType == ConversationType.REACTION_GOOD_ARTICLE ||
             conversationType == ConversationType.REACTION_BAD_ARTICLE)
@@ -77,8 +77,34 @@ public class ConversationCompendium : Singleton<ConversationCompendium>
             cv.Messages = new List<Messages>();
             cv.Type = conversationType;
 
+            string veracity = conversationType == ConversationType.REACTION_BAD_ARTICLE ? "FALSE" : "TRUE";
+
             string table = conversationType == ConversationType.REACTION_BAD_ARTICLE ? "NEGATIVE_REACTIONS" : "POSITIVE_REACTIONS";
-            
+
+            //string key = "GROUP_" + groupIndex.ToString() + "_" + source.ToUpper() + "_" + theme.ToUpper() + "_" + veracity;
+
+            //string stringValue = TranslationManager.Instance.GetLocalizedStringValue(table, key);
+
+            //string[] messages = stringValue.Split("_");
+
+            //foreach (string message in messages)
+            //{
+            //    Messages msg = new Messages();
+            //    string[] split = message.Split(":");
+            //    msg.Name = split[0];
+
+            //    string aux = "";
+            //    for (int i = 1; i < split.Length; ++i)
+            //    {
+            //        aux += split[i];
+            //    }
+
+            //    msg.MessageList = new List<string>();
+            //    msg.MessageList.Add(aux);
+
+            //    cv.Messages.Add(msg);
+            //}
+
             int n = Random.Range(2, 5);
             for (int i = 0; i < n; ++i)
             {

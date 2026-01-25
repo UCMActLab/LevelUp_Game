@@ -8,17 +8,20 @@ public class ScoreMenu : MonoBehaviour
     [Header("Scores Object")]
     [SerializeField] private GameObject _readArticlesObject = null;
     [SerializeField] private GameObject _trueArticlesObject = null;
+    [SerializeField] private GameObject _questionsObject = null;
     [SerializeField] private GameObject _falseArticlesObject = null;
 
     [Header("Sliders")]
     [SerializeField] private Slider _generalSlider = null;
     [SerializeField] private Slider _readArticlesSlider = null;
     [SerializeField] private Slider _trueArticlesSlider = null;
+    [SerializeField] private Slider _questionsSlider = null;
     [SerializeField] private Slider _falseArticlesSlider = null;
 
     [Header("Score Texts")]
     [SerializeField] private TextMeshProUGUI _readArticlesText = null;
     [SerializeField] private TextMeshProUGUI _trueArticlesText = null;
+    [SerializeField] private TextMeshProUGUI _questionsText = null;
     [SerializeField] private TextMeshProUGUI _falseArticlesText = null;
 
     [Header("Image")]
@@ -30,7 +33,9 @@ public class ScoreMenu : MonoBehaviour
     
     [Header("Feedback")]
     [SerializeField] private GameObject _feedback = null;
+    [SerializeField] private GameAssistant _assistant = null;
     private TextMeshProUGUI _feedbackText = null;
+    private string _feedbackString = string.Empty;
 
     private Animator _animator;
 
@@ -68,6 +73,7 @@ public class ScoreMenu : MonoBehaviour
         _readArticlesSlider.value = 0.0f;
         _falseArticlesSlider.value = 0.0f;
         _trueArticlesSlider.value = 0.0f;
+        _questionsSlider.value = 0.0f;
 
         string feedback = string.Empty;
 
@@ -95,13 +101,23 @@ public class ScoreMenu : MonoBehaviour
         }
         SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, score.falseArticlesShared, score.falseArticles, 1.25f);
 
+        // preguntas
+        SetValues(_questionsObject, _questionsSlider, _questionsText, score.questionsRight, score.totalQuestions, 1.25f);
+
         if(!badFalseSharing  && !badTrueSharing && !badReading)
         {
             feedback = TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/GOOD_JOB");
         }
 
-        _feedbackText.SetText(feedback);
+        _feedbackString = feedback;
     }
+
+    public void ShowFeedback()
+    {
+        string[] feedback = _feedbackString.Split('\n');
+        _assistant.ShowMessagesOneShot(feedback, LevelManager.Instance.ShowNextArticle);
+    }
+
 
     public void RebuildLayouts()
     {

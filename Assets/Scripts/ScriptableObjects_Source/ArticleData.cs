@@ -11,9 +11,12 @@ public class ArticleData : ScriptableObject
     public string articleTitle;
     public string articleBody;
     public string ID;
+    public string theme;
 
     public ConversationType convType = ConversationType.NONE;
     public System.Collections.Generic.List<Conversation> conversation;
+
+    public bool[] sharedWithGroups;
 
     public bool isTrue = true;
 }

@@ -1236,11 +1236,11 @@ retry:
             return newInstance;
         }
 
-        public static void PlayOneShot(EventReference eventReference, Vector3 position = new Vector3())
+        public static void PlayOneShot(EventReference eventReference, float volume = 1.0f, Vector3 position = new Vector3())
         {
             try
             {
-                PlayOneShot(eventReference.Guid, position);
+                PlayOneShot(eventReference.Guid, volume, position);
             }
             catch (EventNotFoundException)
             {
@@ -1248,11 +1248,11 @@ retry:
             }
         }
 
-        public static void PlayOneShot(string path, Vector3 position = new Vector3())
+        public static void PlayOneShot(string path, float volume = 1.0f, Vector3 position = new Vector3())
         {
             try
             {
-                PlayOneShot(PathToGUID(path), position);
+                PlayOneShot(PathToGUID(path), 1.0f, position);
             }
             catch (EventNotFoundException)
             {
@@ -1260,12 +1260,13 @@ retry:
             }
         }
 
-        public static void PlayOneShot(FMOD.GUID guid, Vector3 position = new Vector3())
-        {
+        public static void PlayOneShot(FMOD.GUID guid, float volume = 1.0f, Vector3 position = new Vector3())
+        { 
             if (CreateInstanceWithinMaxDistance(guid, position, out FMOD.Studio.EventInstance instance))
             {
                 instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
                 instance.start();
+                instance.setVolume(volume);
                 instance.release();
             }
         }

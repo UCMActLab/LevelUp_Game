@@ -30,6 +30,9 @@ public class LevelManager : Singleton<LevelManager>
     List<List<ArticleData>> _levels;
 
     [SerializeField]
+    private GameAssistant _gameAssistant = null;
+
+    [SerializeField]
     private GameObject _articlePrefab;
 
     [SerializeField]
@@ -44,6 +47,8 @@ public class LevelManager : Singleton<LevelManager>
     private GameObject _articleObject = null;
     private ArticleGameObject _articleData = null;
     private int _currentArticle = 0;
+
+    [SerializeField] private Fader _fader = null;
 
     public ArticleGameObject CurrentArticle { get { return _articleData; } }
 
@@ -82,6 +87,12 @@ public class LevelManager : Singleton<LevelManager>
 
     private void Start()
     {
+        if(!_gameAssistant)
+        {
+            _gameAssistant = FindAnyObjectByType<GameAssistant>();
+        }
+
+        if(!_fader) _fader = FindAnyObjectByType<Fader>();
 
         _numLevels = _levelsInfo.Count;
 
@@ -132,7 +143,7 @@ public class LevelManager : Singleton<LevelManager>
             articlesCanRead += articlesInLevel - articlesCantRead;
             articlesTotal += articlesInLevel;
             
-            ScoreManager.Instance.SetLevelInfo(currentLevel++, articlesInLevel, articlesToReadInLevel, trueArticlesInLevel);
+            ScoreManager.Instance.SetLevelInfo(currentLevel++, articlesInLevel, articlesToReadInLevel, trueArticlesInLevel, level.test.TotalQuestions);
         }
 
         ScoreManager.Instance.SetMaxScore();
@@ -171,7 +182,10 @@ public class LevelManager : Singleton<LevelManager>
 
     public void ShowEndLevel(int level)
     {
-        _endLevelScreen.SetActive(true);
+        // _endLevelScreen.SetActive(true);
+        _fader.StartFade(0.8f, 0.0f, 0.8f);
+        string message = TranslationManager.Instance.GetLocalizedStringValue("Translation", "END_LEVEL/AVATAR_MESSAGE");
+        _gameAssistant.ShowMessageOneShot(message, ShowTest);
     }
 
     public void ShowNextArticle()
@@ -194,6 +208,7 @@ public class LevelManager : Singleton<LevelManager>
         }
         else
         {
+
             _articleObject = Instantiate(_articlePrefab, _articleFeed.transform);
             _articleData = _articleObject.GetComponent<ArticleGameObject>();
             _articleData.OnSkip.AddListener(ShowNextArticle);
@@ -209,6 +224,7 @@ public class LevelManager : Singleton<LevelManager>
 
             if (_currentArticle++ == 0) {
                 // tell ScoreManager that a new Level was reached 
+                _fader.StartFade(0.8f, 0.8f, 0.0f);
                 onLevelStart.Invoke(_currentLevel);
             }
 

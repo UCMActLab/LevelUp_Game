@@ -9,6 +9,9 @@ public class ShowDialogue : MonoBehaviour
     public bool waitForInteraction = false;
     public float waitTimeForNext = 1.5f;
 
+    [Header("Paremeters")]
+    [SerializeField, Range(0.0f, 1.0f)] float _volume = 0.5f;
+
     [Header("Writing Sounds")]
     [SerializeField] FMODUnity.EventReference _writeCharacterEvent;
     [SerializeField] int _writeSoundFrequence = 2;
@@ -140,7 +143,8 @@ public class ShowDialogue : MonoBehaviour
 
     private void PlaySound(FMODUnity.EventReference sound)
     {
-        FMODUnity.RuntimeManager.PlayOneShot(sound);
+        
+        FMODUnity.RuntimeManager.PlayOneShot(sound, 0.5f);
     }
 
     IEnumerator AnimText(string messageToShow, bool isLastMessage)
