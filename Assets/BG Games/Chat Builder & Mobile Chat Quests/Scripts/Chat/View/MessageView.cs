@@ -43,16 +43,16 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         {
             if (name != "")
             {
-                _nameText.text = name;
+                _nameText.SetText(name);
             }
-            _messageText.text = message;
+            _messageText.SetText(message);
         }
 
         public void Setup(string name, Sprite spite)
         {
             if (spite == null) return;
 
-            if (_nameText != null) _nameText.text = name;
+            if (_nameText != null) _nameText.SetText(name);
             _imageHolder.SetActive(true);
             _image.sprite = spite;
             _adjuster.SetupProportions();
@@ -62,7 +62,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         {
             if (video == null) return;
 
-            if (_nameText != null) _nameText.text = name;
+            if (_nameText != null) _nameText.SetText(name);
             _videoHolder.SetActive(true);
             RenderTexture tex = new RenderTexture(1080, 1080, 32);
 
@@ -76,7 +76,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         {
             if (audio == null) return;
 
-            if (_nameText != null) _nameText.text = name;
+            if (_nameText != null) _nameText.SetText(name);
             _audioHolder.SetActive(true);
 
             _audioSource.clip = audio;

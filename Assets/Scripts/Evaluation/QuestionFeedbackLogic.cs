@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -5,12 +6,6 @@ public class QuestionFeedbackLogic : MonoBehaviour
 {
 	[SerializeField]
 	private TMP_Text _headerText;
-
-    [SerializeField]
-    private Color _correctColor = Color.green;
-
-	[SerializeField]
-	private Color _incorrectColor = Color.red;
 
 	[SerializeField]
 	private TMP_Text _correctResponseText;
@@ -21,33 +16,42 @@ public class QuestionFeedbackLogic : MonoBehaviour
     [SerializeField]
     private GameObject _explanationBody;
 
+    [SerializeField]
+    private TestLogic _testLogic;
+
+    [SerializeField]
+    private GameAssistant _assistant;
+
     public void SetUp(bool correct, string correctOptions, string explanation)
     {
-        if(correct)
-        {
-            _headerText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "CORRECT");
-            _headerText.color = _correctColor;
-            _correctResponseText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "CORRECT_OPTIONS");
+        string title = string.Empty;
+        List<string> messages = new List<string>();
 
-            ScoreManager.Instance.AnsweredQuestionRight();
-
-		}
-        else
-        {
-            _headerText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "INCORRECT");
-            _headerText.color = _incorrectColor;
-			_correctResponseText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "INCORRECT_OPTIONS") + "\n\"<b>" + correctOptions + "\"<b>";
-		}
         try
         {
-            _explanationText.text = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", explanation);
+            string expl = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", explanation);
+            messages.Add(expl);
         }
         catch
         {
-            bool hasExplanation = explanation != string.Empty;
-            _explanationBody.SetActive(hasExplanation);
-			_explanationText.text = explanation;
-		}
+            Debug.LogWarning("No feedback found for this question");
+
+            if (correct)
+            {
+                messages.Add(TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "CORRECT"));
+
+                ScoreManager.Instance.AnsweredQuestionRight();
+            }
+            else
+            {
+                messages.Add(TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "INCORRECT"));
+                messages.Add(TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "INCORRECT_OPTIONS"));
+                messages.Add(correctOptions);
+
+            }
+        }
+       
+        _assistant.ShowMessagesOneShot(messages.ToArray(), _testLogic.NextQuestion);
 
     }
 }

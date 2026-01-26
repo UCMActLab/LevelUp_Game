@@ -57,6 +57,11 @@ public class TestLogic : MonoBehaviour
 	Stack<QuestionMC> _trueFalseQuestions;
 	Stack<QuestionMC> _multipleChoiceQuestions;
 
+	[SerializeField]
+    private GameObject _scoreTracker = null;
+	[SerializeField]
+	private GameObject _footer = null;
+
     void Start()
     {
 		_questions = null;
@@ -64,9 +69,20 @@ public class TestLogic : MonoBehaviour
 		CreateQuestions();
 
         if (_setUpOnAwake) SetUp();
+
     }
 
-	public void SetTest(Test newTest, bool startQuiz)
+    private void OnEnable()
+    {
+		OnTestEnd.AddListener(() => { _footer.SetActive(true); _scoreTracker.SetActive(true); });
+    }
+
+    private void OnDisable()
+    {
+		OnTestEnd.RemoveAllListeners();
+    }
+
+    public void SetTest(Test newTest, bool startQuiz)
 	{
 		_test = newTest;
 
@@ -233,8 +249,11 @@ public class TestLogic : MonoBehaviour
         foreach (Transform tr in _parentUI.GetComponentsInChildren<Transform>(true))
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(tr as RectTransform);
-        }
-    }
+		}
+
+		_footer.SetActive(false);
+		_scoreTracker.SetActive(false);
+	}
 
 	private void ActivateTestButtonsIfOptionsAreNotButtons()
 	{
@@ -305,17 +324,30 @@ public class TestLogic : MonoBehaviour
 		_questions[_currentQuestionIndex].SetActive(false);
 		_questionLogics[_currentQuestionIndex].LockQuestion();
 
+		_footer.SetActive(true);
+		_scoreTracker.SetActive(true);
+
+		_testButtons.SetActive(false);
+
 		IQuestionLogic currentLogic = _questionLogics[_currentQuestionIndex];
 
-		// CAMBIAR A MOSTRAR FEEDBACK
-		_feedbackLogic.SetUp(currentLogic.IsCorrect(), currentLogic.GetCorrectResponse(), _test.questions[_currentQuestionIndex].positiveExplanation);
+		bool correct = currentLogic.IsCorrect();
+		string feedback = string.Empty;
 
-		_feedbackQuestion.SetActive(true);
+		if (correct) feedback = _test.questions[_currentQuestionIndex].positiveExplanation;
+		else feedback = _test.questions[_currentQuestionIndex].negativeExplanation;
+
+		_feedbackLogic.SetUp(correct, currentLogic.GetCorrectResponse(), feedback);
+
+		// _feedbackQuestion.SetActive(true);
 	}
 
 	public void NextQuestion()
 	{
-		if (_test.questions[_currentQuestionIndex].showFeedback && !_showingFeedback)
+        _footer.SetActive(false);
+        _scoreTracker.SetActive(false);
+
+        if (_test.questions[_currentQuestionIndex].showFeedback && !_showingFeedback)
 		{
 			DisplayFeedback();
 			return;

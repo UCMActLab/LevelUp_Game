@@ -64,7 +64,7 @@ public class TutorialController : MonoBehaviour
     [SerializeField] private GameObject _secondArticle;
     private LocalizeStringEvent _messageToUserLocalized;
     private Animator _messageAnimator = null;
-    private AudioSource _messageAudioSource = null;
+    private FMODUnity.StudioEventEmitter _messageAudioSource = null;
 
     [SerializeField] private Fader _fader;
 
@@ -124,7 +124,7 @@ public class TutorialController : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(_messageToUser.transform.parent as RectTransform);
 
         _messageAnimator = _messageToUser.transform.parent.parent.GetComponent<Animator>();
-        _messageAudioSource = _messageAnimator.GetComponent<AudioSource>();
+        _messageAudioSource = _messageAnimator.GetComponent<FMODUnity.StudioEventEmitter>();
 
         _data = Instantiate(_data);
 

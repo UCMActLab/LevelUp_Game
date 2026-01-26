@@ -266,9 +266,9 @@ public class GameAssistant : MonoBehaviour
         else
         {
             _messageText.SetText(_messagesOnClick[_messageIndex++]);
+            _message.GetComponent<RebuildLayoutOnStart>().RebuildAllLayouts();
             _messageAnimator.SetTrigger("NewMessage");
         }
-        
     }
 
     private void HasScrolled(Vector2 _) 
@@ -507,6 +507,7 @@ public class GameAssistant : MonoBehaviour
         _messageText.SetText(msg);
         _message.SetActive(true);
         _messageAnimator.SetTrigger("NewMessage");
+        _message.GetComponent<RebuildLayoutOnStart>().RebuildAllLayouts();
     }
 
     public void AssistantEndMessageOneShot(UnityAction oneShot)
