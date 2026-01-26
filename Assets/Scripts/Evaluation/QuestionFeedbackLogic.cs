@@ -27,12 +27,17 @@ public class QuestionFeedbackLogic : MonoBehaviour
         string title = string.Empty;
         List<string> messages = new List<string>();
 
-        try
+        if(explanation != "NULL")
         {
             string expl = TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", explanation);
             messages.Add(expl);
+
+            if(correct)
+            {
+                ScoreManager.Instance.AnsweredQuestionRight();
+            }
         }
-        catch
+        else
         {
             Debug.LogWarning("No feedback found for this question");
 
@@ -47,7 +52,6 @@ public class QuestionFeedbackLogic : MonoBehaviour
                 messages.Add(TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "INCORRECT"));
                 messages.Add(TranslationManager.Instance.GetLocalizedStringValue("EVALUATION", "INCORRECT_OPTIONS"));
                 messages.Add(correctOptions);
-
             }
         }
        

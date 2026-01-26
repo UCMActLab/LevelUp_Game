@@ -116,6 +116,8 @@ public class TestLogic : MonoBehaviour
                     question = ScriptableObject.CreateInstance("QuestionMC") as QuestionMC;
 					question.name = key;
                     question.questionText = key;
+					question.positiveExplanation = "NULL";
+					question.negativeExplanation = "NULL";
 
                     if (question.answerOptions == null) question.answerOptions = new List<OptionMC>();
 
