@@ -167,7 +167,6 @@ public class LevelManager : Singleton<LevelManager>
     {
         if(_articleData.HasSharedWithAllGroups)
         {
-            ScoreManager.Instance.CalculateArticlePoints(_articleData);
             ShowNextArticle();
         }
     }
@@ -198,6 +197,7 @@ public class LevelManager : Singleton<LevelManager>
 
         if (_articleObject != null)
         {
+            ScoreManager.Instance.CalculateArticlePoints(_articleData);
             _articleData.OnSkip.RemoveAllListeners();
             _articleData.DestroyArticle();
         }

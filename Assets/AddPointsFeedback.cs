@@ -17,7 +17,7 @@ public class AddPointsFeedback : MonoBehaviour
         for (int i = 0; i < points; i++)
         {
             GameObject go = Instantiate(_pointFeedbackPrefab, _originPoint);
-            go.GetComponent<FlyToPoint>().FlyTo(_targetPosition.position, 0.6f);
+            go.GetComponent<FlyToPoint>().FlyTo(_targetPosition.position + Vector3.up * 0.5f, 0.6f);
             yield return new WaitForSeconds(0.15f);
         }
     }

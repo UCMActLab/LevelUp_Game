@@ -134,6 +134,8 @@ public class ScoreMenu : MonoBehaviour
 
     public void ChangeMedal(Sprite newSprite)
     {
+        if (!_medalAnimationEnded) return;
+
         _medalAnimationEnded = false;
         _newMedal = newSprite;
         _animator.SetTrigger("ChangeMedal");

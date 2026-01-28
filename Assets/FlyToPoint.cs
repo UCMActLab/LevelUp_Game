@@ -36,6 +36,6 @@ public class FlyToPoint : MonoBehaviour
             transform.localScale = new Vector3(initialScale.x * factor, initialScale.y * factor, initialScale.z * factor);
         }
 
-        Destroy(gameObject);
+        // Destroy(gameObject);
     }
 }

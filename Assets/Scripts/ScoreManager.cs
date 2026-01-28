@@ -40,7 +40,7 @@ public struct LevelScore
     public int questionsRight;
     public int totalQuestions;
 
-    public int MaxScore { get { return readableArticles + trueArticles; } }
+    public int MaxScore { get { return readableArticles + trueArticles + totalQuestions / 2; } }
 
 }
 
@@ -65,6 +65,7 @@ public class ScoreManager : Singleton<ScoreManager>
 
     [SerializeField] private int _pointsForIdentifyingTrueArticle = 1;
     [SerializeField] private int _pointsForReadingArticle = 1;
+    [SerializeField] private int _pointsForQuestionAnsweredCorrectly = 1;
 
     [Header("References")]
     private ScoreMenu _scoreMenu = null;
@@ -158,6 +159,7 @@ public class ScoreManager : Singleton<ScoreManager>
     public void AnsweredQuestionRight()
     {
         _levelsScore[_levelScoreIndex].questionsRight++;
+        AddPoints(_pointsForQuestionAnsweredCorrectly);
     }
 
     public void SetMaxScore()
@@ -201,6 +203,7 @@ public class ScoreManager : Singleton<ScoreManager>
         current.falseArticlesShared = 0;
 
         current.totalQuestions = numQuestions;
+        _score.totalQuestions += numQuestions;
         current.questionsRight = 0;
 
         _levelsScore[levelIndex] = current;
@@ -213,7 +216,7 @@ public class ScoreManager : Singleton<ScoreManager>
 
     private void AddPoints(int points)
     {
-        _currentScore += points;
+        _currentScore = Mathf.Min(MaxScore, _currentScore + points);
 
         SubmitScoreEvent();
     }

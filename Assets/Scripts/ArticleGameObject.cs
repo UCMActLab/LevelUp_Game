@@ -173,11 +173,6 @@ public class ArticleGameObject : MonoBehaviour
     {
         yield return new WaitForSeconds(1.25f);
 
-        if(ScoreManager.Instance != null)
-        {
-            ScoreManager.Instance.CalculateArticlePoints(this);
-        }
-
         CustomEvent newEvent = new CustomEvent("Skip_Action")
         {
             {"IsTrue", Data.isTrue },

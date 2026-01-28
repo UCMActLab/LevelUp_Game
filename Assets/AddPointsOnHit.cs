@@ -19,6 +19,7 @@ public class AddPointsOnHit : MonoBehaviour
         {
             _slider.value += 1;
             ScoreManager.Instance.CalculateScoreState();
+            Destroy(collision.transform.parent.gameObject);
         }
     }
 }
