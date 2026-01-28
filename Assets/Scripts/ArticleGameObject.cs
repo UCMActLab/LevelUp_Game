@@ -27,6 +27,7 @@ public class ArticleGameObject : MonoBehaviour
     [SerializeField] Button _shareButton = null;
     [SerializeField] Button _skipButton = null;
     [SerializeField] Button _verifyButton = null;
+    [SerializeField] Button _increaseTextButton = null;
 
     [Header("Feedback")]
     [SerializeField] GameObject _verificationFeedbackGO = null;
@@ -34,6 +35,9 @@ public class ArticleGameObject : MonoBehaviour
 
     [Header("Data")]
     public ArticleData Data = null;
+
+    [SerializeField]
+    private float _maxTextSize = 120;
 
     public event Action<Choice> OnReadChoice;
     public event Action<Choice> OnSkipChoice;
@@ -190,7 +194,10 @@ public class ArticleGameObject : MonoBehaviour
 
     public void IncreaseBodySize()
     {
-        _bodyText.fontSize *= 1.2f;
+        _bodyText.fontSize = Mathf.Min(_bodyText.fontSize * 1.2f, _maxTextSize);
+
+        _increaseTextButton.interactable = _bodyText.fontSize != _maxTextSize;
+        
         // _articleTitle.fontSize *= 1.2f;
         LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
         foreach (Transform tr in transform.parent.GetComponentsInChildren<Transform>())

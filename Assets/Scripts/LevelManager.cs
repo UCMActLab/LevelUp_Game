@@ -63,6 +63,8 @@ public class LevelManager : Singleton<LevelManager>
     public UnityEvent<int> onLevelEnd = null;
     public UnityEvent<ArticleGameObject> onNewArticleSpawned = null;
 
+    private GameProgressTracker _progressTracker = null;
+
     protected override void Awake()
     {
         _destroyOnLoad = true;
@@ -91,6 +93,8 @@ public class LevelManager : Singleton<LevelManager>
         {
             _gameAssistant = FindAnyObjectByType<GameAssistant>();
         }
+
+        _progressTracker = FindAnyObjectByType<GameProgressTracker>();
 
         if(!_fader) _fader = FindAnyObjectByType<Fader>();
 
@@ -191,6 +195,7 @@ public class LevelManager : Singleton<LevelManager>
     {
         if(_currentLevel >= _levels.Count)
         {
+            _progressTracker.UpdateValue();
             EndLevel();
             return;
         }
@@ -208,7 +213,7 @@ public class LevelManager : Singleton<LevelManager>
         }
         else
         {
-
+            _progressTracker.UpdateValue();
             _articleObject = Instantiate(_articlePrefab, _articleFeed.transform);
             _articleData = _articleObject.GetComponent<ArticleGameObject>();
             _articleData.OnSkip.AddListener(ShowNextArticle);

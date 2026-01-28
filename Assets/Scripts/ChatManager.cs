@@ -122,6 +122,7 @@ public class ChatManager : MonoBehaviour
         _currentChat = newChat;
         _currentChat.SetActive(true);
         _scrollRect.content = _currentChat.transform as RectTransform;
+        _scrollRect.verticalNormalizedPosition = 1.0f;
         _messageWritingAnimator.transform.SetParent(_currentChat.transform);
 
         _keepSharingButton.SetActive(false);

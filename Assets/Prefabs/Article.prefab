@@ -1394,9 +1394,11 @@ MonoBehaviour:
   _shareButton: {fileID: 8735211143819019140}
   _skipButton: {fileID: 5792921991935958627}
   _verifyButton: {fileID: 1985731029685536125}
+  _increaseTextButton: {fileID: 6448555474437749364}
   _verificationFeedbackGO: {fileID: 0}
   _verificationTextLocalized: {fileID: 0}
   Data: {fileID: 0}
+  _maxTextSize: 120
   OnSkip:
     m_PersistentCalls:
       m_Calls: []
@@ -4157,7 +4159,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8825109914613730017}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 

@@ -1720,6 +1720,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1184558753511379250}
   m_SourcePrefab: {fileID: 100100000, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+--- !u!114 &273656208797150783 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6448555474437749364, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+  m_PrefabInstance: {fileID: 6535259444822676555}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &780653302953544232 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5792921991935958627, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
@@ -1803,7 +1814,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 6535259444822676555}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -2024,9 +2035,11 @@ MonoBehaviour:
   _shareButton: {fileID: 2560388300107012047}
   _skipButton: {fileID: 780653302953544232}
   _verifyButton: {fileID: 4701577756436894006}
+  _increaseTextButton: {fileID: 273656208797150783}
   _verificationFeedbackGO: {fileID: 4262959242448296818}
   _verificationTextLocalized: {fileID: 421782248227285157}
   Data: {fileID: 0}
+  _maxTextSize: 120
   OnSkip:
     m_PersistentCalls:
       m_Calls: []
