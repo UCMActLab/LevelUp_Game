@@ -108,8 +108,6 @@ public class LevelManager : Singleton<LevelManager>
         onLevelStart.AddListener(ScoreManager.Instance.ReachedNewLevel);
         onLevelEnd.AddListener(ShowEndLevel);
 
-        PostTotalScoreToDatabase();
-
         CustomEvent newEvent = new CustomEvent("FreeMode_Start");
         AnalyticsManager.Instance.SubmitEvent(newEvent);
     }

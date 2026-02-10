@@ -9,6 +9,17 @@ public class ShowHash : MonoBehaviour
 {
     TextMeshProUGUI _text = null;
 
+    private static bool _hasInstance = false;
+
+    private void Awake()
+    {
+        if(!_hasInstance) _hasInstance = true;
+        else
+        {
+            Destroy(gameObject.transform.parent.gameObject);
+        }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
