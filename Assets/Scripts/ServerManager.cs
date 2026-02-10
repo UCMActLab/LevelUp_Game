@@ -164,13 +164,23 @@ public class ServerManager : MonoBehaviour
     {
         yield return new WaitUntil(() => _isLoggedIn);
         
-        string message = "{\n    \"user\":\"" + userID + "\",\n    \"password\":\"" + userPassword + "\",\n    \"score\":" + score+",\r\n    \"country\":\""+countryLabel+"\"\r\n}";
+        string message = "{\n    \"score\":" + score+",\r\n    \"country\":\""+countryLabel+"\"\r\n}";
         
         // UnityWebRequest.Get("https://levelup-game.fundacionmaldita.es/api/resources?page=" + nPage);
         using (UnityWebRequest www = UnityWebRequest.Post(
             "https://levelup-game.fundacionmaldita.es/api/scores/",
             message, "application/json"))
         {
+            try
+            {
+                www.SetRequestHeader("Authorization", serverLoginInfo.data.token);
+
+            }
+            catch (Exception e)
+            {
+                Debug.Log(www.error);
+            }
+
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)
