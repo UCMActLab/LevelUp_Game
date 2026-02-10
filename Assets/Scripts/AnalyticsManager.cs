@@ -1,9 +1,17 @@
+using System;
 using Unity.Services.Analytics;
 using Unity.Services.Core;
 
 public class AnalyticsManager : Singleton<AnalyticsManager>
 {
 	bool _canSendData = false;
+
+	private string _hash = null;
+
+	public void SetHash(string hash)
+	{
+		_hash = hash;
+	}
 
 	public static async void StartGatheringData()
 	{
@@ -16,6 +24,8 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
     public void SubmitEvent(CustomEvent newEvent, bool isUrgent = false)
 	{
 		if (!_canSendData) return;
+
+		newEvent.Add("HASH_IDENTIFIER", _hash);
 
 		AnalyticsService.Instance.RecordEvent(newEvent);
 		if (isUrgent) FlushEvents();

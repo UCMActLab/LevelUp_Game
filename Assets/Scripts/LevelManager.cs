@@ -108,6 +108,8 @@ public class LevelManager : Singleton<LevelManager>
         onLevelStart.AddListener(ScoreManager.Instance.ReachedNewLevel);
         onLevelEnd.AddListener(ShowEndLevel);
 
+        PostTotalScoreToDatabase();
+
         CustomEvent newEvent = new CustomEvent("FreeMode_Start");
         AnalyticsManager.Instance.SubmitEvent(newEvent);
     }
@@ -191,6 +193,13 @@ public class LevelManager : Singleton<LevelManager>
         _gameAssistant.ShowMessageOneShot(message, ShowTest);
     }
 
+    private void PostTotalScoreToDatabase()
+    {
+        int finalScore = ScoreManager.Instance.Score;
+
+        StartCoroutine(ServerManager.Instance.PostScoreToDatabase(finalScore, TranslationManager.Instance.GetCurrentCountryLabel()));
+    }
+
     public void ShowNextArticle()
     {
         if(_currentLevel >= _levels.Count)
@@ -239,6 +248,8 @@ public class LevelManager : Singleton<LevelManager>
 
     private void EndLevel()
     {
+        PostTotalScoreToDatabase();
+
         SceneChanger.Instance.ChangeScene("EndGame");
 
         AnalyticsManager.Instance.SubmitEvent("FreeMode_End");

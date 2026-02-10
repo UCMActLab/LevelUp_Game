@@ -58,6 +58,9 @@ public class ServerManager : MonoBehaviour
 
     public UnityEvent<List<string>> OnJsonReceived;
 
+    bool _isLoggedIn = false;
+    bool _tryingToLogIn = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -81,6 +84,8 @@ public class ServerManager : MonoBehaviour
 
     IEnumerator serverLogin()
     {
+        _tryingToLogIn = true;
+
         string message = "{\n\"user\": \"" + userID + "\",\n\"password\":\"" + userPassword + "\"\n}";
 
         using (UnityWebRequest www = UnityWebRequest.Post("https://levelup-game.fundacionmaldita.es/api/login", message, "application/json"))
@@ -91,6 +96,7 @@ public class ServerManager : MonoBehaviour
             {
                 Debug.Log(www.error);
                 ConnectionFailed();
+                _tryingToLogIn = false;
             }
             else
             {
@@ -99,9 +105,13 @@ public class ServerManager : MonoBehaviour
                 Debug.Log(www.downloadHandler.text);
                 Debug.Log("Register complete!");
 
+                _isLoggedIn = true;
+
                 StartCoroutine(serverRequest());
             }
         }
+
+        _tryingToLogIn = false;
     }
 
     IEnumerator serverRequest()
@@ -150,41 +160,65 @@ public class ServerManager : MonoBehaviour
         }
     }
 
-    void processServerAnswer()
+    public IEnumerator PostScoreToDatabase(int score, string countryLabel)
     {
-        Debug.Log("no he explotado del todo");
+        yield return new WaitUntil(() => _isLoggedIn);
+        
+        string message = "{\n    \"user\":\"" + userID + "\",\n    \"password\":\"" + userPassword + "\",\n    \"score\":" + score+",\r\n    \"country\":\""+countryLabel+"\"\r\n}";
+        
+        // UnityWebRequest.Get("https://levelup-game.fundacionmaldita.es/api/resources?page=" + nPage);
+        using (UnityWebRequest www = UnityWebRequest.Post(
+            "https://levelup-game.fundacionmaldita.es/api/scores/",
+            message, "application/json"))
+        {
+            yield return www.SendWebRequest();
 
-        TextAsset jsonAsset = Resources.Load<TextAsset>("FakeNewsVideogame");
-        serverAnswer = JsonUtility.FromJson<RootObject>(jsonAsset.text);
-
-        TextAsset inkAsset = Resources.Load<TextAsset>("Languages/" + LanguageSelection.chosenLanguage + inkPath);
-        inkText = inkAsset.text;
-
-        for (int i = 0; i < serverAnswer.Articles.Count; ++i)
-        {            
-            var art = serverAnswer.Articles[i];
-            // Replace de los campos que son independientes al idioma escogido
-            inkText = inkText.Replace("{\"VAR?\":\"news\"},{ \"VAR =\":\"" + art.ConversationRef + "_theme\"}", "{\"VAR?\":\"" + art.Themes + "\"},{ \"VAR =\":\"" + art.ConversationRef + "_theme\"}");
-            inkText = inkText.Replace("true,{\"VAR=\":\"" + art.ConversationRef + "_key\"}", art.Key.ToString().ToLower() + ",{\"VAR=\":\"" + art.ConversationRef + "_key\"}");
-            inkText = inkText.Replace("true,{\"VAR=\":\"" + art.ConversationRef + "_true\"}", art.IsFake.ToString().ToLower() + ",{\"VAR=\":\"" + art.ConversationRef + "_true\"}");
-
-            var lang = serverAnswer.Articles[i].ES;
-            // Depende del idioma escogido en el menú se sustituye la informacion correspondiente
-            if (LanguageSelection.chosenLanguage == Language.czech) lang = serverAnswer.Articles[i].CR;
-            else if (LanguageSelection.chosenLanguage == Language.bulgarian) lang = serverAnswer.Articles[i].B;
-
-            // Replace cada uno de los campos: headline, multimedia, source, body, reactions
-            inkText = inkText.Replace(art.ConversationRef + "_headline", lang.Headline);
-            inkText = inkText.Replace(art.ConversationRef + "_multimedia", lang.Multimedia);
-            inkText = inkText.Replace(art.ConversationRef + "_source", lang.Source);
-            inkText = inkText.Replace(art.ConversationRef + "_body", lang.Body);
-            inkText = inkText.Replace(art.ConversationRef + "_ReactionG1", lang.Reaction_G1);
-            inkText = inkText.Replace(art.ConversationRef + "_ReactionG2", lang.Reaction_G2);
-            inkText = inkText.Replace(art.ConversationRef + "_ReactionG3", lang.Reaction_G3);
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError(www.error);
+            }
+            else
+            {
+                Debug.Log("Form upload complete!");
+            }
         }
-        Debug.Log("hecho :)");
-        //SceneManager.LoadScene("ChatDemo");
     }
+
+    //void processServerAnswer()
+    //{
+    //    Debug.Log("no he explotado del todo");
+
+    //    TextAsset jsonAsset = Resources.Load<TextAsset>("FakeNewsVideogame");
+    //    serverAnswer = JsonUtility.FromJson<RootObject>(jsonAsset.text);
+
+    //    TextAsset inkAsset = Resources.Load<TextAsset>("Languages/" + LanguageSelection.chosenLanguage + inkPath);
+    //    inkText = inkAsset.text;
+
+    //    for (int i = 0; i < serverAnswer.Articles.Count; ++i)
+    //    {            
+    //        var art = serverAnswer.Articles[i];
+    //        // Replace de los campos que son independientes al idioma escogido
+    //        inkText = inkText.Replace("{\"VAR?\":\"news\"},{ \"VAR =\":\"" + art.ConversationRef + "_theme\"}", "{\"VAR?\":\"" + art.Themes + "\"},{ \"VAR =\":\"" + art.ConversationRef + "_theme\"}");
+    //        inkText = inkText.Replace("true,{\"VAR=\":\"" + art.ConversationRef + "_key\"}", art.Key.ToString().ToLower() + ",{\"VAR=\":\"" + art.ConversationRef + "_key\"}");
+    //        inkText = inkText.Replace("true,{\"VAR=\":\"" + art.ConversationRef + "_true\"}", art.IsFake.ToString().ToLower() + ",{\"VAR=\":\"" + art.ConversationRef + "_true\"}");
+
+    //        var lang = serverAnswer.Articles[i].ES;
+    //        // Depende del idioma escogido en el menÃº se sustituye la informacion correspondiente
+    //        if (LanguageSelection.chosenLanguage == Language.czech) lang = serverAnswer.Articles[i].CR;
+    //        else if (LanguageSelection.chosenLanguage == Language.bulgarian) lang = serverAnswer.Articles[i].B;
+
+    //        // Replace cada uno de los campos: headline, multimedia, source, body, reactions
+    //        inkText = inkText.Replace(art.ConversationRef + "_headline", lang.Headline);
+    //        inkText = inkText.Replace(art.ConversationRef + "_multimedia", lang.Multimedia);
+    //        inkText = inkText.Replace(art.ConversationRef + "_source", lang.Source);
+    //        inkText = inkText.Replace(art.ConversationRef + "_body", lang.Body);
+    //        inkText = inkText.Replace(art.ConversationRef + "_ReactionG1", lang.Reaction_G1);
+    //        inkText = inkText.Replace(art.ConversationRef + "_ReactionG2", lang.Reaction_G2);
+    //        inkText = inkText.Replace(art.ConversationRef + "_ReactionG3", lang.Reaction_G3);
+    //    }
+    //    Debug.Log("hecho :)");
+    //    //SceneManager.LoadScene("ChatDemo");
+    //}
 }
 
 
