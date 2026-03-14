@@ -3,7 +3,6 @@ using System;
 using UnityEditor;
 using Unity.Services.Analytics;
 using UnityEngine;
-using System.Collections.Generic;
 
 public enum Score
 {

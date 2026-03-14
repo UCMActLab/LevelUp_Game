@@ -52,6 +52,9 @@ public class ArticleManager : Singleton<ArticleManager>
 
     Dictionary<int, List<ArticleData>> _articlesByLanguage = new Dictionary<int, List<ArticleData>>();
 
+    Dictionary<int, List<ArticleData>> _trueArticlesByLanguage = new Dictionary<int, List<ArticleData>>();
+    Dictionary<int, List<ArticleData>> _falseArticlesByLanguage = new Dictionary<int, List<ArticleData>>();
+
     public bool ArticlesCreated { get; private set; }
 
     protected override void Awake()
@@ -178,7 +181,7 @@ public class ArticleManager : Singleton<ArticleManager>
                 }
 
                 string source = data.Source;
-                if (source != "newspaper" || source != "social" || source != "web" || source != "blog")
+                if (source.Length < 3)
                 {
                     if (data.isTrue) { source = "newspaper"; }
                     else source = "social";
@@ -215,10 +218,15 @@ public class ArticleManager : Singleton<ArticleManager>
 
                 if (!_articlesByLanguage.ContainsKey(parsedLanguage))
                 {
+                    _trueArticlesByLanguage.Add(parsedLanguage, new List<ArticleData>());
+                    _falseArticlesByLanguage.Add(parsedLanguage, new List<ArticleData>());
                     _articlesByLanguage.Add(parsedLanguage, new List<ArticleData>());
                 }
 
                 _articlesByLanguage[parsedLanguage].Add(article);
+
+                if (article.isTrue) _trueArticlesByLanguage[parsedLanguage].Add(article);
+                else _falseArticlesByLanguage[parsedLanguage].Add(article);
 
                 ++i;
             }
@@ -228,6 +236,16 @@ public class ArticleManager : Singleton<ArticleManager>
             if (parsedLanguage == (int)LanguageSelection.chosenLanguage) processedPrioritaryArticles = true;
 
             if (processedPrioritaryArticles) ArticlesCreated = true;
+        }
+
+        foreach (List<ArticleData> articleList in _trueArticlesByLanguage.Values)
+        {
+            articleList.Shuffle();
+        }
+
+        foreach (List<ArticleData> articleList in _falseArticlesByLanguage.Values)
+        {
+            articleList.Shuffle();
         }
 
         ArticlesCreated = true;
@@ -268,8 +286,21 @@ public class ArticleManager : Singleton<ArticleManager>
         return _articlesByLanguage[id][UnityEngine.Random.Range(0, _articlesByLanguage[id].Count)];
     }
 
-    public List<ArticleData> GetAllArticlesByLanguage(int id)
+    public Queue<ArticleData> GetAllArticlesByLanguage(int id)
     {
-        return _articlesByLanguage[id];
+        _articlesByLanguage[id].Shuffle();
+        return new Queue<ArticleData>(_articlesByLanguage[id]);
+    }
+
+    public Queue<ArticleData> GetTrueArticlesByLanguage(int id)
+    {
+        _trueArticlesByLanguage[id].Shuffle();
+        return new Queue<ArticleData>(_trueArticlesByLanguage[id]);
+    }
+
+    public Queue<ArticleData> GetFalseArticlesByLanguage(int id)
+    {
+        _falseArticlesByLanguage[id].Shuffle();
+        return new Queue<ArticleData>(_falseArticlesByLanguage[id]);
     }
 }

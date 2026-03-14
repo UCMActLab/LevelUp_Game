@@ -12,6 +12,7 @@ public struct LevelInfo
 {
     public Test test;
     public int numArticles;
+    public int numTrueArticles;
 }
 
 public class LevelManager : Singleton<LevelManager>
@@ -114,10 +115,9 @@ public class LevelManager : Singleton<LevelManager>
 
     private void BuildLevels()
     {
-        List<ArticleData> data = ArticleManager.Instance.GetAllArticlesByLanguage((int)LanguageSelection.chosenLanguage);
+        Queue<ArticleData> queueTrueArticles = ArticleManager.Instance.GetTrueArticlesByLanguage((int)LanguageSelection.chosenLanguage);
+        Queue<ArticleData> queueFalseArticles = ArticleManager.Instance.GetFalseArticlesByLanguage((int)LanguageSelection.chosenLanguage);
 
-        data.Shuffle();
-        
         _levels = new List<List<ArticleData>>();
         int currentLevel = 0;
         int articlesTotal = 0;
@@ -126,21 +126,43 @@ public class LevelManager : Singleton<LevelManager>
 
         ScoreManager.Instance.SetNumLevels(_numLevels);
 
-        foreach (LevelInfo level in _levelsInfo)
+        for (int o = 0; o < _levelsInfo.Count; ++o)
         {
+            LevelInfo level = _levelsInfo[o];
+            int maxArticles = queueTrueArticles.Count + queueFalseArticles.Count;
+
             int articlesInLevel = level.numArticles;
             int articlesToReadInLevel = articlesInLevel;
             int trueArticlesInLevel = 0;
             int articlesCantRead = 0;
 
             _levels.Add(new List<ArticleData>());
+
+
+            if (maxArticles < level.numArticles)
+            {
+                level.numArticles = maxArticles;
+            }
+
             for (int i = 0; i < level.numArticles; ++i)
             {
-                _levels[currentLevel].Add(data[0]);
-                if (data[0].isTrue) trueArticlesInLevel++;
-                if (data[0].articleBody == string.Empty) articlesToReadInLevel--;
-                data.RemoveAt(0);
+                int choose = UnityEngine.Random.Range(0, 2);
+                ArticleData data = null;
+
+                if (queueFalseArticles.Count == 0 || (trueArticlesInLevel < level.numTrueArticles && queueTrueArticles.Count > 0)) {
+                    data = queueTrueArticles.Dequeue();
+                    trueArticlesInLevel++;
+                }
+                else
+                {
+                    data = queueFalseArticles.Dequeue();
+                }
+
+                if (data.articleBody == string.Empty) articlesToReadInLevel--;
+                _levels[currentLevel].Add(data);
             }
+
+            _levels[currentLevel].Shuffle();
 
             trueArticles += trueArticlesInLevel;
 
