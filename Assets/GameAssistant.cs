@@ -1,6 +1,4 @@
 using AYellowpaper.SerializedCollections;
-using B83.Win32;
-using DA_Assets.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -64,7 +62,7 @@ public class GameAssistant : MonoBehaviour
     // this depends on the current article title's length or body if the user has already started reading it.
     [SerializeField]
     float _hasDoneActionAdditionalTime = 10.0f;
-    [SerializeField, Range(0.01f, 0.3f), Tooltip("Time to read each word in article's body")]
+    [SerializeField, Range(0.2f, 1.5f), Tooltip("Time to read each word in article's body")]
     float _readTimePerWord = 0.075f;
 
     [Header("How many to get assistant worried")]
@@ -87,6 +85,8 @@ public class GameAssistant : MonoBehaviour
     float _timer = 0.0f;
 
     List<string> _messagesOnClick = new List<string>();
+
+    public UnityEvent<GameAssistantState> onStateChanged = new UnityEvent<GameAssistantState>();
 
     private void Initialize()
     {
@@ -216,14 +216,14 @@ public class GameAssistant : MonoBehaviour
             //messages.Add("Intenta fijarte más en si apelan a tus emociones");
             //messages.Add("O si la redacción parece profesional");
             //messages.Add("¡Y no te olvides de revisar la fuente!");
-            WorryAssitant(messages);
+            WorryAssistant(messages);
 
 
             _fakeArticlesShared = 0;
         }
     }
 
-    private void WorryAssitant(List<string> messages)
+    public void WorryAssistant(List<string> messages)
     {
         if (GameAssistantState.BAD != _currentState)
         {
@@ -295,7 +295,7 @@ public class GameAssistant : MonoBehaviour
                 //messages.Add("No estás leyendo las cosas antes de compartirlas...");
                 //messages.Add("Eso te hace difundir más bulos");
                 //messages.Add("Tienes que leer más los artículos");
-                WorryAssitant(messages);
+                WorryAssistant(messages);
 
                 _fakeArticlesShared = 0;
             }
@@ -308,7 +308,7 @@ public class GameAssistant : MonoBehaviour
                 //messages.Add("Tienes suerte de que algunos son ciertos");
                 //messages.Add("Pero esto no siempre es así");
                 //messages.Add("Tienes que leer más los artículos");
-                WorryAssitant(messages);
+                WorryAssistant(messages);
 
                 _sharedNotRead = 0;
             }
@@ -329,7 +329,7 @@ public class GameAssistant : MonoBehaviour
 
             //messages.Add("No estás leyendo las cosas antes de saltártelas...");
             //messages.Add("A mí no me engañas jej");
-            WorryAssitant(messages);
+            WorryAssistant(messages);
 
             _skipBeforeReadCounter = 0;
         }
@@ -339,6 +339,9 @@ public class GameAssistant : MonoBehaviour
     {
         _currentState = newState;
         _assistantImage.sprite = _spriteOnState[newState];
+
+        onStateChanged.Invoke(_currentState);
+
     }
 
 #if UNITY_EDITOR
@@ -398,6 +401,10 @@ public class GameAssistant : MonoBehaviour
             d_hasRead.SetText(_articleData.HasReadArticle.ToString());
             d_hasShared.SetText(_articleData.HasSharedArticle.ToString());
         }
+        else
+        {
+            return;
+        }
 #endif
 
         if (_keepTrackOfTime)
@@ -441,17 +448,17 @@ public class GameAssistant : MonoBehaviour
 
     private void SuggestSharingArticle()
     {
-        ShowMessage("Ahora puedes compartir el artículo o puedes ignorarlo pulsando el botón 'Saltar'");
+        ShowMessage(TranslationManager.Instance.GetLocalizedStringValue("ASSISTANT_ADVICES", "SUGGEST_SHARING"));
     }
 
     private void SuggestReadingArticle()
     {
-        ShowMessage("Puedes Leer el artículo pulsando el botón 'Leer'. O puedes ignorarlo pulsando el botón 'Saltar'");
+        ShowMessage(TranslationManager.Instance.GetLocalizedStringValue("ASSISTANT_ADVICES", "SUGGEST_READING"));
     }
 
     private void SuggestScroll()
     {
-        ShowMessage("¡Recuerda! Puedes utilizar el dedo para deslizar la pantalla");
+        ShowMessage(TranslationManager.Instance.GetLocalizedStringValue("ASSISTANT_ADVICES", "SUGGEST_SCROLLING"));
     }
 
     public void ShowMessage(string msg)
@@ -512,7 +519,7 @@ public class GameAssistant : MonoBehaviour
 
     public void AssistantEndMessageOneShot(UnityAction oneShot)
     {
-        _okAssitantButtonOneShots.onClick.AddListener(() => { oneShot(); _okAssitantButtonOneShots.onClick.RemoveAllListeners(); HideMessageOneShot(); });
+        _okAssitantButtonOneShots.onClick.AddListener(() => { HideMessageOneShot(); oneShot(); _okAssitantButtonOneShots.onClick.RemoveAllListeners(); });
     }
 
     public void HideMessage()

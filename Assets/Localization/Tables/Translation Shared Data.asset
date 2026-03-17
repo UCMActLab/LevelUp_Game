@@ -630,6 +630,15 @@ MonoBehaviour:
     m_Key: ARTICLE/INCREASE_TEXT_SIZE_BUTTON
     m_Metadata:
       m_Items: []
+  - m_Id: 54790439025954816
+    m_Key: SCORE/GAME_PROGRESS
+    m_Metadata:
+      m_Items:
+      - rid: 9139265271477305745
+  - m_Id: 55146829741477888
+    m_Key: CURRENT_LEVEL
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
@@ -1005,3 +1014,7 @@ MonoBehaviour:
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
         m_CommentText: MAX_CHARACTERS=80
+    - rid: 9139265271477305745
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=32

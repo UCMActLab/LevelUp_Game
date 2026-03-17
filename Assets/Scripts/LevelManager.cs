@@ -2,6 +2,8 @@ using DA_Assets.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using TMPro;
 using Unity.Services.Analytics;
 using UnityEngine;
 using UnityEngine.Events;
@@ -42,6 +44,13 @@ public class LevelManager : Singleton<LevelManager>
     [SerializeField]
     private GameObject _loadingAnimation = null;
 
+    private bool _gameLoaded = false;
+
+    [SerializeField]
+    private TextMeshProUGUI _newLevelText = null;
+    FaderText _faderText = null;
+    Fader _faderTextHolder = null;
+
     [SerializeField]
     private GameObject _endLevelScreen = null;
 
@@ -57,6 +66,8 @@ public class LevelManager : Singleton<LevelManager>
     private TestLogic _testLogic = null;
 
     int _numLevels = 0;
+
+    bool _assistantWaitsForGame = false;
 
     Slider _gameProgressSlider = null;
 
@@ -98,6 +109,9 @@ public class LevelManager : Singleton<LevelManager>
         _progressTracker = FindAnyObjectByType<GameProgressTracker>();
 
         if(!_fader) _fader = FindAnyObjectByType<Fader>();
+
+        _faderText = _newLevelText.GetComponent<FaderText>();
+        _faderTextHolder = _newLevelText.transform.parent.GetComponent<Fader>();
 
         _numLevels = _levelsInfo.Count;
 
@@ -177,16 +191,85 @@ public class LevelManager : Singleton<LevelManager>
 
     private IEnumerator GetArticlesFromResources()
     {
+        _gameLoaded = false;
         _loadingAnimation?.SetActive(true);
+        List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WELCOME_", 8, 0);
+        _gameAssistant.ShowMessagesOneShot(messages.ToArray(), WorryAssistantTutorial);
         yield return new WaitUntil(() => ArticleManager.Instance.ArticlesCreated);
-        _loadingAnimation?.SetActive(false);
-
         BuildLevels();
-
-        if (_startOnAwake)
+        
+        _gameLoaded = true;
+        _loadingAnimation?.SetActive(false);
+        _fader.StartFade(1.5f, 0.8f, 0.0f);
+        
+        if (_assistantWaitsForGame)
         {
-            ShowNextArticle();
+            _gameAssistant.HideMessage();
+            StartLevel();
         }
+    }
+
+    private void WorryAssistantTutorial()
+    {
+        _gameAssistant.WorryAssistant(TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WORRIED_TUTORIAL_", 4, 0));
+
+        _gameAssistant.onStateChanged.AddListener(LastWelcomeMessages);
+    }
+
+    private void LastWelcomeMessages(GameAssistantState state)
+    {
+        if (state != GameAssistantState.NORMAL) return;
+
+        List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WELCOME_", 3, 8);
+        _gameAssistant.ShowMessagesOneShot(messages.ToArray(), AvatarWelcomesToGame);
+
+        _gameAssistant.onStateChanged.RemoveListener(LastWelcomeMessages);
+    }
+
+    private void AvatarWelcomesToGame()
+    {
+        if (_gameLoaded)
+        {
+            _assistantWaitsForGame = false;
+            _gameAssistant.HideMessage();
+
+            StartLevel();
+        }
+        else
+        {
+            string messages = "El juego comenzará cuando esté cargado";
+            _gameAssistant.ShowMessage(messages);
+            _assistantWaitsForGame = true;
+        }
+    }
+
+    private void StartLevel() 
+    {
+        _fader.StartFade(1.0f, 0.8f, 0.0f);
+        _levelStarted = true;
+        // Aquí deberíamos meter cosas de "Nivel 1!" y eso
+        if (_faderTextHolder.Value <= 0.1f) _faderTextHolder.StartFade(1.0f, 0.0f, 1.0f);
+
+        _newLevelText.gameObject.SetActive(true);
+        _newLevelText.SetText(string.Format(TranslationManager.Instance.GetLocalizedStringValue("Translation", "CURRENT_LEVEL"), _currentLevel + 1));
+
+        _faderText.StartFade(1.5f, 0.0f, 1.0f);
+        _faderText.OnFadeEnd.AddListener(StartLevelAux);
+    }
+
+    private void StartLevelAux()
+    {
+        StartCoroutine(_StartLevelAux());
+    }
+
+    IEnumerator _StartLevelAux()
+    {
+        _faderText.OnFadeEnd.RemoveAllListeners();
+        yield return new WaitForSeconds(1.3f);
+        _faderText.StartFade(1.5f, 1.0f, 0.0f);
+        yield return new WaitForSeconds(0.65f);
+        ShowNextArticle();
+        _faderTextHolder.StartFade(1.0f, 1.0f, 0.0f);
     }
 
     public void SkipArticleIfCantShare()
@@ -220,6 +303,7 @@ public class LevelManager : Singleton<LevelManager>
         StartCoroutine(ServerManager.Instance.PostScoreToDatabase(finalScore, TranslationManager.Instance.GetCurrentCountryLabel()));
     }
 
+    bool _levelStarted = false;
     public void ShowNextArticle()
     {
         if(_currentLevel >= _levels.Count)
@@ -238,7 +322,12 @@ public class LevelManager : Singleton<LevelManager>
 
         if (_currentArticle >= _levels[_currentLevel].Count)
         {
+            _levelStarted = false;
             onLevelEnd.Invoke(_currentLevel);
+        }
+        else if (!_levelStarted)
+        {
+            StartLevel();
         }
         else
         {
@@ -255,10 +344,10 @@ public class LevelManager : Singleton<LevelManager>
             }
 #endif
             _articleData.SetArticleData(data);
-
+             
             if (_currentArticle++ == 0) {
                 // tell ScoreManager that a new Level was reached 
-                _fader.StartFade(0.8f, 0.8f, 0.0f);
+                // _fader.StartFade(0.8f, 0.8f, 0.0f);
                 onLevelStart.Invoke(_currentLevel);
             }
 

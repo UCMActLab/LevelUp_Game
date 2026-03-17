@@ -301,6 +301,7 @@ public class TutorialController : MonoBehaviour
         _articles[0] = art;
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(art.transform as RectTransform);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_scrollRect.transform as RectTransform);
 
         AddSecondListenerToSkipButton();
     }

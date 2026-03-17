@@ -4505,7 +4505,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 480, y: -986.8286}
+  m_AnchoredPosition: {x: 479.52863, y: -986.82855}
   m_SizeDelta: {x: 800, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &732849413
@@ -4843,7 +4843,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 480, y: -1366.365}
+  m_AnchoredPosition: {x: 479.52863, y: -1366.365}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &749246838
@@ -6204,6 +6204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pointsForIdentifyingTrueArticle: 1
   _pointsForReadingArticle: 1
+  _pointsForQuestionAnsweredCorrectly: 1
   _pointsForEachCategory:
     _serializedList:
     - Key: 0

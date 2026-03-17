@@ -28,6 +28,7 @@ public class ChatManager : MonoBehaviour
     [SerializeField] private GameObject _header = null;
     [SerializeField] private GameObject _keepSharingButton = null;
     [SerializeField] private GameObject _backToChatButton = null;
+    [SerializeField] private GameAssistant _assistant = null;
 
     private GameObject _currentChat;
 
@@ -102,6 +103,7 @@ public class ChatManager : MonoBehaviour
         }
         else
         {
+            if(_assistant != null) _assistant.HideMessage();
             GameObject group = _groupChats[groupID];
             ChangeCurrentChat(group);
             _currentChat.GetComponent<GroupSettings>().ActivateGroupInfo(true);
@@ -133,6 +135,8 @@ public class ChatManager : MonoBehaviour
     {
         while (_currentConversation != null && _currentConversation.CanContinue)
         {
+            _scrollRect.verticalNormalizedPosition = 0.0f;
+
             string messageTable;
             switch(_currentConversation.Type)
             {
@@ -169,6 +173,8 @@ public class ChatManager : MonoBehaviour
 
         if(_keepSharingButton != null)
         {
+            yield return new WaitForSeconds(_waitingBetweenMessages);
+            _chatScrollAnimation?.PlayAnimation();
             ActivateKeepSharingButtons();
         }
     }

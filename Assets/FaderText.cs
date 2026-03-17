@@ -1,36 +1,35 @@
 using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
-[RequireComponent(typeof(Image))]
-public class Fader : MonoBehaviour
+public class FaderText : MonoBehaviour
 {
-    [SerializeField, Range(0,1)] float _startingValue;
+    [SerializeField, Range(0, 1)] float _startingValue;
 
     public UnityEvent OnFadeEnd;
 
-    Image _image;
+    TextMeshProUGUI _text;
 
-    public float Value { get { return _image.color.a; } }
+    public float Value { get { return _text.color.a; } }
 
     void Start()
     {
-        _image = GetComponent<Image>();
+        _text = GetComponent<TextMeshProUGUI>();
 
         ChangeAlpha(_startingValue);
     }
 
     private void ChangeAlpha(float newAlpha)
     {
-        _image.color = GetGoalColor(newAlpha);
+        _text.color = GetGoalColor(newAlpha);
     }
 
     private Color GetGoalColor(float alpha)
     {
-        return new Color(_image.color.r, _image.color.g, _image.color.b, alpha);
-    } 
+        return new Color(_text.color.r, _text.color.g, _text.color.b, alpha);
+    }
 
     public void StartFade(float time, float initialValue, float goalValue)
     {
@@ -43,7 +42,7 @@ public class Fader : MonoBehaviour
 
         float currentAlpha = initialValue;
 
-        while(timer < time)
+        while (timer < time)
         {
             currentAlpha = Mathf.Lerp(initialValue, goalValue, timer / time);
 

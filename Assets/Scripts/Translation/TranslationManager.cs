@@ -67,7 +67,7 @@ public class TranslationManager : Singleton<TranslationManager>
     {
         List<string> strings = new List<string>();
         StringTable tableReference = _database.GetTable(table);
-        for (int i = startIndex; i < count; i++)
+        for (int i = startIndex; i < count + startIndex; i++)
         {
             strings.Add(tableReference.GetEntry(baseKey + i.ToString()).LocalizedValue);
         }
