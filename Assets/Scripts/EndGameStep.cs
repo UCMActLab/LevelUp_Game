@@ -86,6 +86,8 @@ public class EndGameStep : MonoBehaviour
 
         _currentStep++;
 
+        LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+
         return true;
     }
 
