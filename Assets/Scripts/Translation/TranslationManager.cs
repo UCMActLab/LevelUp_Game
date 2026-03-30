@@ -17,10 +17,10 @@ public class TranslationManager : Singleton<TranslationManager>
         _database = LocalizationSettings.StringDatabase;
     }
 
-    private void Start()
-    {
-        GetAllTableEntries("EVALUATION");
-    }
+    //private void Start()
+    //{
+    //    GetAllTableEntries("EVALUATION");
+    //}
 
     public string GetCurrentCountryLabel()
     {

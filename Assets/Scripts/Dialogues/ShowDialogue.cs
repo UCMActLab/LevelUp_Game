@@ -144,7 +144,7 @@ public class ShowDialogue : MonoBehaviour
     private void PlaySound(FMODUnity.EventReference sound)
     {
         
-        FMODUnity.RuntimeManager.PlayOneShot(sound, 0.5f);
+        FMODUnity.RuntimeManager.PlayOneShot(sound, _volume);
     }
 
     IEnumerator AnimText(string messageToShow, bool isLastMessage)

@@ -23,7 +23,7 @@ public class PlayButton : MonoBehaviour
 
     public void goGeneralScene(string Scene)
     {
-        SceneManager.LoadScene(Scene);
+        SceneChanger.Instance.ChangeScene(Scene);
     }
 
     public void goLanguageScene()

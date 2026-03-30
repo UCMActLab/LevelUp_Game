@@ -10,14 +10,14 @@ namespace DA_Assets.Extensions
 {
     public static class MonoBehExtensions
     {
-        public static void DestroyChilds(this GameObject parent)
+        public static void DestroyChilds(this GameObject parent, int offset = 0)
         {
             if (parent == null)
                 return;
 
             int childCount = parent.transform.childCount;
 
-            for (int i = childCount - 1; i >= 0; i--)
+            for (int i = childCount - 1; i >= offset; i--)
             {
                 GameObject go = parent.transform.GetChild(i).gameObject;
                 go.Destroy();

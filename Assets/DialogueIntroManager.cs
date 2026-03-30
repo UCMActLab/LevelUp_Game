@@ -29,9 +29,9 @@ public class DialogueIntroManager : MonoBehaviour
         _titleDialogue.onDialogueEnd.AddListener(() => { _bodyDialogue.ShowText(); _bodyDialogue.waitForInteraction = false; });
         _bodyDialogue.onDialogueEnd.AddListener(AdvanceDialogues);
 
-        _titleDialogue.waitForInteraction = false;
+        // _titleDialogue.waitForInteraction = false;
         _titleDialogue.waitTimeForNext = 0.0f;
-        _bodyDialogue.waitForInteraction = false;
+        // _bodyDialogue.waitForInteraction = false;
     }
 
     private void AdvanceDialogues()

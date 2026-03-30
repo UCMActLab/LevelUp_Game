@@ -241,7 +241,7 @@ public class TutorialController : MonoBehaviour
     public void SetUpChoiceButtons(Choice[] buttons)
     {
         _choiceIsMade = false;
-        _choiceButtons.gameObject.DestroyChilds();
+        _choiceButtons.gameObject.DestroyChilds(1);
 
         foreach (Choice button in buttons)
         {
