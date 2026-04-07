@@ -15,7 +15,7 @@ public struct ArticleJSONData {
     public string Multimedia;
     public string Source;
     public string Links;
-    public string Theme;
+    public string themes;
     public List<ConversationJSON> Conversation;
 }
 
@@ -142,7 +142,7 @@ public class ArticleManager : Singleton<ArticleManager>
                 article.isTrue = data.isTrue;
                 article.articleTitle = headline;
                 article.articleBody = data.Body.Trim(' ');
-                article.theme = data.Theme;
+                article.theme = data.themes;
 
                 // article.image = data.Multimedia; TODO: Tratamiento de imágenes
                 Debug.Log("Load Images: " + _loadImages + data.Multimedia);
