@@ -184,8 +184,10 @@ public class LevelManager : Singleton<LevelManager>
 
             articlesCanRead += articlesInLevel - articlesCantRead;
             articlesTotal += articlesInLevel;
-            
-            ScoreManager.Instance.SetLevelInfo(currentLevel++, articlesInLevel, articlesToReadInLevel, trueArticlesInLevel, level.test.TotalQuestions);
+
+            int totalQuestions = level.test ? level.test.TotalQuestions : -1;
+
+            ScoreManager.Instance.SetLevelInfo(currentLevel++, articlesInLevel, articlesToReadInLevel, trueArticlesInLevel, totalQuestions);
         }
 
         ScoreManager.Instance.SetMaxScore();
@@ -282,9 +284,14 @@ public class LevelManager : Singleton<LevelManager>
         }
     }
 
-    public void ShowTest()
+    public void ShowTest(Test test)
     {
-        _testLogic.SetTest(_levelsInfo[_currentLevel].test, true);
+        _testLogic.SetTest(test, true);
+        ResetLevelStats();
+    }
+
+    private void ResetLevelStats()
+    {
         _currentLevel++;
         _currentArticle = 0;
         _endLevelScreen.SetActive(false);
@@ -294,8 +301,17 @@ public class LevelManager : Singleton<LevelManager>
     {
         // _endLevelScreen.SetActive(true);
         _fader.StartFade(0.8f, 0.0f, 0.8f);
-        string message = TranslationManager.Instance.GetLocalizedStringValue("Translation", "END_LEVEL/AVATAR_MESSAGE");
-        _gameAssistant.ShowMessageOneShot(message, ShowTest);
+        Test test = _levelsInfo[_currentLevel].test;
+        if (test)
+        {
+            string message = TranslationManager.Instance.GetLocalizedStringValue("Translation", "END_LEVEL/AVATAR_MESSAGE");
+            _gameAssistant.ShowMessageOneShot(message, () => ShowTest(test));
+        }
+        else
+        {
+            _gameAssistant.ShowMessageOneShot("ola!", ScoreManager.Instance.ShowPoints);
+            ResetLevelStats();
+        }
     }
 
     private void PostTotalScoreToDatabase()

@@ -139,7 +139,7 @@ public class GameAssistant : MonoBehaviour
     {
         _keepTrackOfTime = false;
 
-        _articleData = null;
+        // _articleData = null;
         _timer = 0.0f;
 
         _scroll.onValueChanged.RemoveListener(HasScrolled);

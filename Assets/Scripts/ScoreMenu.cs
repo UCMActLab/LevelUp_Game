@@ -101,7 +101,6 @@ public class ScoreMenu : MonoBehaviour
         }
         SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, score.falseArticlesShared, score.falseArticles, 1.25f);
 
-        // preguntas
         SetValues(_questionsObject, _questionsSlider, _questionsText, score.questionsRight, score.totalQuestions, 1.25f);
 
         if(!badFalseSharing  && !badTrueSharing && !badReading)
@@ -159,7 +158,7 @@ public class ScoreMenu : MonoBehaviour
 
     private void SetValues(GameObject targetObject, Slider target, TextMeshProUGUI text, int value, int maxValue, float time)
     {
-        if (maxValue == 0)
+        if (maxValue <= 0)
         {
             targetObject.SetActive(false);
             return;
