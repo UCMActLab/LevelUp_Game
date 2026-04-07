@@ -138,6 +138,7 @@ public class GameAssistant : MonoBehaviour
     private void OnLevelEnd(int _)
     {
         _keepTrackOfTime = false;
+
         _articleData = null;
         _timer = 0.0f;
 

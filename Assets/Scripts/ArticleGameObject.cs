@@ -8,7 +8,6 @@ using UnityEngine.Localization.Components;
 using System.Collections;
 using Unity.Services.Analytics;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
-using DA_Assets.Extensions;
 
 public class ArticleGameObject : MonoBehaviour
 {
@@ -117,7 +116,7 @@ public class ArticleGameObject : MonoBehaviour
 
 
     #region Article Actions
-    public void ShareButtonsSetUp()
+    public void OnShareWithGroups()
     {
         _shareArticleButtons = _convManager.SpawnShareButtons();
         Button[] buttons = _shareArticleButtons.GetComponentsInChildren<Button>();
@@ -435,6 +434,28 @@ public class ArticleGameObject : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void SetupShareButtonForGroups(int numGroups)
+    {
+        Debug.LogError("TODO: num groups is unused");
+        _shareButton.onClick.RemoveAllListeners();
+        _shareButton.onClick.AddListener(OnShareWithGroups);
+    }
+
+    public void SetupShareButtonForVerification()
+    {
+        Debug.LogError("TODO: verification mode");
+        // play animation to the right and a blueish tone :3
+        // on animation end -> shownextarticle
+
+        _shareButton.onClick.RemoveAllListeners();
+        _shareButton.onClick.AddListener(() => GetComponent<Animator>().SetTrigger("Share"));
+    }
+
+    public void VerifyArticleSharing()
+    {
+        _hasSharedArticle = true; OnShare.Invoke();
+    }
+
     #region Tutorial
     public void RemoveListenersFromButtons()
     {
@@ -452,7 +473,7 @@ public class ArticleGameObject : MonoBehaviour
     {
         _skipButton.onClick.AddListener(() => _articleFeed.SkipArticle(this));
         _readButton.onClick.AddListener(ReadArticle);
-        _shareButton.onClick.AddListener(ShareButtonsSetUp);
+        _shareButton.onClick.AddListener(OnShareWithGroups);
     }
     #endregion
 }

@@ -1,21 +1,24 @@
 using DA_Assets.Extensions;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TMPro;
 using Unity.Services.Analytics;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-[Serializable]
-public struct LevelInfo
-{
-    public Test test;
-    public int numArticles;
-    public int numTrueArticles;
-}
+//[Serializable]
+//public struct LevelInfo
+//{
+//    public Test test;
+//    public int numArticles;
+//    public int numTrueArticles;
+    
+//    public bool articleIsSharedWithGroups;
+
+//    [Range(1, 3)]
+//    public bool numGroupsToShareWith;
+//}
 
 public class LevelManager : Singleton<LevelManager>
 {
@@ -25,8 +28,6 @@ public class LevelManager : Singleton<LevelManager>
 
     [Header("Levels")]
     [SerializeField] private List<LevelInfo> _levelsInfo = null;
-    //[SerializeField] private int _articlesPerLevel = 3;
-    //[SerializeField] private int _maxLevels = 5;
 
     int _currentLevel = 0;
     public int CurrentLevel { get { return _currentLevel; } }
@@ -152,7 +153,6 @@ public class LevelManager : Singleton<LevelManager>
 
             _levels.Add(new List<ArticleData>());
 
-
             if (maxArticles < level.numArticles)
             {
                 level.numArticles = maxArticles;
@@ -163,6 +163,7 @@ public class LevelManager : Singleton<LevelManager>
                 int choose = UnityEngine.Random.Range(0, 2);
                 ArticleData data = null;
 
+
                 if (queueFalseArticles.Count == 0 || (trueArticlesInLevel < level.numTrueArticles && queueTrueArticles.Count > 0)) {
                     data = queueTrueArticles.Dequeue();
                     trueArticlesInLevel++;
@@ -172,6 +173,7 @@ public class LevelManager : Singleton<LevelManager>
                     data = queueFalseArticles.Dequeue();
                 }
 
+                data.canBeSharedWithGroups = level.articleIsSharedWithGroups;
                 if (data.articleBody == string.Empty) articlesToReadInLevel--;
                 _levels[currentLevel].Add(data);
             }
@@ -344,7 +346,14 @@ public class LevelManager : Singleton<LevelManager>
             }
 #endif
             _articleData.SetArticleData(data);
-             
+
+            if (!data.canBeSharedWithGroups) 
+            { 
+                _articleData.SetupShareButtonForVerification();
+                _articleData.OnShare.AddListener(ShowNextArticle);
+            }
+            else _articleData.SetupShareButtonForGroups(1);
+
             if (_currentArticle++ == 0) {
                 // tell ScoreManager that a new Level was reached 
                 // _fader.StartFade(0.8f, 0.8f, 0.0f);
