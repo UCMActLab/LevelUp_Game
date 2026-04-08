@@ -33,6 +33,8 @@ public class LevelManager : Singleton<LevelManager>
     public int CurrentLevel { get { return _currentLevel; } }
     List<List<ArticleData>> _levels;
 
+    List<Quest> _quests;
+
     [SerializeField]
     private GameAssistant _gameAssistant = null;
 
@@ -121,7 +123,7 @@ public class LevelManager : Singleton<LevelManager>
 
         if (!_testLogic) _testLogic = GameObject.FindFirstObjectByType<TestLogic>();
 
-        onLevelStart.AddListener(ScoreManager.Instance.ReachedNewLevel);
+        // onLevelStart.AddListener(ScoreManager.Instance.ReachedNewLevel);
         onLevelEnd.AddListener(ShowEndLevel);
 
         CustomEvent newEvent = new CustomEvent("FreeMode_Start");
@@ -134,12 +136,16 @@ public class LevelManager : Singleton<LevelManager>
         Queue<ArticleData> queueFalseArticles = ArticleManager.Instance.GetFalseArticlesByLanguage((int)LanguageSelection.chosenLanguage);
 
         _levels = new List<List<ArticleData>>();
+        _quests = new List<Quest>();
+
         int currentLevel = 0;
         int articlesTotal = 0;
         int articlesCanRead = 0;
         int trueArticles = 0;
 
         ScoreManager.Instance.SetNumLevels(_numLevels);
+
+        int maxScore = 0;
 
         for (int o = 0; o < _levelsInfo.Count; ++o)
         {
@@ -162,7 +168,6 @@ public class LevelManager : Singleton<LevelManager>
             {
                 int choose = UnityEngine.Random.Range(0, 2);
                 ArticleData data = null;
-
 
                 if (queueFalseArticles.Count == 0 || (trueArticlesInLevel < level.numTrueArticles && queueTrueArticles.Count > 0)) {
                     data = queueTrueArticles.Dequeue();
@@ -187,10 +192,19 @@ public class LevelManager : Singleton<LevelManager>
 
             int totalQuestions = level.test ? level.test.TotalQuestions : -1;
 
-            ScoreManager.Instance.SetLevelInfo(currentLevel++, articlesInLevel, articlesToReadInLevel, trueArticlesInLevel, totalQuestions);
+            int numGroups = level.numGroupsToShareWith;
+
+            // quest generation
+            Quest quest = new Quest();
+            quest.BuildQuest(trueArticlesInLevel, articlesInLevel, numGroups);
+            _quests.Add(quest);
+
+            maxScore += quest.GetMaxPossibleScore();
+
+            // ScoreManager.Instance.SetLevelInfo(currentLevel++, articlesInLevel, articlesToReadInLevel, trueArticlesInLevel, totalQuestions);
         }
 
-        ScoreManager.Instance.SetMaxScore();
+        ScoreManager.Instance.SetMaxScore(maxScore);
     }
 
     private IEnumerator GetArticlesFromResources()
@@ -301,7 +315,10 @@ public class LevelManager : Singleton<LevelManager>
     {
         // _endLevelScreen.SetActive(true);
         _fader.StartFade(0.8f, 0.0f, 0.8f);
-        Test test = _levelsInfo[_currentLevel].test;
+
+        // ScoreManager.Instance.CalculateArticlePoints()
+
+        Test test = _levelsInfo[level].test;
         if (test)
         {
             string message = TranslationManager.Instance.GetLocalizedStringValue("Translation", "END_LEVEL/AVATAR_MESSAGE");
@@ -309,7 +326,7 @@ public class LevelManager : Singleton<LevelManager>
         }
         else
         {
-            _gameAssistant.ShowMessageOneShot("ola!", ScoreManager.Instance.ShowPoints);
+            _gameAssistant.ShowMessageOneShot("ola!", () => ScoreManager.Instance.ShowPoints(_quests[level]));
             ResetLevelStats();
         }
     }
@@ -327,13 +344,15 @@ public class LevelManager : Singleton<LevelManager>
         if(_currentLevel >= _levels.Count)
         {
             _progressTracker.UpdateValue();
-            EndLevel();
+            EndAllLevels();
             return;
         }
 
         if (_articleObject != null)
         {
-            ScoreManager.Instance.CalculateArticlePoints(_articleData);
+            _quests[_currentLevel].EvaluateArticle(_articleData);
+
+            // ScoreManager.Instance.CalculateArticlePoints(_articleData);
             _articleData.OnSkip.RemoveAllListeners();
             _articleData.DestroyArticle();
         }
@@ -380,7 +399,7 @@ public class LevelManager : Singleton<LevelManager>
         }
     }
 
-    private void EndLevel()
+    private void EndAllLevels()
     {
         PostTotalScoreToDatabase();
 

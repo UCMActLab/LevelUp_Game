@@ -4,6 +4,6 @@ public class ShowPointsButton : MonoBehaviour
 {
     public void ShowPoints()
     {
-        ScoreManager.Instance.ShowPoints();
+        // ScoreManager.Instance.ShowPoints();
     }
 }

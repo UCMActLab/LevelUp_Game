@@ -39,7 +39,9 @@ public struct LevelScore
     public int questionsRight;
     public int totalQuestions;
 
-    public int MaxScore { get { return readableArticles + trueArticles + totalQuestions / 2; } }
+    public int maxScore;
+
+    // public int MaxScore { get { return readableArticles + trueArticles + totalQuestions / 2; } }
 
 }
 
@@ -80,18 +82,18 @@ public class ScoreManager : Singleton<ScoreManager>
     LevelScore _score;
     public LevelScore ScoreStats { get { return _score; } }
 
-    LevelScore[] _levelsScore = null;
-    int _levelScoreIndex = 0;
+    //LevelScore[] _levelsScore = null;
+    //int _levelScoreIndex = 0;
 
     public int Score { get { return _currentScore; } }
-    public int MaxScore { get { return _score.MaxScore; } }
+    public int MaxScore { get { return _score.maxScore; } }
 
     protected override void Awake()
     {
         base.Awake();
 
-        _levelsScore = null;
-        _levelScoreIndex = 0;
+        // _levelsScore = null;
+        // _levelScoreIndex = 0;
     }
 
     private void Start()
@@ -111,7 +113,7 @@ public class ScoreManager : Singleton<ScoreManager>
         // reached max score
         if (nextState >= _pointsForEachCategory.Count) return;
 
-        if(_currentScore >= _score.MaxScore * _pointsForEachCategory[(global::Score)nextState].NeededScore)
+        if(_currentScore >= MaxScore * _pointsForEachCategory[(global::Score)nextState].NeededScore)
         {
             _currentState = (global::Score)nextState;
 
@@ -123,46 +125,50 @@ public class ScoreManager : Singleton<ScoreManager>
     private void AwardPointsReadArticle()
     {
         AddPoints(_pointsForReadingArticle);
-        _levelsScore[_levelScoreIndex].readArticles++;
+        // _levelsScore[_levelScoreIndex].readArticles++;
         _score.readArticles++;
     }
 
     private void AwardPointsForSharingTrueArticle()
     {
         AddPoints(_pointsForIdentifyingTrueArticle);
-        _levelsScore[_levelScoreIndex].trueArticlesShared++;
+        // _levelsScore[_levelScoreIndex].trueArticlesShared++;
         _score.trueArticlesShared++;
     }
 
     public void CalculateArticlePoints(ArticleGameObject data)
     {
-        if(data.HasReadArticle)
-        {
-            AwardPointsReadArticle();
-        }
+        //if(data.HasReadArticle)
+        //{
+        //    AwardPointsReadArticle();
+        //}
 
-        if(data.IsTrue) // true article
-        {
-            if(data.HasSharedArticle)
-            {
-                AwardPointsForSharingTrueArticle();
-            }
-        }
-        else if (data.HasSharedArticle) // false article shared
-        {
-            _levelsScore[_levelScoreIndex].falseArticlesShared++;
-            _score.falseArticlesShared++;
-        }
+        //if(data.IsTrue) // true article
+        //{
+        //    if(data.HasSharedArticle)
+        //    {
+        //        AwardPointsForSharingTrueArticle();
+        //    }
+        //}
+        //else if (data.HasSharedArticle) // false article shared
+        //{
+        //    _levelsScore[_levelScoreIndex].falseArticlesShared++;
+        //    _score.falseArticlesShared++;
+        //}
     }
+
 
     public void AnsweredQuestionRight()
     {
-        _levelsScore[_levelScoreIndex].questionsRight++;
-        AddPoints(_pointsForQuestionAnsweredCorrectly);
+        // TODO: CAMBIAR ESTO??
+        // _levelsScore[_levelScoreIndex].questionsRight++;
+        // AddPoints(_pointsForQuestionAnsweredCorrectly);
     }
 
-    public void SetMaxScore()
+    public void SetMaxScore(int maxScore)
     {
+        _score.maxScore = maxScore;
+
         SetMaxScoreToUIElements();
         
         CalculateScoreState();
@@ -171,47 +177,47 @@ public class ScoreManager : Singleton<ScoreManager>
     private void SetMaxScoreToUIElements()
     {
         FindPointsMenu();
-        _scoreMenu.SetTotalScore(_score.MaxScore);
+        _scoreMenu.SetTotalScore(MaxScore);
     }
 
     public void SetNumLevels(int numLevels)
     {
         RestartScore();
 
-        _levelsScore = new LevelScore[numLevels];
+        // _levelsScore = new LevelScore[numLevels];
     }
 
     public void SetLevelInfo(int levelIndex, int numArticles, int numArticlesToRead, int numArticlesTrue, int numQuestions)
     {
-        LevelScore current = _levelsScore[levelIndex];
+        //LevelScore current = _levelsScore[levelIndex];
 
-        current.totalArticles = numArticles;
-        _score.totalArticles += current.totalArticles;
+        //current.totalArticles = numArticles;
+        //_score.totalArticles += current.totalArticles;
 
-        current.trueArticles = numArticlesTrue;
-        _score.trueArticles += current.trueArticles;
+        //current.trueArticles = numArticlesTrue;
+        //_score.trueArticles += current.trueArticles;
 
-        current.falseArticles = current.totalArticles - current.trueArticles;
-        _score.falseArticles += current.falseArticles;
+        //current.falseArticles = current.totalArticles - current.trueArticles;
+        //_score.falseArticles += current.falseArticles;
 
-        current.readableArticles = numArticlesToRead;
-        _score.readableArticles += current.readableArticles;
+        //current.readableArticles = numArticlesToRead;
+        //_score.readableArticles += current.readableArticles;
 
-        current.readArticles = 0;
-        current.trueArticlesShared = 0;
-        current.falseArticlesShared = 0;
+        //current.readArticles = 0;
+        //current.trueArticlesShared = 0;
+        //current.falseArticlesShared = 0;
 
-        current.totalQuestions = numQuestions;
-        _score.totalQuestions += numQuestions;
-        current.questionsRight = 0;
+        //current.totalQuestions = numQuestions;
+        //_score.totalQuestions += numQuestions;
+        //current.questionsRight = 0;
 
-        _levelsScore[levelIndex] = current;
+        //_levelsScore[levelIndex] = current;
     }
 
-    public void ReachedNewLevel(int level)
-    {
-        _levelScoreIndex = level;
-    }
+    //public void ReachedNewLevel(int level)
+    //{
+    //    _levelScoreIndex = level;
+    //}
 
     private void AddPoints(int points)
     {
@@ -230,12 +236,13 @@ public class ScoreManager : Singleton<ScoreManager>
         AnalyticsManager.Instance.SubmitEvent(newEvent);
     }
 
-    public void ShowPoints()
+    public void ShowPoints(Quest quest)
     {
         // poner los puntos y eso
         _scoreMenu.gameObject.SetActive(true);
 
-        _scoreMenu.ShowScore(_levelsScore[_levelScoreIndex]);
+        // scoreMenu.ShowScore(_levelsScore[_levelScoreIndex]);
+        _scoreMenu.ShowScore(quest);
 
         SubmitScoreEvent();
     }
