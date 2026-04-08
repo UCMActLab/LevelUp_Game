@@ -192,11 +192,11 @@ public class LevelManager : Singleton<LevelManager>
 
             int totalQuestions = level.test ? level.test.TotalQuestions : -1;
 
-            int numGroups = level.numGroupsToShareWith;
+            int numGroups = level.articleIsSharedWithGroups ? level.numGroupsToShareWith : 0;
 
             // quest generation
             Quest quest = new Quest();
-            quest.BuildQuest(trueArticlesInLevel, articlesInLevel, numGroups, articlesCanRead);
+            quest.BuildQuest(trueArticlesInLevel, articlesInLevel, numGroups, articlesInLevel - articlesCantRead);
             _quests.Add(quest);
 
             maxScore += quest.GetMaxPossibleScore();
@@ -355,9 +355,6 @@ public class LevelManager : Singleton<LevelManager>
         {
             _quests[_currentLevel].EvaluateArticle(_articleData);
 
-            Debug.LogError("Te quedaste aquí!!!!!!!!! -> Tienes que hacer que se sumen los puntos de la quest");
-
-
             // ScoreManager.Instance.CalculateArticlePoints(_articleData);
             _articleData.OnSkip.RemoveAllListeners();
             _articleData.DestroyArticle();
@@ -366,6 +363,9 @@ public class LevelManager : Singleton<LevelManager>
         if (_currentArticle >= _levels[_currentLevel].Count)
         {
             _levelStarted = false;
+
+            Debug.LogError("Te quedaste aquí!!!!!!!!! -> Tienes que hacer que se sumen los puntos de la quest");
+            ScoreManager.Instance.EvaluateQuest(_quests[_currentLevel]);
             onLevelEnd.Invoke(_currentLevel);
         }
         else if (!_levelStarted)

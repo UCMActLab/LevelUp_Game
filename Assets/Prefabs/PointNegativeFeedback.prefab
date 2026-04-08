@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 1690739194823693667}
   - component: {fileID: 6729582861594267816}
   - component: {fileID: 974139832282508058}
-  - component: {fileID: 2119487748014850897}
+  - component: {fileID: 7268224738099453433}
   m_Layer: 5
-  m_Name: PointFeedback
+  m_Name: PointNegativeFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.39324754, g: 0.6603774, b: 0.25293696, a: 1}
+  m_Color: {r: 0.65882355, g: 0.2841057, b: 0.25098044, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1b5173b434d95447b5e732abcf7902a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2119487748014850897
+--- !u!114 &7268224738099453433
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -123,6 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae09046ea255f8846a6f13a99540c3ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreOnHit: -1
 --- !u!1 &6297538716969563916
 GameObject:
   m_ObjectHideFlags: 0
@@ -182,7 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.28490567, g: 1, b: 0.29447794, a: 1}
+  m_Color: {r: 1, g: 0.34323987, b: 0.28627455, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

@@ -45,20 +45,6 @@ public struct LevelScore
 
 }
 
-//// Esto es exactamente lo mismo que lo de LevelScore... Cambiar
-//public struct GeneralScore
-//{
-//    public int totalArticles;
-//    public int totalTrueArticles;
-//    public int totalFalseArticles;
-//    public int totalReadableArticles;
-
-//    public int totalReadArticles;
-//    public int totalTrueArticlesShared;
-//    public int totalFalseArticlesShared;
-
-//    public int MaxScore { get { return totalReadableArticles + totalTrueArticles; } }
-// }
 public class ScoreManager : Singleton<ScoreManager>
 {
     [Header("Score")]
@@ -67,6 +53,7 @@ public class ScoreManager : Singleton<ScoreManager>
     [SerializeField] private int _pointsForIdentifyingTrueArticle = 1;
     [SerializeField] private int _pointsForReadingArticle = 1;
     [SerializeField] private int _pointsForQuestionAnsweredCorrectly = 1;
+    [SerializeField] private int _pointsForSharingFalseArticle = -1;
 
     [Header("References")]
     private ScoreMenu _scoreMenu = null;
@@ -81,6 +68,8 @@ public class ScoreManager : Singleton<ScoreManager>
 
     LevelScore _score;
     public LevelScore ScoreStats { get { return _score; } }
+
+    public bool CanContinue = true;
 
     //LevelScore[] _levelsScore = null;
     //int _levelScoreIndex = 0;
@@ -122,6 +111,7 @@ public class ScoreManager : Singleton<ScoreManager>
         }
     }
 
+    // this is 0 points actually
     private void AwardPointsReadArticle()
     {
         AddPoints(_pointsForReadingArticle);
@@ -134,6 +124,39 @@ public class ScoreManager : Singleton<ScoreManager>
         AddPoints(_pointsForIdentifyingTrueArticle);
         // _levelsScore[_levelScoreIndex].trueArticlesShared++;
         _score.trueArticlesShared++;
+    }
+
+    private void SubstractPointsForSharingFalseArticle()
+    {
+        AddPoints(_pointsForSharingFalseArticle);
+        _score.falseArticlesShared++;
+    }
+
+    public void EvaluateQuest(Quest quest)
+    {
+        for (int i = 0; i < quest.done.identifiedArticles; ++i)
+        {
+            AwardPointsForSharingTrueArticle();
+        }
+
+        for (int i = 0; i < quest.done.falseArticlesShared; ++i)
+        {
+            SubstractPointsForSharingFalseArticle();
+        }
+
+        for (int i = 0; i < quest.done.readedArticles; ++i)
+        {
+            AwardPointsReadArticle();
+        }
+
+        Debug.Log("Evaluating Quest");
+
+        _score.totalArticles += quest.totalArticles;
+        _score.trueArticles += quest.toDo.articlesToIdentify;
+        _score.falseArticles += quest.toDo.falseArticlesToSkip;
+        _score.readableArticles += quest.toDo.toRead;
+
+        // for (int i = 0; i < quest.)
     }
 
     public void CalculateArticlePoints(ArticleGameObject data)

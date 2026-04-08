@@ -41,6 +41,8 @@ public class ScoreMenu : MonoBehaviour
 
     private bool _medalAnimationEnded = false;
 
+    bool _animationRunning = false;
+
     void Awake()
     {
         _animator = GetComponent<Animator>();
@@ -58,7 +60,7 @@ public class ScoreMenu : MonoBehaviour
 
     private IEnumerator ActivateOKButtonOnEnd()
     {
-        yield return new WaitUntil(() => _generalSlider.value == ScoreManager.Instance.Score && _medalAnimationEnded);
+        yield return new WaitUntil(() => _generalSlider.value == ScoreManager.Instance.Score && _medalAnimationEnded && ScoreManager.Instance.CanContinue);
         ActivateOKButton(true);
     }
 
@@ -148,7 +150,7 @@ public class ScoreMenu : MonoBehaviour
         // SetValues(_questionsObject, _questionsSlider, _questionsText, score.questionsRight, score.totalQuestions, 1.25f);
         SetValues(_questionsObject, _questionsSlider, _questionsText, -1, -1, 1.25f);
 
-        if (!badFalseSharing && !badTrueSharing/* && !badReading*/)
+        if (!badFalseSharing && !badTrueSharing && !badReading)
         {
             feedback = TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/GOOD_JOB");
         }
@@ -161,7 +163,6 @@ public class ScoreMenu : MonoBehaviour
         string[] feedback = _feedbackString.Split('\n');
         _assistant.ShowMessagesOneShot(feedback, LevelManager.Instance.ShowNextArticle);
     }
-
 
     public void RebuildLayouts()
     {
@@ -178,10 +179,10 @@ public class ScoreMenu : MonoBehaviour
 
     public void ChangeMedal(Sprite newSprite)
     {
+        _newMedal = newSprite;
         if (!_medalAnimationEnded) return;
 
         _medalAnimationEnded = false;
-        _newMedal = newSprite;
         _animator.SetTrigger("ChangeMedal");
     }
 
@@ -216,6 +217,12 @@ public class ScoreMenu : MonoBehaviour
 
     IEnumerator AnimSliderValue(GameObject targetObject, Slider target, int targetValue, int maxValue, float time)
     {
+        if (_animationRunning) 
+            yield return new WaitUntil(() => !_animationRunning);
+
+        _animationRunning = true;
+
+
         float initialValue = target.value;
         if (targetValue != initialValue)
         {
@@ -239,5 +246,6 @@ public class ScoreMenu : MonoBehaviour
             AddPointsFeedback feedback = targetObject.GetComponent<AddPointsFeedback>();
             if(feedback) feedback.AddPoints((int)target.value);
         }
+        _animationRunning = false;
     }
 }
