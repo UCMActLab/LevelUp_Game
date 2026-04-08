@@ -120,15 +120,16 @@ public class ScoreMenu : MonoBehaviour
 
         string feedback = string.Empty;
 
-        // bool badReading = score.readArticles < score.readableArticles;
+        bool badReading = quest.done.readedArticles < quest.toDo.toRead;
         bool badTrueSharing = quest.done.identifiedArticles < quest.toDo.articlesToIdentify;
         bool badFalseSharing = quest.done.falseArticlesShared > 0;
 
-        //if (badReading)
-        //{
-        //    feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/READ");
-        //}
-        // SetValues(_readArticlesObject, _readArticlesSlider, _readArticlesText, score.readArticles, score.readableArticles, 1.25f);
+        if (badReading)
+        {
+            feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/READ");
+        }
+        _readArticlesObject.SetActive(false);
+        //SetValues(_readArticlesObject, _readArticlesSlider, _readArticlesText, quest.done.readedArticles, quest.toDo.toRead, 1.25f);
 
         if (badTrueSharing)
         {

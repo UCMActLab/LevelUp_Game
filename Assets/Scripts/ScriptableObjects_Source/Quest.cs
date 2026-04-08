@@ -56,6 +56,8 @@ public class Quest : ScriptableObject
                 done.falseArticlesShared++;
             }
 
+            Debug.LogError("TODO: SharingPoints");
+            
             //                  TODO
             // ============================================
 

@@ -196,10 +196,12 @@ public class LevelManager : Singleton<LevelManager>
 
             // quest generation
             Quest quest = new Quest();
-            quest.BuildQuest(trueArticlesInLevel, articlesInLevel, numGroups);
+            quest.BuildQuest(trueArticlesInLevel, articlesInLevel, numGroups, articlesCanRead);
             _quests.Add(quest);
 
             maxScore += quest.GetMaxPossibleScore();
+
+            currentLevel++;
 
             // ScoreManager.Instance.SetLevelInfo(currentLevel++, articlesInLevel, articlesToReadInLevel, trueArticlesInLevel, totalQuestions);
         }
@@ -326,6 +328,7 @@ public class LevelManager : Singleton<LevelManager>
         }
         else
         {
+            Debug.LogError("TODO: Change Assistant Message");
             _gameAssistant.ShowMessageOneShot("ola!", () => ScoreManager.Instance.ShowPoints(_quests[level]));
             ResetLevelStats();
         }
@@ -351,6 +354,9 @@ public class LevelManager : Singleton<LevelManager>
         if (_articleObject != null)
         {
             _quests[_currentLevel].EvaluateArticle(_articleData);
+
+            Debug.LogError("Te quedaste aquí!!!!!!!!! -> Tienes que hacer que se sumen los puntos de la quest");
+
 
             // ScoreManager.Instance.CalculateArticlePoints(_articleData);
             _articleData.OnSkip.RemoveAllListeners();
