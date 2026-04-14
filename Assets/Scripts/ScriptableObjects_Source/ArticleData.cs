@@ -14,6 +14,7 @@ public class ArticleData : ScriptableObject
     public string theme;
 
     public bool canBeSharedWithGroups;
+    public int numGroupsToShareWith;
 
     public ConversationType convType = ConversationType.NONE;
     public System.Collections.Generic.List<Conversation> conversation;

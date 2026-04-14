@@ -66,6 +66,7 @@ public class ArticleGameObject : MonoBehaviour
     private LocalizeStringEvent _body;
 
     bool[] _sharedWithGroups;
+    int _numGroupsToShareWith;
 
     GameObject _shareArticleButtons = null;
     public bool IsTrue { get { return Data.isTrue; } }
@@ -88,11 +89,10 @@ public class ArticleGameObject : MonoBehaviour
         } 
     }
 
+    bool dataAlreadySet = false;
     private void Start()
     {
         _articleFeed = GetComponentInParent<ArticleFeed>();
-
-        _sharedWithGroups = new bool[3] { false, false, false };
 
         // _inkConvManager = FindAnyObjectByType<InkConversationManager>();
         _convManager = FindAnyObjectByType<ChatManager>();
@@ -103,7 +103,7 @@ public class ArticleGameObject : MonoBehaviour
         _title = _articleTitle.GetComponent<LocalizeStringEvent>();
         _body = _bodyText.GetComponent<LocalizeStringEvent>();
 
-        if (Data != null)
+        if (Data != null && !dataAlreadySet)
         {
             SetArticleData(Instantiate(Data));
         }
@@ -116,7 +116,7 @@ public class ArticleGameObject : MonoBehaviour
 
 
     #region Article Actions
-    public void OnShareWithGroups()
+    public void OnShareWithGroups(int numGroups)
     {
         _shareArticleButtons = _convManager.SpawnShareButtons();
         Button[] buttons = _shareArticleButtons.GetComponentsInChildren<Button>();
@@ -133,11 +133,18 @@ public class ArticleGameObject : MonoBehaviour
 
         for (int i = 1; i <  buttons.Length; i++) {
             Button bt = buttons[i];
-            
-            bt.interactable = !_sharedWithGroups[i - 1];
-            if (bt.interactable)
+
+            if (i < numGroups + 1)
             {
-                AddShareArticleListenerToButton(i, bt);
+                bt.interactable = !_sharedWithGroups[i - 1];
+                if (bt.interactable)
+                {
+                    AddShareArticleListenerToButton(i, bt);
+                }
+            }
+            else
+            {
+                bt.gameObject.SetActive(false);
             }
 
             //int tempInt = i;
@@ -218,20 +225,19 @@ public class ArticleGameObject : MonoBehaviour
 
         _convManager.ChangeGroup(groupID);
         // Data should be an instance
-        ArticleData data = Instantiate(Data);
-        data.sharedWithGroups = _sharedWithGroups;
-        _convManager.SendArticle(data);
+
+        _sharedWithGroups[groupID - 1] = true;
+        Data.sharedWithGroups = _sharedWithGroups;
+        _convManager.SendArticle(Data);
 
         if(conv == null)
         {
-            conv = ConversationCompendium.Instance.GetConversation(groupID, data.companyName, data.theme, Data.convType);
+            conv = ConversationCompendium.Instance.GetConversation(groupID, Data.companyName, Data.theme, Data.convType);
         }
 
         _convManager.SetConversation(conv, true);
 
         Destroy(shareButtons);
-
-        _sharedWithGroups[groupID - 1] = true;
 
         _hasSharedArticle = true;
     
@@ -389,7 +395,7 @@ public class ArticleGameObject : MonoBehaviour
         if (data == null) return;
 
         Data = data;
-        
+
         _companyLogo.sprite = Data.companyLogo;
         _articleImage.sprite = Data.articleImage;
         _articleImage.gameObject.SetActive(_articleImage.sprite != null);
@@ -420,11 +426,18 @@ public class ArticleGameObject : MonoBehaviour
             ActivateReadButton(false);
         }
 
-        if (Data.sharedWithGroups.Length == 3)
-        {
-            _sharedWithGroups = Data.sharedWithGroups;
-        }
+        _numGroupsToShareWith = data.numGroupsToShareWith;
         
+        _sharedWithGroups = Data.sharedWithGroups;
+
+        if (!data.canBeSharedWithGroups)
+        {
+            SetupShareButtonForVerification();
+        }
+        else SetupShareButtonForGroups(_numGroupsToShareWith);
+
+        dataAlreadySet = true;
+
         RebuildAllLayouts();
     }
 
@@ -436,9 +449,10 @@ public class ArticleGameObject : MonoBehaviour
 
     public void SetupShareButtonForGroups(int numGroups)
     {
+        _numGroupsToShareWith = numGroups;
         Debug.LogError("TODO: num groups is unused");
         _shareButton.onClick.RemoveAllListeners();
-        _shareButton.onClick.AddListener(OnShareWithGroups);
+        _shareButton.onClick.AddListener(() => OnShareWithGroups(numGroups));
     }
 
     public void SetupShareButtonForVerification()
@@ -473,7 +487,7 @@ public class ArticleGameObject : MonoBehaviour
     {
         _skipButton.onClick.AddListener(() => _articleFeed.SkipArticle(this));
         _readButton.onClick.AddListener(ReadArticle);
-        _shareButton.onClick.AddListener(OnShareWithGroups);
+        _shareButton.onClick.AddListener(() => OnShareWithGroups(3));
     }
     #endregion
 }

@@ -184,7 +184,11 @@ public class ChatManager : MonoBehaviour
         ArticleGameObject article = _lastSharedArticle.GetComponent<ArticleGameObject>();
         bool[] sharedWithGroups = article.HasSharedWithGroups;
 
-        bool canShare = !(sharedWithGroups[0] && sharedWithGroups[1] && sharedWithGroups[2]);
+        bool canShare = false;
+        for (int i = 0; i < sharedWithGroups.Length; ++i)
+        {
+            canShare = canShare || !sharedWithGroups[i];
+        }
 
         if(canShare)
         {
@@ -200,6 +204,10 @@ public class ChatManager : MonoBehaviour
                 {
                     article.AddShareArticleListenerToButton(i + 1, buttons[i]);
                 }
+            }
+            for (int i = sharedWithGroups.Length; i < buttons.Length; ++i)
+            {
+                buttons[i].gameObject.SetActive(false);
             }
         }
         else

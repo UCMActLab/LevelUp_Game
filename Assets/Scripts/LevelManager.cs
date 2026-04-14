@@ -386,14 +386,15 @@ public class LevelManager : Singleton<LevelManager>
                 data.articleTitle = "IS TRUE: " + data.articleTitle;
             }
 #endif
+            if (!data.canBeSharedWithGroups) _articleData.OnShare.AddListener(ShowNextArticle);
+            else
+            {
+                data.numGroupsToShareWith = _levelsInfo[_currentLevel].numGroupsToShareWith;
+                data.sharedWithGroups = new bool[data.numGroupsToShareWith];
+            }
+
             _articleData.SetArticleData(data);
 
-            if (!data.canBeSharedWithGroups) 
-            { 
-                _articleData.SetupShareButtonForVerification();
-                _articleData.OnShare.AddListener(ShowNextArticle);
-            }
-            else _articleData.SetupShareButtonForGroups(1);
 
             if (_currentArticle++ == 0) {
                 // tell ScoreManager that a new Level was reached 
