@@ -395,7 +395,6 @@ public class LevelManager : Singleton<LevelManager>
 
             _articleData.SetArticleData(data);
 
-
             if (_currentArticle++ == 0) {
                 // tell ScoreManager that a new Level was reached 
                 // _fader.StartFade(0.8f, 0.8f, 0.0f);
