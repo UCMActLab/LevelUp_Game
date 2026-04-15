@@ -469,6 +469,10 @@ public class GameAssistant : MonoBehaviour
         _keepTrackOfTime = false;
     }
 
+    public void ShowMessages(string[] msg)
+    {
+        ShowMessagesOneShot(msg, null);
+    }
     public void ShowMessageOneShot(string msg, UnityAction oneShot = null)
     {
         _ShowMessage(msg);
@@ -502,6 +506,7 @@ public class GameAssistant : MonoBehaviour
             {
                 _okAssitantButtonOneShots.onClick.RemoveAllListeners();
                 if (oneShot != null) AssistantEndMessageOneShot(oneShot);
+                else AssistantEndMessageOneShot(HideMessage);
             }
             else
             {

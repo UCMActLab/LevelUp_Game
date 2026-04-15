@@ -70,49 +70,6 @@ public class ScoreMenu : MonoBehaviour
         if(_newMedal != null) ChangeMedalDuringAnimation();
     }
 
-    //public void ShowScore(LevelScore score)
-    //{
-    //    _readArticlesSlider.value = 0.0f;
-    //    _falseArticlesSlider.value = 0.0f;
-    //    _trueArticlesSlider.value = 0.0f;
-    //    _questionsSlider.value = 0.0f;
-
-    //    string feedback = string.Empty;
-
-    //    bool badReading = score.readArticles < score.readableArticles;
-    //    bool badTrueSharing = score.trueArticlesShared < score.trueArticles;
-    //    bool badFalseSharing = score.falseArticlesShared > 0;
-
-    //    if (badReading)
-    //    {
-    //        feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/READ");
-    //    }
-    //    SetValues(_readArticlesObject, _readArticlesSlider, _readArticlesText, score.readArticles, score.readableArticles, 1.25f);
-
-    //    if (badTrueSharing)
-    //    {
-    //        if (feedback != string.Empty) feedback += '\n';
-    //        feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_TRUE");
-    //    }
-    //    SetValues(_trueArticlesObject, _trueArticlesSlider, _trueArticlesText, score.trueArticlesShared, score.trueArticles, 1.25f);
-
-    //    if (badFalseSharing)
-    //    {
-    //        if (feedback != string.Empty) feedback += '\n';
-    //        feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_FALSE");
-    //    }
-    //    SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, score.falseArticlesShared, score.falseArticles, 1.25f);
-
-    //    SetValues(_questionsObject, _questionsSlider, _questionsText, score.questionsRight, score.totalQuestions, 1.25f);
-
-    //    if(!badFalseSharing  && !badTrueSharing && !badReading)
-    //    {
-    //        feedback = TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/GOOD_JOB");
-    //    }
-
-    //    _feedbackString = feedback;
-    //}
-
     public void ShowScore(Quest quest)
     {
         _readArticlesSlider.value = 0.0f;

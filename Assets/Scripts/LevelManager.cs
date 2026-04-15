@@ -399,10 +399,34 @@ public class LevelManager : Singleton<LevelManager>
                 // tell ScoreManager that a new Level was reached 
                 // _fader.StartFade(0.8f, 0.8f, 0.0f);
                 onLevelStart.Invoke(_currentLevel);
+                ShowMessagesLevelStart(_levelsInfo[_currentLevel]);
+
             }
 
             onNewArticleSpawned.Invoke(_articleData);
         }
+    }
+
+    private void ShowMessagesLevelStart(LevelInfo info)
+    {
+        Debug.LogError("TODO: Poner fade out bloqueando interacción!!");
+        if (info.avatarMessagesOnStart != null && info.avatarMessagesOnStart.Count > 0)
+        {
+            string[] messages = new string[info.avatarMessagesOnStart.Count];
+            for (int i = 0; i < messages.Length; i++)
+            {
+                messages[i] = info.avatarMessagesOnStart[i].GetLocalizedString();
+            }
+
+            _fader.StartFade(1.0f, 0.0f, 0.8f, true);
+            _gameAssistant.ShowMessagesOneShot(messages, StartLevelPostMessages);
+        }
+    }
+
+    private void StartLevelPostMessages()
+    {
+        _gameAssistant.HideMessage();
+        _fader.StartFade(1.0f, 0.8f, 0.0f);
     }
 
     private void EndAllLevels()

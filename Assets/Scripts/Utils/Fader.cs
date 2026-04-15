@@ -24,6 +24,8 @@ public class Fader : MonoBehaviour
 
     private void ChangeAlpha(float newAlpha)
     {
+        if (newAlpha == 0.0f) 
+            _image.raycastTarget = false;
         _image.color = GetGoalColor(newAlpha);
     }
 
@@ -32,8 +34,9 @@ public class Fader : MonoBehaviour
         return new Color(_image.color.r, _image.color.g, _image.color.b, alpha);
     } 
 
-    public void StartFade(float time, float initialValue, float goalValue)
+    public void StartFade(float time, float initialValue, float goalValue, bool blockInteraction = false)
     {
+        _image.raycastTarget = blockInteraction;
         StartCoroutine(Fade(time, initialValue, goalValue));
     }
 
@@ -45,11 +48,11 @@ public class Fader : MonoBehaviour
 
         while(timer < time)
         {
+            timer += Time.deltaTime;
             currentAlpha = Mathf.Lerp(initialValue, goalValue, timer / time);
 
             ChangeAlpha(currentAlpha);
 
-            timer += Time.deltaTime;
             yield return new WaitForNextFrameUnit();
         }
 
