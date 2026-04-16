@@ -234,4 +234,42 @@ public class ChatManager : MonoBehaviour
         // hacemos una copia de la conversación para no modificar la original
         if(_currentConversation != null) _currentConversation = Instantiate(_currentConversation);
     }
+
+    public void RandomizeAllGroupTopics()
+    {
+        // Creamos la "bolsa" con las 5 opciones.
+        List<string> topicPool = new List<string>()
+        {
+            "Misterios y Conspiraciones",
+            "Gatitos y Memes",
+            "Desarrollo de Videojuegos",
+            "Deportes Extremos",
+            "Recetas de Cocina Desastrosas"
+        };
+
+        foreach (GameObject groupObj in _groupChats)
+        {
+            if (groupObj == null) continue;
+
+            GroupSettings settings = groupObj.GetComponent<GroupSettings>();
+            if (settings != null)
+            {
+                // Seguridad: Si hay más grupos que temáticas, rellenamos la bolsa
+                if (topicPool.Count == 0)
+                {
+                    topicPool = new List<string>()
+                    {
+                        "Misterios y Conspiraciones",
+                        "Gatitos y Memes",
+                        "Desarrollo de Videojuegos",
+                        "Deportes Extremos",
+                        "Recetas de Cocina Desastrosas"
+                    };
+                }
+
+                // El método de GroupSettings escoge uno y lo elimina de topicPool
+                settings.AssignRandomTopic(topicPool);
+            }
+        }
+    }
 }

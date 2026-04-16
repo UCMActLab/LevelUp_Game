@@ -38,10 +38,10 @@ public class ArticleGameObject : MonoBehaviour
     [SerializeField]
     private float _maxTextSize = 120;
 
-    public event Action<Choice> OnReadChoice;
-    public event Action<Choice> OnSkipChoice;
-    public event Action<Choice> OnShareChoice;
-    public event Action<Choice> AnswerClicked;
+    //public event Action<Choice> OnReadChoice;
+    //public event Action<Choice> OnSkipChoice;
+    //public event Action<Choice> OnShareChoice;
+    //public event Action<Choice> AnswerClicked;
 
     bool _hasReadArticle;
     public bool HasReadArticle {  get { return _hasReadArticle; } }
