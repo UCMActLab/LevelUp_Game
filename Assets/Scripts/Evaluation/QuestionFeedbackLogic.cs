@@ -55,7 +55,7 @@ public class QuestionFeedbackLogic : MonoBehaviour
             }
         }
        
-        _assistant.ShowMessagesOneShot(messages.ToArray(), _testLogic.NextQuestion);
+        _assistant.ShowMessages(messages.ToArray(), _testLogic.NextQuestion);
 
     }
 }

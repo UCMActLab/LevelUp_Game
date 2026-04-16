@@ -7,6 +7,18 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+public struct QueuedMessage
+{
+    public string Text;
+    public UnityAction OnComplete;
+
+    public QueuedMessage(string text, UnityAction onComplete = null)
+    {
+        Text = text;
+        OnComplete = onComplete;
+    }
+}
+
 public enum GameAssistantState
 {
     NORMAL = 0, // Sonríe feliz viendo que el jugador ha hecho bien 1 nivel (este es el estado base)
@@ -33,6 +45,10 @@ public class GameAssistant : MonoBehaviour
     ///     - BAD: Detecta que el jugador no está haciéndolo muy bien y se pone sad. Aquí es cuándo debemos lanzar la interrogación
     ///     - GOOD: Está súper contento porque ve que el jugador lleva haciéndolo bien 2 o más niveles
 
+    private Queue<QueuedMessage> _messageQueue = new Queue<QueuedMessage>();
+    private bool _isDisplayingQueue = false;
+    private UnityAction _currentMessageAction = null;
+
     const GameAssistantState INITIAL_STATE = GameAssistantState.NORMAL;
     GameAssistantState _currentState = GameAssistantState.NORMAL;
 
@@ -47,9 +63,7 @@ public class GameAssistant : MonoBehaviour
     private TextMeshProUGUI _messageText = null;
     private Animator _messageAnimator = null;
     
-    
     // TODO: ADD SOUND TO MESSAGES
-
 
     [SerializeField] private Button _okAssitantButton = null;
     // this button is for handling events when showing Messages
@@ -79,12 +93,10 @@ public class GameAssistant : MonoBehaviour
     int _sharedNotRead = 0;
     int _fakeArticlesShared = 0;
 
-    ScoreManager _scoreManager = null;
     ArticleGameObject _articleData = null;
 
     float _timer = 0.0f;
 
-    List<string> _messagesOnClick = new List<string>();
 
     public UnityEvent<GameAssistantState> onStateChanged = new UnityEvent<GameAssistantState>();
 
@@ -109,16 +121,115 @@ public class GameAssistant : MonoBehaviour
         Debug.Assert(_messageText != null, "Message has no Text child object.");
 
         Debug.Assert(_okAssitantButton != null, "OK Assistant button was not set.");
-        _okAssitantButton.onClick.AddListener(HideMessage);
-
-        _scoreManager = ScoreManager.Instance;
 
         LevelManager.Instance.onLevelStart.AddListener(OnLevelStart);
         LevelManager.Instance.onLevelEnd.AddListener(OnLevelEnd);
         LevelManager.Instance.onNewArticleSpawned.AddListener(GetNewArticle);
 
         ChangeState(INITIAL_STATE);
+
+        // Asegurarnos de que el botón OK principal procese la cola
+        _okAssitantButton.onClick.RemoveAllListeners();
+        _okAssitantButton.onClick.AddListener(OnOkButtonClicked);
+
+        // El botón OneShot puede seguir existiendo, pero lo unificaremos
+        _okAssitantButtonOneShots.onClick.RemoveAllListeners();
+        _okAssitantButtonOneShots.onClick.AddListener(OnOkButtonClicked);
     }
+
+    public void ShowMessage(string msg)
+    {
+        EnqueueMessage(msg, ProcessNextMessage);
+    }
+
+    private void EnqueueMessage(string msg, UnityAction onComplete = null, bool activateMessage = true)
+    {
+        _messageQueue.Enqueue(new QueuedMessage(msg, onComplete));
+        
+        if (!_isDisplayingQueue && activateMessage)
+        {
+            ProcessNextMessage();
+        }
+    }
+
+    private void ProcessNextMessage()
+    {
+        if (_messageQueue.Count > 0)
+        {
+            _isDisplayingQueue = true;
+            _keepTrackOfTime = false;
+            
+            QueuedMessage next = _messageQueue.Dequeue();
+            _currentMessageAction = next.OnComplete;
+
+            _messageText.SetText(next.Text);
+            _message.SetActive(true);
+            _okAssitantButton.gameObject.SetActive(true); // Usamos el botón estándar
+            
+            _messageAnimator.SetTrigger("NewMessage");
+            if(_message.TryGetComponent(out RebuildLayoutOnStart rebuild)) rebuild.RebuildAllLayouts();
+        }
+        else
+        {
+            _isDisplayingQueue = false;
+            _message.SetActive(false);
+            _okAssitantButton.gameObject.SetActive(false); // Usamos el botón estándar
+            _keepTrackOfTime = true;
+            _timer = 0.0f;
+        }
+    }
+
+    private void OnOkButtonClicked()
+    {
+        // Ejecutar acción asociada al mensaje actual si existe
+        _currentMessageAction?.Invoke();
+        // _currentMessageAction = null;
+
+        // Intentar mostrar el siguiente
+        // ProcessNextMessage();
+    }
+
+    // --- ADAPTACIÓN DE TUS FUNCIONES EXISTENTES ---
+
+    public void ShowMessages(string[] msgs, UnityAction oneShot = null)
+    {
+        for (int i = 0; i < msgs.Length; ++i) {
+            UnityAction action = i < msgs.Length -1 ? ProcessNextMessage : () => { ProcessNextMessage(); oneShot(); };
+            EnqueueMessage(msgs[i], action);
+        }
+    }
+
+    public void ShowMessageOneShot(string msg, UnityAction oneShot = null)
+    {
+        EnqueueMessage(msg, () => { oneShot(); ProcessNextMessage(); });
+    }
+
+    public void WorryAssistant(List<string> messages)
+    {
+        if (GameAssistantState.BAD != _currentState)
+        {
+            ChangeState(GameAssistantState.BAD);
+            for (int i = 0; i < messages.Count; ++i)
+            {
+                if (i == messages.Count - 1) EnqueueMessage(messages[i], ProcessNextMessage, false);
+                else EnqueueMessage(messages[i], () => { ChangeState(GameAssistantState.NORMAL); ProcessNextMessage(); }, false);
+            }
+            
+            _assistantHeadButton.onClick.AddListener(() => { ProcessNextMessage(); _assistantHeadButton.onClick.RemoveAllListeners(); });
+        }
+    }
+
+    //// El sistema de ShowMessageOnClick ahora es más simple
+    //private void ShowMessageOnClick()
+    //{
+    //    // Si ya hay mensajes en cola, no hacemos nada o añadimos estos
+    //    foreach(var msg in _messagesOnClick)
+    //    {
+    //         EnqueueMessage(msg);
+    //    }
+    //    _messagesOnClick.Clear();
+    //    _assistantHeadButton.onClick.RemoveListener(ShowMessageOnClick);
+    //}
 
     IEnumerator WaitToActivateScrollTracking()
     {
@@ -212,11 +323,6 @@ public class GameAssistant : MonoBehaviour
             // WORRIED/SHARED_FALSE/READED_ARTICLE/0/0
             List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WORRIED/SHARED_FALSE/READED_ARTICLE/0/", 5);
 
-            //messages.Add("Creo que no te estás fijando bien en lo que lees");
-            //messages.Add("Has compartido algunos bulos, a pesar de haber leído los artículos");
-            //messages.Add("Intenta fijarte más en si apelan a tus emociones");
-            //messages.Add("O si la redacción parece profesional");
-            //messages.Add("¡Y no te olvides de revisar la fuente!");
             WorryAssistant(messages);
 
 
@@ -224,53 +330,52 @@ public class GameAssistant : MonoBehaviour
         }
     }
 
-    public void WorryAssistant(List<string> messages)
-    {
-        if (GameAssistantState.BAD != _currentState)
-        {
-            _messagesOnClick.Clear(); 
+    //public void WorryAssistant(List<string> messages)
+    //{
+    //    if (GameAssistantState.BAD != _currentState)
+    //    {
+    //        _messagesOnClick.Clear(); 
 
-            ChangeState(GameAssistantState.BAD);
+    //        ChangeState(GameAssistantState.BAD);
 
-            _assistantHeadButton.onClick.AddListener(ShowMessageOnClick);
-        }
+    //        _assistantHeadButton.onClick.AddListener(ShowMessageOnClick);
+    //    }
 
-        _messagesOnClick.AddRange(messages);
-    }
+    //    _messagesOnClick.AddRange(messages);
+    //}
 
-    int _messageIndex = 0;
-    private void ShowMessageOnClick()
-    {
-        _messageIndex = 0;
+    //private void ShowMessageOnClick()
+    //{
+    //    _messageIndex = 0;
 
-        _okAssitantButton.onClick.RemoveListener(HideMessage);
-        _okAssitantButton.onClick.AddListener(ShowNextMessage);
+    //    _okAssitantButton.onClick.RemoveListener(HideMessage);
+    //    _okAssitantButton.onClick.AddListener(ShowNextMessage);
 
-        _okAssitantButton.gameObject.SetActive(true);
+    //    _okAssitantButton.gameObject.SetActive(true);
 
-        _message.SetActive(true);
-        ShowNextMessage();
-        _keepTrackOfTime = false;
+    //    _message.SetActive(true);
+    //    ShowNextMessage();
+    //    _keepTrackOfTime = false;
 
-        _assistantHeadButton.onClick.RemoveListener(ShowMessageOnClick);
-    }
+    //    _assistantHeadButton.onClick.RemoveListener(ShowMessageOnClick);
+    //}
 
-    private void ShowNextMessage()
-    {
-        if (_messageIndex >= _messagesOnClick.Count)
-        {
-            HideMessage();
-            ChangeState(GameAssistantState.NORMAL);
-            _okAssitantButton.onClick.RemoveListener(ShowNextMessage);
-            _okAssitantButton.onClick.AddListener(HideMessage);
-        }
-        else
-        {
-            _messageText.SetText(_messagesOnClick[_messageIndex++]);
-            _message.GetComponent<RebuildLayoutOnStart>().RebuildAllLayouts();
-            _messageAnimator.SetTrigger("NewMessage");
-        }
-    }
+    //private void ShowNextMessage()
+    //{
+    //    if (_messageIndex >= _messagesOnClick.Count)
+    //    {
+    //        HideMessage();
+    //        ChangeState(GameAssistantState.NORMAL);
+    //        _okAssitantButton.onClick.RemoveListener(ShowNextMessage);
+    //        _okAssitantButton.onClick.AddListener(HideMessage);
+    //    }
+    //    else
+    //    {
+    //        _messageText.SetText(_messagesOnClick[_messageIndex++]);
+    //        _message.GetComponent<RebuildLayoutOnStart>().RebuildAllLayouts();
+    //        _messageAnimator.SetTrigger("NewMessage");
+    //    }
+    //}
 
     private void HasScrolled(Vector2 _) 
     {
@@ -462,71 +567,71 @@ public class GameAssistant : MonoBehaviour
         ShowMessage(TranslationManager.Instance.GetLocalizedStringValue("ASSISTANT_ADVICES", "SUGGEST_SCROLLING"));
     }
 
-    public void ShowMessage(string msg)
-    {
-        _ShowMessage(msg);
-        _okAssitantButton.gameObject.SetActive(true);
-        _keepTrackOfTime = false;
-    }
+    //public void ShowMessage(string msg)
+    //{
+    //    _ShowMessage(msg);
+    //    _okAssitantButton.gameObject.SetActive(true);
+    //    _keepTrackOfTime = false;
+    //}
 
-    public void ShowMessages(string[] msg)
-    {
-        ShowMessagesOneShot(msg, null);
-    }
-    public void ShowMessageOneShot(string msg, UnityAction oneShot = null)
-    {
-        _ShowMessage(msg);
-        _okAssitantButtonOneShots.gameObject.SetActive(true);
-        _keepTrackOfTime = false;
-        if (oneShot != null) AssistantEndMessageOneShot(oneShot);
-    }
+    //public void ShowMessages(string[] msg)
+    //{
+    //    ShowMessagesOneShot(msg, null);
+    //}
+    //public void ShowMessageOneShot(string msg, UnityAction oneShot = null)
+    //{
+    //    _ShowMessage(msg);
+    //    _okAssitantButtonOneShots.gameObject.SetActive(true);
+    //    _keepTrackOfTime = false;
+    //    if (oneShot != null) AssistantEndMessageOneShot(oneShot);
+    //}
 
-    public void ShowMessagesOneShot(string[] msg, UnityAction oneShot = null)
-    {
-        StartCoroutine(_ShowMessages(msg, oneShot));
-        //_okAssitantButtonOneShots.gameObject.SetActive(true);
-        //_keepTrackOfTime = false;
-        //if (oneShot != null) AssistantEndMessageOneShot(oneShot);
-    }
+    //public void ShowMessagesOneShot(string[] msg, UnityAction oneShot = null)
+    //{
+    //    StartCoroutine(_ShowMessages(msg, oneShot));
+    //    //_okAssitantButtonOneShots.gameObject.SetActive(true);
+    //    //_keepTrackOfTime = false;
+    //    //if (oneShot != null) AssistantEndMessageOneShot(oneShot);
+    //}
 
-    IEnumerator _ShowMessages(string[] msg, UnityAction oneShot = null)
-    {
-        _okAssitantButtonOneShots.gameObject.SetActive(true);
-        _okAssitantButtonOneShots.onClick.RemoveAllListeners();
-        _keepTrackOfTime = false;
+    //IEnumerator _ShowMessages(string[] msg, UnityAction oneShot = null)
+    //{
+    //    _okAssitantButtonOneShots.gameObject.SetActive(true);
+    //    _okAssitantButtonOneShots.onClick.RemoveAllListeners();
+    //    _keepTrackOfTime = false;
 
-        int current = 0;
-        bool nextMessage = false;
-        _okAssitantButtonOneShots.onClick.AddListener(() => nextMessage = true);
-        while (current < msg.Length)
-        {
-            nextMessage = false;
-            _ShowMessage(msg[current++]);
-            if (current >= msg.Length)
-            {
-                _okAssitantButtonOneShots.onClick.RemoveAllListeners();
-                if (oneShot != null) AssistantEndMessageOneShot(oneShot);
-                else AssistantEndMessageOneShot(HideMessage);
-            }
-            else
-            {
-                yield return new WaitUntil(() => nextMessage == true);
-            }
-        }
-    }
+    //    int current = 0;
+    //    bool nextMessage = false;
+    //    _okAssitantButtonOneShots.onClick.AddListener(() => nextMessage = true);
+    //    while (current < msg.Length)
+    //    {
+    //        nextMessage = false;
+    //        _ShowMessage(msg[current++]);
+    //        if (current >= msg.Length)
+    //        {
+    //            _okAssitantButtonOneShots.onClick.RemoveAllListeners();
+    //            if (oneShot != null) AssistantEndMessageOneShot(oneShot);
+    //            else AssistantEndMessageOneShot(HideMessage);
+    //        }
+    //        else
+    //        {
+    //            yield return new WaitUntil(() => nextMessage == true);
+    //        }
+    //    }
+    //}
 
-    private void _ShowMessage(string msg)
-    {
-        _messageText.SetText(msg);
-        _message.SetActive(true);
-        _messageAnimator.SetTrigger("NewMessage");
-        _message.GetComponent<RebuildLayoutOnStart>().RebuildAllLayouts();
-    }
+    //private void _ShowMessage(string msg)
+    //{
+    //    _messageText.SetText(msg);
+    //    _message.SetActive(true);
+    //    _messageAnimator.SetTrigger("NewMessage");
+    //    _message.GetComponent<RebuildLayoutOnStart>().RebuildAllLayouts();
+    //}
 
-    public void AssistantEndMessageOneShot(UnityAction oneShot)
-    {
-        _okAssitantButtonOneShots.onClick.AddListener(() => { HideMessageOneShot(); oneShot(); _okAssitantButtonOneShots.onClick.RemoveAllListeners(); });
-    }
+    //public void AssistantEndMessageOneShot(UnityAction oneShot)
+    //{
+    //    _okAssitantButtonOneShots.onClick.AddListener(() => { HideMessageOneShot(); oneShot(); _okAssitantButtonOneShots.onClick.RemoveAllListeners(); });
+    //}
 
     public void HideMessage()
     {
@@ -537,12 +642,12 @@ public class GameAssistant : MonoBehaviour
         _timer = 0.0f;
     }
 
-    private void HideMessageOneShot()
-    {
-        _message.SetActive(false);
-        _messageText.SetText(string.Empty);
-        _okAssitantButtonOneShots.gameObject.SetActive(false);
-    }
+    //private void HideMessageOneShot()
+    //{
+    //    _message.SetActive(false);
+    //    _messageText.SetText(string.Empty);
+    //    _okAssitantButtonOneShots.gameObject.SetActive(false);
+    //}
 }
 
 

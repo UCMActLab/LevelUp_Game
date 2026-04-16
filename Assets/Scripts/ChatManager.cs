@@ -2,6 +2,7 @@ using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -238,14 +239,7 @@ public class ChatManager : MonoBehaviour
     public void RandomizeAllGroupTopics()
     {
         // Creamos la "bolsa" con las 5 opciones.
-        List<string> topicPool = new List<string>()
-        {
-            "Misterios y Conspiraciones",
-            "Gatitos y Memes",
-            "Desarrollo de Videojuegos",
-            "Deportes Extremos",
-            "Recetas de Cocina Desastrosas"
-        };
+        List<Topics> topicPool = TopicsDictionary.topics.Keys.ToList();
 
         foreach (GameObject groupObj in _groupChats)
         {
@@ -254,19 +248,6 @@ public class ChatManager : MonoBehaviour
             GroupSettings settings = groupObj.GetComponent<GroupSettings>();
             if (settings != null)
             {
-                // Seguridad: Si hay más grupos que temáticas, rellenamos la bolsa
-                if (topicPool.Count == 0)
-                {
-                    topicPool = new List<string>()
-                    {
-                        "Misterios y Conspiraciones",
-                        "Gatitos y Memes",
-                        "Desarrollo de Videojuegos",
-                        "Deportes Extremos",
-                        "Recetas de Cocina Desastrosas"
-                    };
-                }
-
                 // El método de GroupSettings escoge uno y lo elimina de topicPool
                 settings.AssignRandomTopic(topicPool);
             }

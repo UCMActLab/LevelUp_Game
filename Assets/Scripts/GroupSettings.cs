@@ -16,10 +16,10 @@ public class GroupSettings : MonoBehaviour
 
     [SerializeField] private int _topOffset = 0;
 
-    public string Topic { get; private set; }
+    public Topics Topic { get; private set; }
 
     // Método público que escoge aleatoriamente de una lista proporcionada y consume la opción
-    public void AssignRandomTopic(List<string> availableTopicsPool)
+    public void AssignRandomTopic(List<Topics> availableTopicsPool)
     {
         if (availableTopicsPool == null || availableTopicsPool.Count == 0)
         {

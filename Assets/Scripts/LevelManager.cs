@@ -36,6 +36,9 @@ public class LevelManager : Singleton<LevelManager>
     List<Quest> _quests;
 
     [SerializeField]
+    private ChatManager _chatManager = null;
+
+    [SerializeField]
     private GameAssistant _gameAssistant = null;
 
     [SerializeField]
@@ -166,7 +169,6 @@ public class LevelManager : Singleton<LevelManager>
 
             for (int i = 0; i < level.numArticles; ++i)
             {
-                int choose = UnityEngine.Random.Range(0, 2);
                 ArticleData data = null;
 
                 if (queueFalseArticles.Count == 0 || (trueArticlesInLevel < level.numTrueArticles && queueTrueArticles.Count > 0)) {
@@ -214,7 +216,7 @@ public class LevelManager : Singleton<LevelManager>
         _gameLoaded = false;
         _loadingAnimation?.SetActive(true);
         List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WELCOME_", 8, 0);
-        _gameAssistant.ShowMessagesOneShot(messages.ToArray(), WorryAssistantTutorial);
+        _gameAssistant.ShowMessages(messages.ToArray(), WorryAssistantTutorial);
         yield return new WaitUntil(() => ArticleManager.Instance.ArticlesCreated);
         BuildLevels();
         
@@ -241,7 +243,7 @@ public class LevelManager : Singleton<LevelManager>
         if (state != GameAssistantState.NORMAL) return;
 
         List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WELCOME_", 3, 8);
-        _gameAssistant.ShowMessagesOneShot(messages.ToArray(), AvatarWelcomesToGame);
+        _gameAssistant.ShowMessages(messages.ToArray(), AvatarWelcomesToGame);
 
         _gameAssistant.onStateChanged.RemoveListener(LastWelcomeMessages);
     }
@@ -400,7 +402,8 @@ public class LevelManager : Singleton<LevelManager>
                 // _fader.StartFade(0.8f, 0.8f, 0.0f);
                 onLevelStart.Invoke(_currentLevel);
                 ShowMessagesLevelStart(_levelsInfo[_currentLevel]);
-
+                _chatManager.RandomizeAllGroupTopics();
+                // añadir mensaje de "ahora tus grupos les interesa: blabla"
             }
 
             onNewArticleSpawned.Invoke(_articleData);
@@ -419,7 +422,7 @@ public class LevelManager : Singleton<LevelManager>
             }
 
             _fader.StartFade(1.0f, 0.0f, 0.8f, true);
-            _gameAssistant.ShowMessagesOneShot(messages, StartLevelPostMessages);
+            _gameAssistant.ShowMessages(messages, StartLevelPostMessages);
         }
     }
 

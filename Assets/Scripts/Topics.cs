@@ -10,7 +10,7 @@ using System.Collections.Generic;
  * "Conspiracy theories"
  */
 
-enum Topics
+public enum Topics
 {
     AI,
     GENERAL,

@@ -118,7 +118,7 @@ public class ScoreMenu : MonoBehaviour
     public void ShowFeedback()
     {
         string[] feedback = _feedbackString.Split('\n');
-        _assistant.ShowMessagesOneShot(feedback, LevelManager.Instance.ShowNextArticle);
+        _assistant.ShowMessages(feedback, LevelManager.Instance.ShowNextArticle);
     }
 
     public void RebuildLayouts()
