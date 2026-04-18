@@ -239,7 +239,7 @@ public class ChatManager : MonoBehaviour
     public void RandomizeAllGroupTopics()
     {
         // Creamos la "bolsa" con las 5 opciones.
-        List<Topics> topicPool = TopicsDictionary.topics.Keys.ToList();
+        List<Topics> topicPool = TopicsDictionary.topics.Values.ToList();
 
         foreach (GameObject groupObj in _groupChats)
         {
@@ -252,5 +252,10 @@ public class ChatManager : MonoBehaviour
                 settings.AssignRandomTopic(topicPool);
             }
         }
+    }
+
+    public Topics GetGroupTheme(int id)
+    {
+        return _groupChats[id].GetComponent<GroupSettings>().Topic;
     }
 }

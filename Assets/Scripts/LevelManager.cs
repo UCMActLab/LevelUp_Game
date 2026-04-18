@@ -440,4 +440,9 @@ public class LevelManager : Singleton<LevelManager>
 
         AnalyticsManager.Instance.SubmitEvent("FreeMode_End");
     }
+
+    public Topics GetGroupTheme(int id)
+    {
+        return _chatManager.GetGroupTheme(id);
+    }
 }

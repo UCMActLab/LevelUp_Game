@@ -159,28 +159,6 @@ public class ScoreManager : Singleton<ScoreManager>
         // for (int i = 0; i < quest.)
     }
 
-    public void CalculateArticlePoints(ArticleGameObject data)
-    {
-        //if(data.HasReadArticle)
-        //{
-        //    AwardPointsReadArticle();
-        //}
-
-        //if(data.IsTrue) // true article
-        //{
-        //    if(data.HasSharedArticle)
-        //    {
-        //        AwardPointsForSharingTrueArticle();
-        //    }
-        //}
-        //else if (data.HasSharedArticle) // false article shared
-        //{
-        //    _levelsScore[_levelScoreIndex].falseArticlesShared++;
-        //    _score.falseArticlesShared++;
-        //}
-    }
-
-
     public void AnsweredQuestionRight()
     {
         // TODO: CAMBIAR ESTO??
@@ -210,32 +188,32 @@ public class ScoreManager : Singleton<ScoreManager>
         // _levelsScore = new LevelScore[numLevels];
     }
 
-    public void SetLevelInfo(int levelIndex, int numArticles, int numArticlesToRead, int numArticlesTrue, int numQuestions)
-    {
-        //LevelScore current = _levelsScore[levelIndex];
+    //public void SetLevelInfo(int levelIndex, int numArticles, int numArticlesToRead, int numArticlesTrue, int numQuestions)
+    //{
+    //    //LevelScore current = _levelsScore[levelIndex];
 
-        //current.totalArticles = numArticles;
-        //_score.totalArticles += current.totalArticles;
+    //    //current.totalArticles = numArticles;
+    //    //_score.totalArticles += current.totalArticles;
 
-        //current.trueArticles = numArticlesTrue;
-        //_score.trueArticles += current.trueArticles;
+    //    //current.trueArticles = numArticlesTrue;
+    //    //_score.trueArticles += current.trueArticles;
 
-        //current.falseArticles = current.totalArticles - current.trueArticles;
-        //_score.falseArticles += current.falseArticles;
+    //    //current.falseArticles = current.totalArticles - current.trueArticles;
+    //    //_score.falseArticles += current.falseArticles;
 
-        //current.readableArticles = numArticlesToRead;
-        //_score.readableArticles += current.readableArticles;
+    //    //current.readableArticles = numArticlesToRead;
+    //    //_score.readableArticles += current.readableArticles;
 
-        //current.readArticles = 0;
-        //current.trueArticlesShared = 0;
-        //current.falseArticlesShared = 0;
+    //    //current.readArticles = 0;
+    //    //current.trueArticlesShared = 0;
+    //    //current.falseArticlesShared = 0;
 
-        //current.totalQuestions = numQuestions;
-        //_score.totalQuestions += numQuestions;
-        //current.questionsRight = 0;
+    //    //current.totalQuestions = numQuestions;
+    //    //_score.totalQuestions += numQuestions;
+    //    //current.questionsRight = 0;
 
-        //_levelsScore[levelIndex] = current;
-    }
+    //    //_levelsScore[levelIndex] = current;
+    //}
 
     //public void ReachedNewLevel(int level)
     //{

@@ -14,6 +14,7 @@ public class LevelInfo : ScriptableObject
     public int numTrueArticles;
 
     public bool articleIsSharedWithGroups;
+    public bool groupHavePreferredTheme;
 
     public List<LocalizedString> avatarMessagesOnStart = new List<LocalizedString>();
 
@@ -29,7 +30,8 @@ public class LevelInfo : ScriptableObject
         private void OnEnable()
         {
             string[] propertyNames = {
-                    "test", "numArticles", "numTrueArticles", "articleIsSharedWithGroups", "numGroupsToShareWith", "avatarMessagesOnStart"
+                    "test", "numArticles", "numTrueArticles", "articleIsSharedWithGroups", 
+                "numGroupsToShareWith", "avatarMessagesOnStart", "groupHavePreferredTheme"
                 };
 
             _properties = new Dictionary<string, SerializedProperty>();
@@ -60,6 +62,7 @@ public class LevelInfo : ScriptableObject
             if (_properties["articleIsSharedWithGroups"].boolValue)
             {
                 DrawProperty(_properties["numGroupsToShareWith"], "Number of Groups to Share With");
+                DrawProperty(_properties["groupHavePreferredTheme"], "Groups Have Preferred Theme");
             }
 
             //DrawEnumProperty(_properties[4], "Structure", typeof(StructureMode));
