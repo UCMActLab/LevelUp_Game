@@ -54,6 +54,7 @@ public class ScoreManager : Singleton<ScoreManager>
     [SerializeField] private int _pointsForReadingArticle = 1;
     [SerializeField] private int _pointsForQuestionAnsweredCorrectly = 1;
     [SerializeField] private int _pointsForSharingFalseArticle = -1;
+    [SerializeField, Range(0.0f, 1.0f)] private float _thresholdForCompletingQuest = 0.5f;
 
     [Header("References")]
     private ScoreMenu _scoreMenu = null;
@@ -91,25 +92,25 @@ public class ScoreManager : Singleton<ScoreManager>
         _currentState = global::Score.NONE;
     }
     
-    private void FindPointsMenu()
+    public void FindPointsMenu()
     {
         _scoreMenu = GameObject.FindAnyObjectByType<ScoreMenu>(FindObjectsInactive.Include);
     }
 
-    public void CalculateScoreState()
-    {
-        int nextState = (int)_currentState + 1;
-        // reached max score
-        if (nextState >= _pointsForEachCategory.Count) return;
+    //public void CalculateScoreState()
+    //{
+    //    int nextState = (int)_currentState + 1;
+    //    // reached max score
+    //    if (nextState >= _pointsForEachCategory.Count) return;
 
-        if(_currentScore >= MaxScore * _pointsForEachCategory[(global::Score)nextState].NeededScore)
-        {
-            _currentState = (global::Score)nextState;
+    //    if(_currentScore >= MaxScore * _pointsForEachCategory[(global::Score)nextState].NeededScore)
+    //    {
+    //        _currentState = (global::Score)nextState;
 
-            // change something (?)
-            _scoreMenu.ChangeMedal(_pointsForEachCategory[_currentState].Sprite);
-        }
-    }
+    //        // change something (?)
+    //        _scoreMenu.ChangeMedal(_pointsForEachCategory[_currentState].Sprite);
+    //    }
+    //}
 
     // this is 0 points actually
     private void AwardPointsReadArticle()
@@ -132,31 +133,46 @@ public class ScoreManager : Singleton<ScoreManager>
         _score.falseArticlesShared++;
     }
 
-    public void EvaluateQuest(Quest quest)
+    /// <summary>
+    /// Devuelve si la quest se ha completado o no
+    /// </summary>
+    /// <param name="quest"></param>
+    /// <returns></returns>
+    public bool EvaluateQuest(Quest quest)
     {
-        for (int i = 0; i < quest.done.identifiedArticles; ++i)
+        Debug.LogError("TODO: FALTA AÑADIR LA PUNTUACIÓN DE LAS TEMÁTICAS Y LO DE COMPARTIR A CIERTOS GRUPOS");
+        int scoreAchieved = quest.done.identifiedArticles * _pointsForIdentifyingTrueArticle +
+                            quest.done.falseArticlesShared * _pointsForSharingFalseArticle;
+
+        bool questCompleted = scoreAchieved >= quest.GetMaxPossibleScore() * _thresholdForCompletingQuest;
+
+        if (questCompleted)
         {
-            AwardPointsForSharingTrueArticle();
+            for (int i = 0; i < quest.done.identifiedArticles; ++i)
+            {
+                AwardPointsForSharingTrueArticle();
+            }
+
+            for (int i = 0; i < quest.done.falseArticlesShared; ++i)
+            {
+                SubstractPointsForSharingFalseArticle();
+            }
+
+            for (int i = 0; i < quest.done.readedArticles; ++i)
+            {
+                AwardPointsReadArticle();
+            }
+
+            Debug.Log("Evaluating Quest");
+
+            _score.totalArticles += quest.totalArticles;
+            _score.trueArticles += quest.toDo.articlesToIdentify;
+            _score.falseArticles += quest.toDo.falseArticlesToSkip;
+            _score.readableArticles += quest.toDo.toRead;
+
         }
 
-        for (int i = 0; i < quest.done.falseArticlesShared; ++i)
-        {
-            SubstractPointsForSharingFalseArticle();
-        }
-
-        for (int i = 0; i < quest.done.readedArticles; ++i)
-        {
-            AwardPointsReadArticle();
-        }
-
-        Debug.Log("Evaluating Quest");
-
-        _score.totalArticles += quest.totalArticles;
-        _score.trueArticles += quest.toDo.articlesToIdentify;
-        _score.falseArticles += quest.toDo.falseArticlesToSkip;
-        _score.readableArticles += quest.toDo.toRead;
-
-        // for (int i = 0; i < quest.)
+        return questCompleted;
     }
 
     public void AnsweredQuestionRight()
@@ -166,20 +182,20 @@ public class ScoreManager : Singleton<ScoreManager>
         // AddPoints(_pointsForQuestionAnsweredCorrectly);
     }
 
-    public void SetMaxScore(int maxScore)
-    {
-        _score.maxScore = maxScore;
+    //public void SetMaxScore(int maxScore)
+    //{
+    //    _score.maxScore = maxScore;
 
-        SetMaxScoreToUIElements();
+    //    SetMaxScoreToUIElements();
         
-        CalculateScoreState();
-    }
+    //    CalculateScoreState();
+    //}
 
-    private void SetMaxScoreToUIElements()
-    {
-        FindPointsMenu();
-        _scoreMenu.SetTotalScore(MaxScore);
-    }
+    //private void SetMaxScoreToUIElements()
+    //{
+    //    FindPointsMenu();
+    //    _scoreMenu.SetTotalScore(MaxScore);
+    //}
 
     public void SetNumLevels(int numLevels)
     {
@@ -239,10 +255,7 @@ public class ScoreManager : Singleton<ScoreManager>
 
     public void ShowPoints(Quest quest)
     {
-        // poner los puntos y eso
         _scoreMenu.gameObject.SetActive(true);
-
-        // scoreMenu.ShowScore(_levelsScore[_levelScoreIndex]);
         _scoreMenu.ShowScore(quest);
 
         SubmitScoreEvent();

@@ -44,14 +44,17 @@ public class Quest : ScriptableObject
         toDo.toRead = articlesToRead;
     }
 
-    public void EvaluateArticle(ArticleGameObject data)
+    /// <summary>
+    /// Evalúa la puntuación de un artículo para una quest.
+    /// Si se ha evaluado como erróneo, devuelve False
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public bool EvaluateArticle(ArticleGameObject data)
     {
+        bool correctlyIdentified = true;
         if (data.HasSharedArticle)
         {
-            // add "with wich group have we shared?"
-
-            Debug.LogError("TE QUEDASTE PENSANDO EN CÓMO PUNTUAR LAS TEMÁTICAS");
-
             if(data.IsTrue)
             {
                 done.identifiedArticles++;
@@ -63,7 +66,7 @@ public class Quest : ScriptableObject
                         if (groupsHaveThemes)
                         {
                             if (TopicsDictionary.topics[data.Data.theme] == 
-                                LevelManager.Instance.GetGroupTheme(i))
+                                LevelManager.Instance.GetGroupTheme(i + 1)) // i == 0 es el MainChat (donde se ven los artículos)
                             {
                                 done.themesCorrectlyAddressed++;
                             }
@@ -81,21 +84,18 @@ public class Quest : ScriptableObject
             else
             {
                 done.falseArticlesShared++;
+                correctlyIdentified = false;
             }
 
             Debug.LogError("TODO: SharingPoints");
-            
-            //                  TODO
-            // ============================================
-
-            // sharedWithFriends
-            // sharedWithNeighbours
-            // sharedWithFamily
-
-            // ============================================
+        }
+        else if (data.IsTrue)
+        {
+            correctlyIdentified = false;
         }
 
         if (data.HasReadArticle) done.readedArticles++;
+        return correctlyIdentified;
     }
 
     // DONE 

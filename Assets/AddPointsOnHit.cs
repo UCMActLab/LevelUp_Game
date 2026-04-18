@@ -21,7 +21,7 @@ public class AddPointsOnHit : MonoBehaviour
         ScoreManager.Instance.CanContinue = false;
         timer = 0.0f;
         yield return new WaitUntil(() => timer >= maxTime);
-        ScoreManager.Instance.CalculateScoreState();
+        // ScoreManager.Instance.CalculateScoreState();
         ScoreManager.Instance.CanContinue = true;
         startedTimer = false;
     }

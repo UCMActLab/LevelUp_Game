@@ -12,7 +12,6 @@ public class ScoreMenu : MonoBehaviour
     [SerializeField] private GameObject _falseArticlesObject = null;
 
     [Header("Sliders")]
-    [SerializeField] private Slider _generalSlider = null;
     [SerializeField] private Slider _readArticlesSlider = null;
     [SerializeField] private Slider _trueArticlesSlider = null;
     [SerializeField] private Slider _questionsSlider = null;
@@ -46,7 +45,6 @@ public class ScoreMenu : MonoBehaviour
     void Awake()
     {
         _animator = GetComponent<Animator>();
-        _generalSlider.value = 0;
 
         _feedbackText = _feedback.GetComponentInChildren<TextMeshProUGUI>();
     }
@@ -60,7 +58,7 @@ public class ScoreMenu : MonoBehaviour
 
     private IEnumerator ActivateOKButtonOnEnd()
     {
-        yield return new WaitUntil(() => _generalSlider.value == ScoreManager.Instance.Score && _medalAnimationEnded && ScoreManager.Instance.CanContinue);
+        yield return new WaitUntil(() => !_animationRunning);
         ActivateOKButton(true);
     }
 
@@ -128,12 +126,6 @@ public class ScoreMenu : MonoBehaviour
             LayoutRebuilder.ForceRebuildLayoutImmediate(child as RectTransform);
         }
     }
-
-    public void SetTotalScore(int maxScore)
-    {
-        _generalSlider.maxValue = maxScore;
-    }
-
     public void ChangeMedal(Sprite newSprite)
     {
         _newMedal = newSprite;
@@ -200,8 +192,8 @@ public class ScoreMenu : MonoBehaviour
 
             target.value = targetValue;
 
-            AddPointsFeedback feedback = targetObject.GetComponent<AddPointsFeedback>();
-            if(feedback) feedback.AddPoints((int)target.value);
+            //AddPointsFeedback feedback = targetObject.GetComponent<AddPointsFeedback>();
+            //if(feedback) feedback.AddPoints((int)target.value);
         }
         _animationRunning = false;
     }

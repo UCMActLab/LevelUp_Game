@@ -31,7 +31,9 @@ public class GroupSettings : MonoBehaviour
         int randomIndex = Random.Range(0, availableTopicsPool.Count);
         Topic = availableTopicsPool[randomIndex];
 
-        // Se elimina para que el siguiente grupo no pueda escoger la misma
+        Debug.Log(_name + " GROUP TOPIC: " + Topic.ToString());
+
+        //// Se elimina para que el siguiente grupo no pueda escoger la misma
         availableTopicsPool.RemoveAt(randomIndex);
     }
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering.Universal.Internal;
 using UnityEngine.UI;
 
 public class ChatManager : MonoBehaviour
@@ -197,7 +198,6 @@ public class ChatManager : MonoBehaviour
             _keepSharingButton.transform.parent = _currentChat.transform;
 
             Button[] buttons = _keepSharingButton?.GetComponentsInChildren<Button>();
-            _keepSharingButton.SetActive(true);
             for (int i = 0; i < sharedWithGroups.Length; ++i) {
                 buttons[i].interactable = !sharedWithGroups[i];
 
@@ -206,7 +206,7 @@ public class ChatManager : MonoBehaviour
                     article.AddShareArticleListenerToButton(i + 1, buttons[i]);
                 }
             }
-            for (int i = sharedWithGroups.Length; i < buttons.Length; ++i)
+            for (int i = sharedWithGroups.Length; i < buttons.Length - 1; ++i)
             {
                 buttons[i].gameObject.SetActive(false);
             }
@@ -236,10 +236,11 @@ public class ChatManager : MonoBehaviour
         if(_currentConversation != null) _currentConversation = Instantiate(_currentConversation);
     }
 
-    public void RandomizeAllGroupTopics()
+    public void RandomizeAllGroupTopics(List<Topics> topicPool = null)
     {
         // Creamos la "bolsa" con las 5 opciones.
-        List<Topics> topicPool = TopicsDictionary.topics.Values.ToList();
+        if (topicPool == null) topicPool = TopicsDictionary.topics.Values.ToList();
+        List<Topics> copy = new List<Topics>(topicPool);
 
         foreach (GameObject groupObj in _groupChats)
         {
@@ -248,9 +249,11 @@ public class ChatManager : MonoBehaviour
             GroupSettings settings = groupObj.GetComponent<GroupSettings>();
             if (settings != null)
             {
-                // El método de GroupSettings escoge uno y lo elimina de topicPool
+                // El método de GroupSettings escoge uno
                 settings.AssignRandomTopic(topicPool);
             }
+
+            if (topicPool.Count <= 0) topicPool = new List<Topics>(copy);
         }
     }
 

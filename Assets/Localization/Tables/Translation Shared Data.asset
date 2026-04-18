@@ -536,6 +536,11 @@ MonoBehaviour:
     m_Key: CURRENT_LEVEL
     m_Metadata:
       m_Items: []
+  - m_Id: 66697776865882112
+    m_Key: GAME/REPEAT_LEVEL_EXPLANATION
+    m_Metadata:
+      m_Items:
+      - rid: 26724046985232754
   - m_Id: 1470815914090499
     m_Key: IMMERSION/NOTIFICATION
     m_Metadata:
@@ -634,6 +639,10 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 26724046985232754
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: MAX_CHARACTERS=100
     - rid: 3936882922569859483
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
