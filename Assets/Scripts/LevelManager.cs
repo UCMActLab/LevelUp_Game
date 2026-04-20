@@ -1,7 +1,7 @@
+using DA_Assets.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.Services.Analytics;
 using UnityEngine;
@@ -23,6 +23,13 @@ public class LevelManager : Singleton<LevelManager>
     List<List<ArticleData>> _levels;
 
     List<Quest> _quests;
+
+    [SerializeField]
+    private Button _topicsPerGroupButton = null;
+    [SerializeField]
+    private Button _toShareWithButton = null;
+    [SerializeField]
+    private ToShareWithMenu _toShareWithMenu = null;
 
     [SerializeField]
     private ChatManager _chatManager = null;
@@ -192,6 +199,8 @@ public class LevelManager : Singleton<LevelManager>
             _levels[_currentLevel].Add(data);
         }
 
+        _levels[_currentLevel].Shuffle();
+
         int numGroups = level.articleIsSharedWithGroups ? level.numGroupsToShareWith : 0;
 
         // quest generation
@@ -296,13 +305,13 @@ public class LevelManager : Singleton<LevelManager>
         _faderTextHolder.StartFade(1.0f, 1.0f, 0.0f);
     }
 
-    public void SkipArticleIfCantShare()
-    {
-        if(_articleData.HasSharedWithAllGroups)
-        {
-            ShowNextArticle();
-        }
-    }
+    //public void SkipArticleIfCantShare()
+    //{
+    //    if(_articleData.HasSharedWithAllGroups)
+    //    {
+    //        ShowNextArticle();
+    //    }
+    //}
 
     public void ShowTest(Test test)
     {
@@ -319,6 +328,9 @@ public class LevelManager : Singleton<LevelManager>
 
     public void ShowEndLevel(int level)
     {
+        _topicsPerGroupButton.gameObject.SetActive(false);
+        _toShareWithButton.gameObject.SetActive(false);
+
         _fader.StartFade(0.8f, 0.0f, 0.8f);
 
         Test test = _levelsInfo[level].test;
@@ -366,7 +378,11 @@ public class LevelManager : Singleton<LevelManager>
             _articleData.DestroyArticle();
         }
 
-        if (_currentArticle >= _levels[_currentLevel].Count)
+        if (!_levelStarted)
+        {
+            StartLevel();
+        }
+        else if (_currentArticle >= _levels[_currentLevel].Count)
         {
             _levelStarted = false;
 
@@ -390,10 +406,6 @@ public class LevelManager : Singleton<LevelManager>
 
             onLevelEnd.Invoke(_currentLevel);
         }
-        else if (!_levelStarted)
-        {
-            StartLevel();
-        }
         else
         {
             _progressTracker.UpdateValue();
@@ -405,7 +417,7 @@ public class LevelManager : Singleton<LevelManager>
 #if UNITY_EDITOR
             if (data.isTrue)
             {
-                data.articleTitle = "IS TRUE: " + data.articleTitle;
+                data.articleTitle = "(" + TopicsDictionary.topics[data.theme].ToString() + ") IS TRUE: " + data.articleTitle;
             }
 #endif
             if (!data.canBeSharedWithGroups) _articleData.OnShare.AddListener(ShowNextArticle);
@@ -436,8 +448,24 @@ public class LevelManager : Singleton<LevelManager>
                     if (article.isTrue) topics.Add(TopicsDictionary.topics[article.theme]);
                 }
 
-                _chatManager.RandomizeAllGroupTopics(topics.ToList());
                 // añadir mensaje de "ahora a tus grupos les interesa: blabla"
+                if (_levelsInfo[_currentLevel].groupHavePreferredTheme)
+                {
+                    _chatManager.RandomizeAllGroupTopics(topics.ToList(), _levelsInfo[_currentLevel].numGroupsToShareWith);
+                    _topicsPerGroupButton.gameObject.SetActive(true);
+                    _toShareWithButton.gameObject.SetActive(false);
+                }
+                else if (_levelsInfo[_currentLevel].articleIsSharedWithGroups)
+                {
+                    _topicsPerGroupButton.gameObject.SetActive(false);
+                    _toShareWithButton.gameObject.SetActive(true);
+                    _toShareWithMenu.SetValues(_quests[_currentLevel]);
+                }
+                else
+                {
+                    _topicsPerGroupButton.gameObject.SetActive(false);
+                    _toShareWithButton.gameObject.SetActive(false);
+                }
             }
 
             onNewArticleSpawned.Invoke(_articleData);
@@ -446,7 +474,11 @@ public class LevelManager : Singleton<LevelManager>
 
     private void ShowMessagesLevelStart(List<LocalizedString> messagesList)
     {
-        Debug.LogError("TODO: Poner fade out bloqueando interacción!!");
+        if (messagesList.Count == 0)
+        {
+            StartLevelPostMessages();
+            return;
+        }
         if (messagesList != null && messagesList.Count > 0)
         {
             string[] messages = new string[messagesList.Count];
@@ -462,7 +494,6 @@ public class LevelManager : Singleton<LevelManager>
 
     private void ShowMessagesFailedLevel()
     {
-        Debug.LogError("TODO: Poner fade out bloqueando interacción!!");
         if (_onLevelFailedMessages != null && _onLevelFailedMessages.Count > 0)
         {
             string[] messages = new string[_onLevelFailedMessages.Count];
@@ -472,7 +503,10 @@ public class LevelManager : Singleton<LevelManager>
             }
 
             _fader.StartFade(1.0f, 0.0f, 0.8f, true);
-            _gameAssistant.ShowMessages(messages, PromptChoiceToRepatLevelExplanation);
+            if (_levelsInfo[_currentLevel].avatarMessagesOnStart.Count > 0)
+                _gameAssistant.ShowMessages(messages, PromptChoiceToRepatLevelExplanation);
+            else
+                _gameAssistant.ShowMessages(messages, StartLevelPostMessages);
         }
     }
 

@@ -8,6 +8,7 @@ using UnityEngine.Localization.Components;
 using System.Collections;
 using Unity.Services.Analytics;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
+using System.Data;
 
 public class ArticleGameObject : MonoBehaviour
 {
@@ -401,7 +402,18 @@ public class ArticleGameObject : MonoBehaviour
         _articleImage.gameObject.SetActive(_articleImage.sprite != null);
 
         if(_company == null) _company = _companyText.GetComponent<LocalizeStringEvent>();
-        _company.StringReference.SetReference("Translation", "SOURCE/" + Data.companyName.ToUpper());
+        if (Data.companyName.ToLower() == "newspaper" ||
+            Data.companyName.ToLower() == "social" || 
+            Data.companyName.ToLower() == "blog" ||
+            Data.companyName.ToLower() == "web")
+        {
+            _company.StringReference.SetReference("Translation", "SOURCE/" + Data.companyName.ToUpper());
+        }
+        else
+        {
+            _company.enabled = false;
+            _companyText.text = Data.companyName.ToUpper();
+        }
 
         if (Data.needsTranslation)
         {
@@ -450,7 +462,6 @@ public class ArticleGameObject : MonoBehaviour
     public void SetupShareButtonForGroups(int numGroups)
     {
         _numGroupsToShareWith = numGroups;
-        Debug.LogError("TODO: num groups is unused");
         _shareButton.onClick.RemoveAllListeners();
         _shareButton.onClick.AddListener(() => OnShareWithGroups(numGroups));
     }

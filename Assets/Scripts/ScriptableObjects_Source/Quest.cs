@@ -18,8 +18,20 @@ public class Quest : ScriptableObject
 
     public int totalArticles;
     public bool groupsHaveThemes;
+    public bool thereAreGroups;
 
-    public int GetMaxPossibleScore() { return this.toDo.articlesToIdentify + this.toDo.toShareWithNeighbours + this.toDo.toShareWithFriends + this.toDo.toShareWithFamily; }
+    public int GetMaxPossibleScore() {
+
+        int score = this.toDo.articlesToIdentify + this.toDo.toShareWithNeighbours + 
+            this.toDo.toShareWithFriends + this.toDo.toShareWithFamily;
+
+        if (this.groupsHaveThemes)
+            // usamos esto porque tenemos que clasificar correctamente
+            // las temáticas de tantos artículos como identifiquemos
+            score += this.toDo.articlesToIdentify;
+
+        return score; 
+    }
 
     public void BuildQuest(int numTrueArticles, int totalArticles, int numGroups, int articlesToRead, bool groupsHaveThemes)
     {
@@ -28,20 +40,28 @@ public class Quest : ScriptableObject
         toDo.articlesToIdentify = numTrueArticles;
         toDo.falseArticlesToSkip = this.totalArticles - numTrueArticles;
 
-        if (numGroups > 0)
+        thereAreGroups = numGroups > 0;
+
+        this.groupsHaveThemes = groupsHaveThemes;
+
+        if (thereAreGroups && !this.groupsHaveThemes)
         {
             for (int i = 0; i < toDo.articlesToIdentify; ++i)
             {
-                int rand = Random.Range(0, numGroups + 1);
+                int rand = Random.Range(0, numGroups);
                 if (rand == 0) toDo.toShareWithFamily++;
                 if (rand == 1) toDo.toShareWithFriends++;
                 if (rand == 2) toDo.toShareWithNeighbours++;
             }
         }
 
-        this.groupsHaveThemes = groupsHaveThemes;
-
         toDo.toRead = articlesToRead;
+
+        if(thereAreGroups && !groupsHaveThemes)
+        {
+            Debug.Log(string.Format("MISSION: YOU HAVE TO SEND {0} TO FAMILY, {1} TO FRIENDS, {2} TO NEIGHBOURS", 
+                toDo.toShareWithFamily, toDo.toShareWithFriends, toDo.toShareWithNeighbours));
+        }
     }
 
     /// <summary>
@@ -59,16 +79,19 @@ public class Quest : ScriptableObject
             {
                 done.identifiedArticles++;
 
+                bool alreadyScoredTheme = false;
                 for (int i = 0; i < data.HasSharedWithGroups.Length; ++i)
                 {
                     if (data.HasSharedWithGroups[i])
                     {
-                        if (groupsHaveThemes)
+                        if (groupsHaveThemes && !alreadyScoredTheme)
                         {
                             if (TopicsDictionary.topics[data.Data.theme] == 
                                 LevelManager.Instance.GetGroupTheme(i + 1)) // i == 0 es el MainChat (donde se ven los artículos)
                             {
                                 done.themesCorrectlyAddressed++;
+                                alreadyScoredTheme = true;
+
                             }
                         }
                         else

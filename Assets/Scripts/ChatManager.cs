@@ -31,6 +31,7 @@ public class ChatManager : MonoBehaviour
     [SerializeField] private GameObject _keepSharingButton = null;
     [SerializeField] private GameObject _backToChatButton = null;
     [SerializeField] private GameAssistant _assistant = null;
+    [SerializeField] private TopicMenu _topicMenu = null;
 
     private GameObject _currentChat;
 
@@ -197,12 +198,13 @@ public class ChatManager : MonoBehaviour
             _keepSharingButton.SetActive(true);
             _keepSharingButton.transform.parent = _currentChat.transform;
 
-            Button[] buttons = _keepSharingButton?.GetComponentsInChildren<Button>();
+            Button[] buttons = _keepSharingButton?.GetComponentsInChildren<Button>(true);
             for (int i = 0; i < sharedWithGroups.Length; ++i) {
                 buttons[i].interactable = !sharedWithGroups[i];
 
                 if (buttons[i].interactable)
                 {
+                    buttons[i].gameObject.SetActive(true);
                     article.AddShareArticleListenerToButton(i + 1, buttons[i]);
                 }
             }
@@ -236,14 +238,17 @@ public class ChatManager : MonoBehaviour
         if(_currentConversation != null) _currentConversation = Instantiate(_currentConversation);
     }
 
-    public void RandomizeAllGroupTopics(List<Topics> topicPool = null)
+    public void RandomizeAllGroupTopics(List<Topics> topicPool = null, int numGroups = 3)
     {
         // Creamos la "bolsa" con las 5 opciones.
         if (topicPool == null) topicPool = TopicsDictionary.topics.Values.ToList();
         List<Topics> copy = new List<Topics>(topicPool);
 
+        int i = 0;
         foreach (GameObject groupObj in _groupChats)
         {
+            if (i >= numGroups + 1) break;
+
             if (groupObj == null) continue;
 
             GroupSettings settings = groupObj.GetComponent<GroupSettings>();
@@ -251,9 +256,17 @@ public class ChatManager : MonoBehaviour
             {
                 // El método de GroupSettings escoge uno
                 settings.AssignRandomTopic(topicPool);
+                _topicMenu.SetTopic(settings.Name, settings.Topic);
             }
 
+
             if (topicPool.Count <= 0) topicPool = new List<Topics>(copy);
+            i++;
+        }
+
+        for (; i < numGroups + 1; ++i)
+        {
+            _topicMenu.HideTopic(_groupChats[i].GetComponent<GroupSettings>().Name);
         }
     }
 

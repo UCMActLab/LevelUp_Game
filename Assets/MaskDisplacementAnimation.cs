@@ -29,10 +29,6 @@ public class MaskDisplacementAnimation : MonoBehaviour
         float width = Mathf.Abs((_initialPos - _endPos).x);
         float widthOffset = width / _childs.Count;
 
-        Debug.Log(widthOffset);
-        Debug.Log(_childs.Count);
-        Debug.Log(width);
-
         for (int i = 0; i < _childs.Count; ++i)
         {
             _childs[i].position = _initialPos + Vector2.right * widthOffset * i;

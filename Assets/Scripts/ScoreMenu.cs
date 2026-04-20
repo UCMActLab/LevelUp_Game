@@ -8,18 +8,36 @@ public class ScoreMenu : MonoBehaviour
     [Header("Scores Object")]
     [SerializeField] private GameObject _readArticlesObject = null;
     [SerializeField] private GameObject _trueArticlesObject = null;
+    [SerializeField] private GameObject _rightThemesObject = null;
     [SerializeField] private GameObject _questionsObject = null;
     [SerializeField] private GameObject _falseArticlesObject = null;
 
     [Header("Sliders")]
     [SerializeField] private Slider _readArticlesSlider = null;
     [SerializeField] private Slider _trueArticlesSlider = null;
+    [SerializeField] private Slider _rightThemesSlider = null;
     [SerializeField] private Slider _questionsSlider = null;
     [SerializeField] private Slider _falseArticlesSlider = null;
+
+    [Header("Toggles")]
+    [SerializeField] private TextMeshProUGUI _shareWithText = null;
+    [SerializeField] private GameObject _familyToggleGameObject = null;
+    [SerializeField] private GameObject _friendsToggleGameObject = null;
+    [SerializeField] private GameObject _neighboursToggleGameObject = null;
+
+
+    Toggle _familyToggle = null;
+    Toggle _friendsToggle = null;
+    Toggle _neighboursToggle = null;
+
+    TextMeshProUGUI _familySharedText = null;
+    TextMeshProUGUI _friendsSharedText = null;
+    TextMeshProUGUI _neighboursSharedText = null;
 
     [Header("Score Texts")]
     [SerializeField] private TextMeshProUGUI _readArticlesText = null;
     [SerializeField] private TextMeshProUGUI _trueArticlesText = null;
+    [SerializeField] private TextMeshProUGUI _rightThemesText = null;
     [SerializeField] private TextMeshProUGUI _questionsText = null;
     [SerializeField] private TextMeshProUGUI _falseArticlesText = null;
 
@@ -52,13 +70,15 @@ public class ScoreMenu : MonoBehaviour
     private void OnEnable()
     {
         _medalAnimationEnded = true;
-        ActivateOKButton(false);
-        StartCoroutine(ActivateOKButtonOnEnd());
-    }
 
-    private IEnumerator ActivateOKButtonOnEnd()
-    {
-        yield return new WaitUntil(() => !_animationRunning);
+        _familyToggle = _familyToggleGameObject.GetComponentInChildren<Toggle>();
+        _friendsToggle = _friendsToggleGameObject.GetComponentInChildren<Toggle>();
+        _neighboursToggle = _neighboursToggleGameObject.GetComponentInChildren<Toggle>();
+
+        _familySharedText = _familyToggleGameObject.GetComponentsInChildren<TextMeshProUGUI>()[1];
+        _friendsSharedText = _friendsToggleGameObject.GetComponentsInChildren<TextMeshProUGUI>()[1];
+        _neighboursSharedText = _neighboursToggleGameObject.GetComponentsInChildren<TextMeshProUGUI>()[1];
+
         ActivateOKButton(true);
     }
 
@@ -102,6 +122,53 @@ public class ScoreMenu : MonoBehaviour
         }
         SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, quest.done.falseArticlesShared, quest.toDo.falseArticlesToSkip, 1.25f);
 
+        if (quest.thereAreGroups && !quest.groupsHaveThemes)
+        {
+            _rightThemesObject.SetActive(false);
+            _shareWithText.gameObject.SetActive(true);
+            if (quest.toDo.toShareWithFamily > 0)
+            {
+                SetToggle(_familyToggleGameObject, _familyToggle, _familySharedText
+                    , quest.done.sharedWithFamily, 
+                    quest.toDo.toShareWithFamily);
+            }
+            else
+            {
+                _familyToggleGameObject.SetActive(false);
+            }
+            if (quest.toDo.toShareWithFriends > 0)
+            {
+                SetToggle(_friendsToggleGameObject, _friendsToggle, _friendsSharedText,
+                    quest.done.sharedWithFriends, quest.toDo.toShareWithFriends);
+            }
+            else
+            {
+                _friendsToggleGameObject.SetActive(false);
+            }
+            if (quest.toDo.toShareWithNeighbours > 0)
+            {
+                SetToggle(_neighboursToggleGameObject, _neighboursToggle, _neighboursSharedText,
+                    quest.done.sharedWithNeighbours, quest.toDo.toShareWithNeighbours);
+            }
+            else
+            {
+                _neighboursToggleGameObject.SetActive(false);
+            }
+        }
+        else if (quest.groupsHaveThemes)
+        {
+            SetValues(_rightThemesObject, _rightThemesSlider, _rightThemesText, 
+                quest.done.themesCorrectlyAddressed, quest.toDo.articlesToIdentify, 1.25f);
+        }
+        else
+        {
+            _shareWithText.gameObject.SetActive(false);
+            _familyToggleGameObject.SetActive(false);
+            _friendsToggleGameObject.SetActive(false);
+            _neighboursToggleGameObject.SetActive(false);
+            _rightThemesObject.SetActive(false);
+        }
+
         // SetValues(_questionsObject, _questionsSlider, _questionsText, score.questionsRight, score.totalQuestions, 1.25f);
         SetValues(_questionsObject, _questionsSlider, _questionsText, -1, -1, 1.25f);
 
@@ -111,6 +178,15 @@ public class ScoreMenu : MonoBehaviour
         }
 
         _feedbackString = feedback;
+    }
+
+    private void SetToggle(GameObject toggleHolder, Toggle toggle, TextMeshProUGUI text, int value, int maxValue)
+    {
+
+        toggleHolder.SetActive(true);
+        toggle.isOn = maxValue <= value;
+
+        text.text = string.Format("{0}/{1}", value, maxValue);
     }
 
     public void ShowFeedback()
@@ -166,13 +242,7 @@ public class ScoreMenu : MonoBehaviour
 
     IEnumerator AnimSliderValue(GameObject targetObject, Slider target, int targetValue, int maxValue, float time)
     {
-        if (_animationRunning) 
-            yield return new WaitUntil(() => !_animationRunning);
-
-        _animationRunning = true;
-
-
-        float initialValue = target.value;
+        float initialValue = 0;
         if (targetValue != initialValue)
         {
             float currentValue = initialValue;
@@ -195,6 +265,5 @@ public class ScoreMenu : MonoBehaviour
             //AddPointsFeedback feedback = targetObject.GetComponent<AddPointsFeedback>();
             //if(feedback) feedback.AddPoints((int)target.value);
         }
-        _animationRunning = false;
     }
 }

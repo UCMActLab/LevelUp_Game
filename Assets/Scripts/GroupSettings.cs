@@ -17,6 +17,7 @@ public class GroupSettings : MonoBehaviour
     [SerializeField] private int _topOffset = 0;
 
     public Topics Topic { get; private set; }
+    public string Name { get { return _name; } }
 
     // Método público que escoge aleatoriamente de una lista proporcionada y consume la opción
     public void AssignRandomTopic(List<Topics> availableTopicsPool)

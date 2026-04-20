@@ -1,4 +1,3 @@
-using AYellowpaper.SerializedCollections;
 using System;
 using UnityEditor;
 using Unity.Services.Analytics;
@@ -12,12 +11,12 @@ public enum Score
     NONE = 0
 }
 
-[Serializable]
-public struct ScoreInfo
-{
-    public Sprite Sprite;
-    public float NeededScore;
-}
+//[Serializable]
+//public struct ScoreInfo
+//{
+//    public Sprite Sprite;
+//    public float NeededScore;
+//}
 
 public struct LevelScore
 {
@@ -36,12 +35,14 @@ public struct LevelScore
     public int trueArticlesShared;
     public int falseArticlesShared;
 
+    public int sharedWithRightGroup;
+
+    public int sharedRightTheme;
+
     public int questionsRight;
     public int totalQuestions;
 
     public int maxScore;
-
-    // public int MaxScore { get { return readableArticles + trueArticles + totalQuestions / 2; } }
 
 }
 
@@ -50,17 +51,19 @@ public class ScoreManager : Singleton<ScoreManager>
     [Header("Score")]
     private int _initialScore = 0;
 
-    [SerializeField] private int _pointsForIdentifyingTrueArticle = 1;
-    [SerializeField] private int _pointsForReadingArticle = 1;
-    [SerializeField] private int _pointsForQuestionAnsweredCorrectly = 1;
-    [SerializeField] private int _pointsForSharingFalseArticle = -1;
+    private int _pointsForIdentifyingTrueArticle = 1;
+    private int _pointsForReadingArticle = 0;
+    private int _pointsForQuestionAnsweredCorrectly = 1;
+    private int _pointsForSharingFalseArticle = -1;
+    private int _pointsForSharingToRightGroup = 1;
+    private int _pointsForSharingRightTheme = 1;
     [SerializeField, Range(0.0f, 1.0f)] private float _thresholdForCompletingQuest = 0.5f;
 
     [Header("References")]
     private ScoreMenu _scoreMenu = null;
 
-    [SerializeField]
-    SerializedDictionary<global::Score, ScoreInfo> _pointsForEachCategory = null;
+    //[SerializeField]
+    //SerializedDictionary<global::Score, ScoreInfo> _pointsForEachCategory = null;
 
     private int _currentScore = 0;
     private Score _currentState = global::Score.NONE;
@@ -97,21 +100,6 @@ public class ScoreManager : Singleton<ScoreManager>
         _scoreMenu = GameObject.FindAnyObjectByType<ScoreMenu>(FindObjectsInactive.Include);
     }
 
-    //public void CalculateScoreState()
-    //{
-    //    int nextState = (int)_currentState + 1;
-    //    // reached max score
-    //    if (nextState >= _pointsForEachCategory.Count) return;
-
-    //    if(_currentScore >= MaxScore * _pointsForEachCategory[(global::Score)nextState].NeededScore)
-    //    {
-    //        _currentState = (global::Score)nextState;
-
-    //        // change something (?)
-    //        _scoreMenu.ChangeMedal(_pointsForEachCategory[_currentState].Sprite);
-    //    }
-    //}
-
     // this is 0 points actually
     private void AwardPointsReadArticle()
     {
@@ -133,6 +121,18 @@ public class ScoreManager : Singleton<ScoreManager>
         _score.falseArticlesShared++;
     }
 
+    private void AwardPointsForSharingToRightGroup()
+    {
+        AddPoints(_pointsForSharingToRightGroup);
+        _score.sharedWithRightGroup++;
+    }
+
+    private void AwardPointsForSharingRightTheme()
+    {
+        AddPoints(_pointsForSharingRightTheme);
+        _score.sharedRightTheme++;
+    }
+
     /// <summary>
     /// Devuelve si la quest se ha completado o no
     /// </summary>
@@ -143,6 +143,21 @@ public class ScoreManager : Singleton<ScoreManager>
         Debug.LogError("TODO: FALTA AÑADIR LA PUNTUACIÓN DE LAS TEMÁTICAS Y LO DE COMPARTIR A CIERTOS GRUPOS");
         int scoreAchieved = quest.done.identifiedArticles * _pointsForIdentifyingTrueArticle +
                             quest.done.falseArticlesShared * _pointsForSharingFalseArticle;
+
+        if (quest.toDo.toShareWithFamily > 0) 
+            scoreAchieved += Mathf.Min(quest.toDo.toShareWithFamily, quest.done.sharedWithFamily) * 
+                _pointsForSharingToRightGroup;
+        
+        if (quest.toDo.toShareWithFriends> 0) 
+            scoreAchieved += Mathf.Min(quest.toDo.toShareWithFriends, quest.done.sharedWithFriends) * 
+                _pointsForSharingToRightGroup;
+
+        if (quest.toDo.toShareWithNeighbours > 0) 
+            scoreAchieved += Mathf.Min(quest.toDo.toShareWithNeighbours, quest.done.sharedWithNeighbours) * 
+                _pointsForSharingToRightGroup;
+
+        if (quest.groupsHaveThemes) 
+            scoreAchieved += quest.done.themesCorrectlyAddressed * _pointsForSharingRightTheme;
 
         bool questCompleted = scoreAchieved >= quest.GetMaxPossibleScore() * _thresholdForCompletingQuest;
 
@@ -163,13 +178,29 @@ public class ScoreManager : Singleton<ScoreManager>
                 AwardPointsReadArticle();
             }
 
-            Debug.Log("Evaluating Quest");
+            if (quest.thereAreGroups && !quest.groupsHaveThemes)
+            {
+                int howMuchShared = Mathf.Min(quest.toDo.toShareWithNeighbours, quest.done.sharedWithNeighbours) +
+                    Mathf.Min(quest.toDo.toShareWithFriends, quest.done.sharedWithFriends) +
+                    Mathf.Min(quest.toDo.toShareWithFamily, quest.done.sharedWithFamily);
+
+                for (int i = 0; i < howMuchShared; ++i)
+                {
+                    AwardPointsForSharingToRightGroup();
+                }
+            }
+            else if (quest.groupsHaveThemes)
+            {
+                for (int i = 0; i < quest.done.themesCorrectlyAddressed; ++i)
+                {
+                    AwardPointsForSharingRightTheme();
+                }
+            }
 
             _score.totalArticles += quest.totalArticles;
             _score.trueArticles += quest.toDo.articlesToIdentify;
             _score.falseArticles += quest.toDo.falseArticlesToSkip;
             _score.readableArticles += quest.toDo.toRead;
-
         }
 
         return questCompleted;
@@ -245,10 +276,10 @@ public class ScoreManager : Singleton<ScoreManager>
 
     private void SubmitScoreEvent()
     {
+        Debug.LogError("TODO: Comprobar Analytics de Puntuación!!!!!!");
         CustomEvent newEvent = new CustomEvent("Score_Check")
         {
-            {"Score", _currentScore },
-            {"MaxScore", MaxScore }
+            {"Score", _currentScore }
         };
         AnalyticsManager.Instance.SubmitEvent(newEvent);
     }
@@ -274,8 +305,8 @@ public class ScoreManager : Singleton<ScoreManager>
         _score.falseArticlesShared = 0;
         _score.readableArticles = 0;
         _score.readArticles = 0;
-
-        _currentState = global::Score.NONE;
+        _score.sharedRightTheme = 0;
+        _score.sharedWithRightGroup = 0;
     }
 
     public void DeactivateMenu()
