@@ -198,8 +198,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 320.11212, y: -97.66}
-  m_SizeDelta: {x: 640.22424, y: 0}
+  m_AnchoredPosition: {x: 320, y: -97.66}
+  m_SizeDelta: {x: 640, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &120717387
 MonoBehaviour:
@@ -605,8 +605,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 312.16495, y: -188.88}
-  m_SizeDelta: {x: 424.3299, y: 177.76}
+  m_AnchoredPosition: {x: 420, y: -188.88}
+  m_SizeDelta: {x: 640, y: 177.76}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &186986937
 MonoBehaviour:
@@ -1351,7 +1351,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 420.11212, y: -127.555}
+  m_AnchoredPosition: {x: 420, y: -127.555}
   m_SizeDelta: {x: 426.09, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &600526953
@@ -2852,8 +2852,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 420.11212, y: -302.77002}
-  m_SizeDelta: {x: 640.22424, y: 0}
+  m_AnchoredPosition: {x: 420, y: -302.77002}
+  m_SizeDelta: {x: 640, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &945016617
 GameObject:
@@ -3224,8 +3224,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 420.11212, y: -548.08997}
-  m_SizeDelta: {x: 640.22424, y: 0}
+  m_AnchoredPosition: {x: 420, y: -548.08997}
+  m_SizeDelta: {x: 640, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1080331726
 GameObject:
@@ -3394,17 +3394,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 432509255}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 771892728}
+        m_TargetAssemblyTypeName: DialogueIntroManager, Assembly-CSharp
+        m_MethodName: StartDialogues
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1080331733
 MonoBehaviour:
@@ -3800,8 +3800,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 320.11212, y: -97.66}
-  m_SizeDelta: {x: 640.22424, y: 0}
+  m_AnchoredPosition: {x: 320, y: -97.66}
+  m_SizeDelta: {x: 640, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1298382683
 MonoBehaviour:
@@ -3994,7 +3994,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 917116965688032416, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 424.3299
+      value: 640
       objectReference: {fileID: 0}
     - target: {fileID: 917116965688032416, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_SizeDelta.y
@@ -4030,7 +4030,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 917116965688032416, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 312.16495
+      value: 420
       objectReference: {fileID: 0}
     - target: {fileID: 917116965688032416, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4070,7 +4070,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6068626921488070715, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 424.3299
+      value: 640
       objectReference: {fileID: 0}
     - target: {fileID: 6068626921488070715, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_SizeDelta.y
@@ -4078,7 +4078,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6068626921488070715, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 212.16495
+      value: 320
       objectReference: {fileID: 0}
     - target: {fileID: 6068626921488070715, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4300,21 +4300,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 432509255}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 9032619182473584977, guid: a26b00b110945a34ca9f3f97a141b15e, type: 3}
+        m_TargetAssemblyTypeName: AnalyticsManager, Assembly-CSharp
+        m_MethodName: StartGatheringData
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 9032619182473584977, guid: a26b00b110945a34ca9f3f97a141b15e, type: 3}
-        m_TargetAssemblyTypeName: AnalyticsManager, Assembly-CSharp
-        m_MethodName: StartGatheringData
+      - m_Target: {fileID: 771892728}
+        m_TargetAssemblyTypeName: DialogueIntroManager, Assembly-CSharp
+        m_MethodName: StartDialogues
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5014,7 +5014,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 917116965688032416, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 424.3299
+      value: 640
       objectReference: {fileID: 0}
     - target: {fileID: 917116965688032416, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_SizeDelta.y
@@ -5050,7 +5050,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 917116965688032416, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 312.16495
+      value: 420
       objectReference: {fileID: 0}
     - target: {fileID: 917116965688032416, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -5090,7 +5090,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6068626921488070715, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 424.3299
+      value: 640
       objectReference: {fileID: 0}
     - target: {fileID: 6068626921488070715, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_SizeDelta.y
@@ -5098,7 +5098,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6068626921488070715, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 212.16495
+      value: 320
       objectReference: {fileID: 0}
     - target: {fileID: 6068626921488070715, guid: fe999af690a893249adfab914b4825d0, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -5376,9 +5376,25 @@ PrefabInstance:
     m_TransformParent: {fileID: 1657785684}
     m_Modifications:
     - target: {fileID: 218590864838221264, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 218590864838221264, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 432509255}
+    - target: {fileID: 218590864838221264, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: StartDialogues
+      objectReference: {fileID: 0}
+    - target: {fileID: 218590864838221264, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: DialogueIntroManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 218590864838221264, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 1710146112627647095, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -5406,6 +5422,10 @@ PrefabInstance:
     - target: {fileID: 2350686695106121526, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
       propertyPath: m_Name
       value: DataRequest
+      objectReference: {fileID: 0}
+    - target: {fileID: 2350686695106121526, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2453543821008202438, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
       propertyPath: m_Pivot.x
@@ -5560,9 +5580,41 @@ PrefabInstance:
       value: -548.08997
       objectReference: {fileID: 0}
     - target: {fileID: 8581418339361997718, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8581418339361997718, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8581418339361997718, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 432509255}
+      objectReference: {fileID: 9032619182473584977, guid: a26b00b110945a34ca9f3f97a141b15e, type: 3}
+    - target: {fileID: 8581418339361997718, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: StartGatheringData
+      objectReference: {fileID: 0}
+    - target: {fileID: 8581418339361997718, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: StartDialogues
+      objectReference: {fileID: 0}
+    - target: {fileID: 8581418339361997718, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: AnalyticsManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8581418339361997718, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: DialogueIntroManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8581418339361997718, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8581418339361997718, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 9065588181373800058, guid: 1af05ef753f228944819eb732ee328e2, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1

@@ -140,7 +140,6 @@ public class ScoreManager : Singleton<ScoreManager>
     /// <returns></returns>
     public bool EvaluateQuest(Quest quest)
     {
-        Debug.LogError("TODO: FALTA AÑADIR LA PUNTUACIÓN DE LAS TEMÁTICAS Y LO DE COMPARTIR A CIERTOS GRUPOS");
         int scoreAchieved = quest.done.identifiedArticles * _pointsForIdentifyingTrueArticle +
                             quest.done.falseArticlesShared * _pointsForSharingFalseArticle;
 

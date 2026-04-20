@@ -159,6 +159,11 @@ public class ScoreMenu : MonoBehaviour
         {
             SetValues(_rightThemesObject, _rightThemesSlider, _rightThemesText, 
                 quest.done.themesCorrectlyAddressed, quest.toDo.articlesToIdentify, 1.25f);
+            
+            _shareWithText.gameObject.SetActive(false);
+            _familyToggleGameObject.SetActive(false);
+            _friendsToggleGameObject.SetActive(false);
+            _neighboursToggleGameObject.SetActive(false);
         }
         else
         {

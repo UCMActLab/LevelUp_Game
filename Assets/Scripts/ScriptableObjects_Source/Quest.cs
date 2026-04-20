@@ -110,7 +110,6 @@ public class Quest : ScriptableObject
                 correctlyIdentified = false;
             }
 
-            Debug.LogError("TODO: SharingPoints");
         }
         else if (data.IsTrue)
         {

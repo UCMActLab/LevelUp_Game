@@ -468,7 +468,6 @@ public class ArticleGameObject : MonoBehaviour
 
     public void SetupShareButtonForVerification()
     {
-        Debug.LogError("TODO: verification mode");
         // play animation to the right and a blueish tone :3
         // on animation end -> shownextarticle
 
