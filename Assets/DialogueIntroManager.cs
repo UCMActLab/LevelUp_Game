@@ -15,6 +15,9 @@ public class DialogueIntroManager : MonoBehaviour
     [SerializeField]
     private UnityEvent onDialoguesEnd = new UnityEvent();
 
+    [SerializeField]
+    private Animator _okButton = null;
+
     int _titleDialogueIndex = 0;
     int _bodyDialogueIndex = 0;
 
@@ -26,12 +29,19 @@ public class DialogueIntroManager : MonoBehaviour
         _titleDialogue.SetSettings(_titleSettings[_titleDialogueIndex]);
         _bodyDialogue.SetSettings(_bodySettings[_bodyDialogueIndex]);
 
-        _titleDialogue.onDialogueEnd.AddListener(() => { _bodyDialogue.ShowText(); _bodyDialogue.waitForInteraction = false; });
+        _titleDialogue.onLineEnded.AddListener(_bodyDialogue.ShowText);
+
+        _bodyDialogue.onLineEnded.AddListener(() => SetFeedbackOkButton(true));
         _bodyDialogue.onDialogueEnd.AddListener(AdvanceDialogues);
 
         // _titleDialogue.waitForInteraction = false;
         _titleDialogue.waitTimeForNext = 0.0f;
         // _bodyDialogue.waitForInteraction = false;
+    }
+
+    public void SetFeedbackOkButton(bool active)
+    {
+        _okButton.SetBool("Highlighted", active);
     }
 
     private void AdvanceDialogues()

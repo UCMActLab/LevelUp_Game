@@ -54,7 +54,7 @@ public class ScoreManager : Singleton<ScoreManager>
     private int _pointsForIdentifyingTrueArticle = 1;
     private int _pointsForReadingArticle = 0;
     private int _pointsForQuestionAnsweredCorrectly = 1;
-    private int _pointsForSharingFalseArticle = -1;
+    private int _pointsForSkippingFalseArticle = 1;
     private int _pointsForSharingToRightGroup = 1;
     private int _pointsForSharingRightTheme = 1;
     [SerializeField, Range(0.0f, 1.0f)] private float _thresholdForCompletingQuest = 0.5f;
@@ -115,10 +115,10 @@ public class ScoreManager : Singleton<ScoreManager>
         _score.trueArticlesShared++;
     }
 
-    private void SubstractPointsForSharingFalseArticle()
+    private void AwardPointsForSkippingArticle()
     {
-        AddPoints(_pointsForSharingFalseArticle);
-        _score.falseArticlesShared++;
+        AddPoints(_pointsForSkippingFalseArticle);
+        // _score.falseArticlesShared++;
     }
 
     private void AwardPointsForSharingToRightGroup()
@@ -133,6 +133,11 @@ public class ScoreManager : Singleton<ScoreManager>
         _score.sharedRightTheme++;
     }
 
+    public int MinimumScoreToCompleteQuest(Quest quest)
+    {
+        return (int)Mathf.Ceil((quest.toDo.articlesToIdentify + quest.toDo.falseArticlesToSkip) * _thresholdForCompletingQuest);
+    }
+
     /// <summary>
     /// Devuelve si la quest se ha completado o no
     /// </summary>
@@ -141,7 +146,7 @@ public class ScoreManager : Singleton<ScoreManager>
     public bool EvaluateQuest(Quest quest)
     {
         int scoreAchieved = quest.done.identifiedArticles * _pointsForIdentifyingTrueArticle +
-                            quest.done.falseArticlesShared * _pointsForSharingFalseArticle;
+                            quest.done.falseArticlesSkipped * _pointsForSkippingFalseArticle;
 
         if (quest.toDo.toShareWithFamily > 0) 
             scoreAchieved += Mathf.Min(quest.toDo.toShareWithFamily, quest.done.sharedWithFamily) * 
@@ -155,10 +160,10 @@ public class ScoreManager : Singleton<ScoreManager>
             scoreAchieved += Mathf.Min(quest.toDo.toShareWithNeighbours, quest.done.sharedWithNeighbours) * 
                 _pointsForSharingToRightGroup;
 
-        if (quest.groupsHaveThemes) 
+        if (quest.groupsHaveTopics) 
             scoreAchieved += quest.done.themesCorrectlyAddressed * _pointsForSharingRightTheme;
 
-        bool questCompleted = scoreAchieved >= quest.GetMaxPossibleScore() * _thresholdForCompletingQuest;
+        bool questCompleted = scoreAchieved >= MinimumScoreToCompleteQuest(quest);
 
         if (questCompleted)
         {
@@ -169,15 +174,17 @@ public class ScoreManager : Singleton<ScoreManager>
 
             for (int i = 0; i < quest.done.falseArticlesShared; ++i)
             {
-                SubstractPointsForSharingFalseArticle();
+                AwardPointsForSkippingArticle();
             }
+
+            _score.falseArticlesShared += quest.done.falseArticlesShared;
 
             for (int i = 0; i < quest.done.readedArticles; ++i)
             {
                 AwardPointsReadArticle();
             }
 
-            if (quest.thereAreGroups && !quest.groupsHaveThemes)
+            if (quest.thereAreGroups && !quest.groupsHaveTopics)
             {
                 int howMuchShared = Mathf.Min(quest.toDo.toShareWithNeighbours, quest.done.sharedWithNeighbours) +
                     Mathf.Min(quest.toDo.toShareWithFriends, quest.done.sharedWithFriends) +
@@ -188,7 +195,7 @@ public class ScoreManager : Singleton<ScoreManager>
                     AwardPointsForSharingToRightGroup();
                 }
             }
-            else if (quest.groupsHaveThemes)
+            else if (quest.groupsHaveTopics)
             {
                 for (int i = 0; i < quest.done.themesCorrectlyAddressed; ++i)
                 {

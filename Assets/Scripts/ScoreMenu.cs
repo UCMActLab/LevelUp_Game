@@ -25,7 +25,6 @@ public class ScoreMenu : MonoBehaviour
     [SerializeField] private GameObject _friendsToggleGameObject = null;
     [SerializeField] private GameObject _neighboursToggleGameObject = null;
 
-
     Toggle _familyToggle = null;
     Toggle _friendsToggle = null;
     Toggle _neighboursToggle = null;
@@ -41,36 +40,16 @@ public class ScoreMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _questionsText = null;
     [SerializeField] private TextMeshProUGUI _falseArticlesText = null;
 
-    [Header("Image")]
-    [SerializeField] private Image _medal = null;
-    private Sprite _newMedal = null;
-
     [Header("Button")]
     [SerializeField] private Button _okButton = null;
     
     [Header("Feedback")]
     [SerializeField] private GameObject _feedback = null;
     [SerializeField] private GameAssistant _assistant = null;
-    private TextMeshProUGUI _feedbackText = null;
     private string _feedbackString = string.Empty;
-
-    private Animator _animator;
-
-    private bool _medalAnimationEnded = false;
-
-    bool _animationRunning = false;
-
-    void Awake()
-    {
-        _animator = GetComponent<Animator>();
-
-        _feedbackText = _feedback.GetComponentInChildren<TextMeshProUGUI>();
-    }
 
     private void OnEnable()
     {
-        _medalAnimationEnded = true;
-
         _familyToggle = _familyToggleGameObject.GetComponentInChildren<Toggle>();
         _friendsToggle = _friendsToggleGameObject.GetComponentInChildren<Toggle>();
         _neighboursToggle = _neighboursToggleGameObject.GetComponentInChildren<Toggle>();
@@ -85,7 +64,6 @@ public class ScoreMenu : MonoBehaviour
     private void OnDisable()
     {
         ActivateOKButton(false);
-        if(_newMedal != null) ChangeMedalDuringAnimation();
     }
 
     public void ShowScore(Quest quest)
@@ -120,9 +98,9 @@ public class ScoreMenu : MonoBehaviour
             if (feedback != string.Empty) feedback += '\n';
             feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_FALSE");
         }
-        SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, quest.done.falseArticlesShared, quest.toDo.falseArticlesToSkip, 1.25f);
+        SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, quest.done.falseArticlesSkipped, quest.toDo.falseArticlesToSkip, 1.25f);
 
-        if (quest.thereAreGroups && !quest.groupsHaveThemes)
+        if (quest.thereAreGroups && !quest.groupsHaveTopics)
         {
             _rightThemesObject.SetActive(false);
             _shareWithText.gameObject.SetActive(true);
@@ -155,26 +133,21 @@ public class ScoreMenu : MonoBehaviour
                 _neighboursToggleGameObject.SetActive(false);
             }
         }
-        else if (quest.groupsHaveThemes)
+        else if (quest.groupsHaveTopics)
         {
             SetValues(_rightThemesObject, _rightThemesSlider, _rightThemesText, 
                 quest.done.themesCorrectlyAddressed, quest.toDo.articlesToIdentify, 1.25f);
-            
-            _shareWithText.gameObject.SetActive(false);
-            _familyToggleGameObject.SetActive(false);
-            _friendsToggleGameObject.SetActive(false);
-            _neighboursToggleGameObject.SetActive(false);
-        }
-        else
-        {
-            _shareWithText.gameObject.SetActive(false);
-            _familyToggleGameObject.SetActive(false);
-            _friendsToggleGameObject.SetActive(false);
-            _neighboursToggleGameObject.SetActive(false);
-            _rightThemesObject.SetActive(false);
         }
 
-        // SetValues(_questionsObject, _questionsSlider, _questionsText, score.questionsRight, score.totalQuestions, 1.25f);
+        bool topics = quest.thereAreGroups && quest.groupsHaveTopics;
+        bool groups = quest.thereAreGroups && !quest.groupsHaveTopics;
+
+        _shareWithText.gameObject.SetActive(groups);
+        _familyToggleGameObject.SetActive(groups);
+        _friendsToggleGameObject.SetActive(groups);
+        _neighboursToggleGameObject.SetActive(groups);
+        _rightThemesObject.SetActive(topics);
+
         SetValues(_questionsObject, _questionsSlider, _questionsText, -1, -1, 1.25f);
 
         if (!badFalseSharing && !badTrueSharing && !badReading)
@@ -187,7 +160,6 @@ public class ScoreMenu : MonoBehaviour
 
     private void SetToggle(GameObject toggleHolder, Toggle toggle, TextMeshProUGUI text, int value, int maxValue)
     {
-
         toggleHolder.SetActive(true);
         toggle.isOn = maxValue <= value;
 
@@ -197,7 +169,7 @@ public class ScoreMenu : MonoBehaviour
     public void ShowFeedback()
     {
         string[] feedback = _feedbackString.Split('\n');
-        _assistant.ShowMessages(feedback, LevelManager.Instance.ShowNextArticle);
+        _assistant.ShowMessages(feedback, LevelManager.Instance.ShowMessagesEndLevel);
     }
 
     public void RebuildLayouts()
@@ -206,25 +178,6 @@ public class ScoreMenu : MonoBehaviour
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(child as RectTransform);
         }
-    }
-    public void ChangeMedal(Sprite newSprite)
-    {
-        _newMedal = newSprite;
-        if (!_medalAnimationEnded) return;
-
-        _medalAnimationEnded = false;
-        _animator.SetTrigger("ChangeMedal");
-    }
-
-    public void ChangeMedalDuringAnimation()
-    {
-        _medal.sprite = _newMedal;
-        _newMedal = null;
-    }
-
-    public void MedalAnimationEnded()
-    {
-        _medalAnimationEnded = true;
     }
 
     public void ActivateOKButton(bool activate)
@@ -266,9 +219,6 @@ public class ScoreMenu : MonoBehaviour
             }
 
             target.value = targetValue;
-
-            //AddPointsFeedback feedback = targetObject.GetComponent<AddPointsFeedback>();
-            //if(feedback) feedback.AddPoints((int)target.value);
         }
     }
 }

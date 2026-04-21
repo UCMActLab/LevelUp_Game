@@ -17,18 +17,19 @@ public class Quest : ScriptableObject
     }
 
     public int totalArticles;
-    public bool groupsHaveThemes;
+    public bool groupsHaveTopics;
     public bool thereAreGroups;
 
     public int GetMaxPossibleScore() {
 
-        int score = this.toDo.articlesToIdentify + this.toDo.toShareWithNeighbours + 
-            this.toDo.toShareWithFriends + this.toDo.toShareWithFamily;
+        int score = this.toDo.articlesToIdentify + this.toDo.falseArticlesToSkip + 
+            
+                                                ((thereAreGroups && groupsHaveTopics) ? 
+                                                (this.toDo.toShareWithFamily
+                                                + this.toDo.toShareWithNeighbours +
+                                                this.toDo.toShareWithFriends) : 0) +
 
-        if (this.groupsHaveThemes)
-            // usamos esto porque tenemos que clasificar correctamente
-            // las temáticas de tantos artículos como identifiquemos
-            score += this.toDo.articlesToIdentify;
+                                                (groupsHaveTopics ? this.toDo.articlesToIdentify : 0);
 
         return score; 
     }
@@ -42,9 +43,9 @@ public class Quest : ScriptableObject
 
         thereAreGroups = numGroups > 0;
 
-        this.groupsHaveThemes = groupsHaveThemes;
+        this.groupsHaveTopics = groupsHaveThemes;
 
-        if (thereAreGroups && !this.groupsHaveThemes)
+        if (thereAreGroups && !this.groupsHaveTopics)
         {
             for (int i = 0; i < toDo.articlesToIdentify; ++i)
             {
@@ -84,7 +85,7 @@ public class Quest : ScriptableObject
                 {
                     if (data.HasSharedWithGroups[i])
                     {
-                        if (groupsHaveThemes && !alreadyScoredTheme)
+                        if (groupsHaveTopics && !alreadyScoredTheme)
                         {
                             if (TopicsDictionary.topics[data.Data.theme] == 
                                 LevelManager.Instance.GetGroupTheme(i + 1)) // i == 0 es el MainChat (donde se ven los artículos)
@@ -109,11 +110,14 @@ public class Quest : ScriptableObject
                 done.falseArticlesShared++;
                 correctlyIdentified = false;
             }
-
         }
         else if (data.IsTrue)
         {
             correctlyIdentified = false;
+        }
+        else
+        {
+            done.falseArticlesSkipped++;
         }
 
         if (data.HasReadArticle) done.readedArticles++;

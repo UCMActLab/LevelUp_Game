@@ -31,7 +31,7 @@ public class ChatManager : MonoBehaviour
     [SerializeField] private GameObject _keepSharingButton = null;
     [SerializeField] private GameObject _backToChatButton = null;
     [SerializeField] private GameAssistant _assistant = null;
-    [SerializeField] private TopicMenu _topicMenu = null;
+    [SerializeField] private ToDoMenu _topicMenu = null;
 
     private GameObject _currentChat;
 
@@ -188,10 +188,11 @@ public class ChatManager : MonoBehaviour
         bool[] sharedWithGroups = article.HasSharedWithGroups;
 
         bool canShare = false;
-        for (int i = 0; i < sharedWithGroups.Length; ++i)
-        {
-            canShare = canShare || !sharedWithGroups[i];
-        }
+        // quitamos el canShare porque ahora hacemos que SOLO se puede compartir una vez
+        //for (int i = 0; i < sharedWithGroups.Length; ++i)
+        //{ 
+        //    canShare = canShare || !sharedWithGroups[i];
+        //}
 
         if(canShare)
         {

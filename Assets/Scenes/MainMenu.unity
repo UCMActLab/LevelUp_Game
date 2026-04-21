@@ -198,8 +198,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 320, y: -97.66}
-  m_SizeDelta: {x: 640, y: 0}
+  m_AnchoredPosition: {x: 320.20343, y: -97.66}
+  m_SizeDelta: {x: 640.40686, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &120717387
 MonoBehaviour:
@@ -1351,7 +1351,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 420, y: -127.555}
+  m_AnchoredPosition: {x: 420.20343, y: -127.555}
   m_SizeDelta: {x: 426.09, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &600526953
@@ -1575,6 +1575,7 @@ GameObject:
   - component: {fileID: 663001240}
   - component: {fileID: 663001239}
   - component: {fileID: 663001238}
+  - component: {fileID: 663001245}
   m_Layer: 5
   m_Name: Image (1)
   m_TagString: Untagged
@@ -1688,6 +1689,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 771892728}
+        m_TargetAssemblyTypeName: DialogueIntroManager, Assembly-CSharp
+        m_MethodName: SetFeedbackOkButton
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &663001241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1772,6 +1785,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 663001236}
   m_CullTransparentMesh: 1
+--- !u!95 &663001245
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 663001236}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 65023708b8d5bf34cba02acbaa82929e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &730630269
 GameObject:
   m_ObjectHideFlags: 0
@@ -2637,6 +2672,7 @@ MonoBehaviour:
           m_StringArgument: ChatDemo
           m_BoolArgument: 0
         m_CallState: 2
+  _okButton: {fileID: 663001245}
 --- !u!1 &845215684
 GameObject:
   m_ObjectHideFlags: 0
@@ -2852,8 +2888,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 420, y: -302.77002}
-  m_SizeDelta: {x: 640, y: 0}
+  m_AnchoredPosition: {x: 420.20343, y: -302.77002}
+  m_SizeDelta: {x: 640.40686, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &945016617
 GameObject:
@@ -3224,8 +3260,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 420, y: -548.08997}
-  m_SizeDelta: {x: 640, y: 0}
+  m_AnchoredPosition: {x: 420.20343, y: -548.08997}
+  m_SizeDelta: {x: 640.40686, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1080331726
 GameObject:
@@ -3800,8 +3836,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 320, y: -97.66}
-  m_SizeDelta: {x: 640, y: 0}
+  m_AnchoredPosition: {x: 320.20343, y: -97.66}
+  m_SizeDelta: {x: 640.40686, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1298382683
 MonoBehaviour:

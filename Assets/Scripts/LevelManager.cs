@@ -25,11 +25,10 @@ public class LevelManager : Singleton<LevelManager>
     List<Quest> _quests;
 
     [SerializeField]
-    private Button _topicsPerGroupButton = null;
+    private Button _todoButton = null;
+
     [SerializeField]
-    private Button _toShareWithButton = null;
-    [SerializeField]
-    private ToShareWithMenu _toShareWithMenu = null;
+    private ToDoMenu _todoMenu = null;
 
     [SerializeField]
     private ChatManager _chatManager = null;
@@ -328,8 +327,7 @@ public class LevelManager : Singleton<LevelManager>
 
     public void ShowEndLevel(int level)
     {
-        _topicsPerGroupButton.gameObject.SetActive(false);
-        _toShareWithButton.gameObject.SetActive(false);
+        _todoButton.gameObject.SetActive(false);
 
         _fader.StartFade(0.8f, 0.0f, 0.8f);
 
@@ -358,6 +356,15 @@ public class LevelManager : Singleton<LevelManager>
     bool _levelStarted = false;
     List<ArticleData> _discardedArticlesDuringLevel = null;
     bool _currentLevelCompleted = true;
+
+    public void ShowMessagesEndLevel()
+    {
+        if (_currentLevelCompleted)
+            ShowNextArticle();
+        else
+            ShowMessagesFailedLevel();
+    }
+
     public void ShowNextArticle()
     {
         if(_currentLevel >= _levelsInfo.Count)
@@ -404,7 +411,7 @@ public class LevelManager : Singleton<LevelManager>
                     }
                 }
             }
-
+            
             onLevelEnd.Invoke(_currentLevel);
         }
         else
@@ -436,7 +443,7 @@ public class LevelManager : Singleton<LevelManager>
                 onLevelStart.Invoke(_currentLevel);
                 if (!_currentLevelCompleted)
                 {
-                    ShowMessagesFailedLevel();
+                    PromptChoiceToRepatLevelExplanation();
                 }
                 else
                 {
@@ -453,20 +460,9 @@ public class LevelManager : Singleton<LevelManager>
                 if (_levelsInfo[_currentLevel].groupHavePreferredTheme)
                 {
                     _chatManager.RandomizeAllGroupTopics(topics.ToList(), _levelsInfo[_currentLevel].numGroupsToShareWith);
-                    _topicsPerGroupButton.gameObject.SetActive(true);
-                    _toShareWithButton.gameObject.SetActive(false);
                 }
-                else if (_levelsInfo[_currentLevel].articleIsSharedWithGroups)
-                {
-                    _topicsPerGroupButton.gameObject.SetActive(false);
-                    _toShareWithButton.gameObject.SetActive(true);
-                    _toShareWithMenu.SetValues(_quests[_currentLevel]);
-                }
-                else
-                {
-                    _topicsPerGroupButton.gameObject.SetActive(false);
-                    _toShareWithButton.gameObject.SetActive(false);
-                }
+
+                _todoMenu.SetValues(_quests[_currentLevel]);
             }
 
             onNewArticleSpawned.Invoke(_articleData);
@@ -505,7 +501,10 @@ public class LevelManager : Singleton<LevelManager>
 
             _fader.StartFade(1.0f, 0.0f, 0.8f, true);
             if (_levelsInfo[_currentLevel].avatarMessagesOnStart.Count > 0)
-                _gameAssistant.ShowMessages(messages, PromptChoiceToRepatLevelExplanation);
+            {
+                int auxLevel = _currentLevel;
+                _gameAssistant.ShowMessages(messages, ShowNextArticle);
+            }
             else
                 _gameAssistant.ShowMessages(messages, StartLevelPostMessages);
         }
@@ -529,6 +528,7 @@ public class LevelManager : Singleton<LevelManager>
 
     private void StartLevelPostMessages()
     {
+        _todoButton.onClick.Invoke();
         _gameAssistant.HideMessage();
         _fader.StartFade(1.0f, 0.8f, 0.0f);
     }
