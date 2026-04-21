@@ -339,7 +339,6 @@ public class LevelManager : Singleton<LevelManager>
         }
         else
         {
-            Debug.LogError("TODO: Change Assistant Message");
             List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("Translation", "END_LEVEL_MESSAGE/", 2, 1);
             _gameAssistant.ShowMessages(messages.ToArray(), () => ScoreManager.Instance.ShowPoints(_quests[level]));
             ResetLevelStats();

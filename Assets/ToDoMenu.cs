@@ -40,6 +40,9 @@ public class ToDoMenu : MonoBehaviour
     [Header("GENERAL")]
     [SerializeField]
     private TextMeshProUGUI _minimumArticles = null;
+    [SerializeField]
+    private GameObject _extra = null;
+
     //[SerializeField]
     //private TextMeshProUGUI _trueNumber = null;
     //[SerializeField]
@@ -50,6 +53,7 @@ public class ToDoMenu : MonoBehaviour
         if (quest.thereAreGroups && !quest.groupsHaveTopics)
         {
             _generalObjectShareWith.SetActive(true);
+            _extra.SetActive(true);
             _generalObjectTopic.SetActive(false);
             if (quest.toDo.toShareWithFamily > 0)
             {
@@ -57,7 +61,7 @@ public class ToDoMenu : MonoBehaviour
             }
             else
             {
-                HideTopic("FAMILY");
+                HideToShareWith("FAMILY");
             }
             if (quest.toDo.toShareWithFriends > 0)
             {
@@ -65,7 +69,7 @@ public class ToDoMenu : MonoBehaviour
             }
             else
             {
-                HideTopic("FRIENDS");
+                HideToShareWith("FRIENDS");
             }
             if (quest.toDo.toShareWithNeighbours > 0)
             {
@@ -73,20 +77,22 @@ public class ToDoMenu : MonoBehaviour
             }
             else
             {
-                HideTopic("NEIGHBOURS");
+                HideToShareWith("NEIGHBOURS");
             }
         }
         else if (quest.thereAreGroups)
         {
             _generalObjectShareWith.SetActive(false);
+            _extra.SetActive(true);
             _generalObjectTopic.SetActive(true);
         }
         else
         {
             _generalObjectShareWith.SetActive(false);
             _generalObjectTopic.SetActive(false);
+            _extra.SetActive(false);
         }
-        
+
         _minimumArticles.SetText(string.Format(TranslationManager.Instance.GetLocalizedStringValue("Translation", "TODO/MINIMUM_ARTICLES"), ScoreManager.Instance.MinimumScoreToCompleteQuest(quest)));
         // _falseNumber.SetText(quest.toDo.falseArticlesToSkip.ToString());
     }
@@ -107,19 +113,19 @@ public class ToDoMenu : MonoBehaviour
         }
     }
 
-    public void HideTopic(string groupName)
+    public void HideToShareWith(string groupName)
     {
         if (groupName.Contains("FAMILY"))
         {
-            _familyObjectTopic.SetActive(false);
+            _familyObjectShareWith.SetActive(false);
         }
         if (groupName.Contains("FRIENDS"))
         {
-            _friendsObjectTopic.SetActive(false);
+            _friendsObjectShareWith.SetActive(false);
         }
         if (groupName.Contains("NEIGHBOURS"))
         {
-            _neighboursObjectTopic.SetActive(false);
+            _neighboursObjectShareWith.SetActive(false);
         }
     }
 

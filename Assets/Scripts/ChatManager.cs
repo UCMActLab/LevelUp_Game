@@ -267,7 +267,7 @@ public class ChatManager : MonoBehaviour
 
         for (; i < numGroups + 1; ++i)
         {
-            _topicMenu.HideTopic(_groupChats[i].GetComponent<GroupSettings>().Name);
+            _topicMenu.HideToShareWith(_groupChats[i].GetComponent<GroupSettings>().Name);
         }
     }
 

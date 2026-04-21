@@ -100,10 +100,12 @@ public class ScoreMenu : MonoBehaviour
         }
         SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, quest.done.falseArticlesSkipped, quest.toDo.falseArticlesToSkip, 1.25f);
 
-        if (quest.thereAreGroups && !quest.groupsHaveTopics)
+        bool groups = quest.thereAreGroups && !quest.groupsHaveTopics;
+        bool topics = quest.thereAreGroups && quest.groupsHaveTopics;
+
+        if (groups)
         {
             _rightThemesObject.SetActive(false);
-            _shareWithText.gameObject.SetActive(true);
             if (quest.toDo.toShareWithFamily > 0)
             {
                 SetToggle(_familyToggleGameObject, _familyToggle, _familySharedText
@@ -130,22 +132,24 @@ public class ScoreMenu : MonoBehaviour
             }
             else
             {
+                
                 _neighboursToggleGameObject.SetActive(false);
             }
         }
-        else if (quest.groupsHaveTopics)
+        else if (topics)
         {
             SetValues(_rightThemesObject, _rightThemesSlider, _rightThemesText, 
                 quest.done.themesCorrectlyAddressed, quest.toDo.articlesToIdentify, 1.25f);
         }
+        else
+        {
+            _familyToggleGameObject.SetActive(false);
+            _friendsToggleGameObject.SetActive(false);
+            _neighboursToggleGameObject.SetActive(false);
+        }
 
-        bool topics = quest.thereAreGroups && quest.groupsHaveTopics;
-        bool groups = quest.thereAreGroups && !quest.groupsHaveTopics;
 
         _shareWithText.gameObject.SetActive(groups);
-        _familyToggleGameObject.SetActive(groups);
-        _friendsToggleGameObject.SetActive(groups);
-        _neighboursToggleGameObject.SetActive(groups);
         _rightThemesObject.SetActive(topics);
 
         SetValues(_questionsObject, _questionsSlider, _questionsText, -1, -1, 1.25f);
