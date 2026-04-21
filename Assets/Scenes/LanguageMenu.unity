@@ -1663,6 +1663,7 @@ GameObject:
   - component: {fileID: 1380544782}
   - component: {fileID: 1380544781}
   - component: {fileID: 1380544780}
+  - component: {fileID: 1380544791}
   m_Layer: 5
   m_Name: czech
   m_TagString: Untagged
@@ -2022,6 +2023,20 @@ MonoBehaviour:
     parentTransformRect: {fileID: 0}
     parentTransform: {fileID: 0}
     partOfPrefab: 0
+--- !u!114 &1380544791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380544778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69869e6165e8b4b41aa5cd689840c400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pressedScale: 0.9
+  speed: 12
 --- !u!1 &1455108545
 GameObject:
   m_ObjectHideFlags: 0
@@ -2042,6 +2057,7 @@ GameObject:
   - component: {fileID: 1455108549}
   - component: {fileID: 1455108548}
   - component: {fileID: 1455108547}
+  - component: {fileID: 1455108558}
   m_Layer: 5
   m_Name: spanish
   m_TagString: Untagged
@@ -2401,6 +2417,20 @@ MonoBehaviour:
     parentTransformRect: {fileID: 0}
     parentTransform: {fileID: 0}
     partOfPrefab: 0
+--- !u!114 &1455108558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1455108545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69869e6165e8b4b41aa5cd689840c400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pressedScale: 0.9
+  speed: 12
 --- !u!1 &1484781365
 GameObject:
   m_ObjectHideFlags: 0
@@ -3224,6 +3254,7 @@ GameObject:
   - component: {fileID: 1873520863}
   - component: {fileID: 1873520862}
   - component: {fileID: 1873520873}
+  - component: {fileID: 1873520874}
   m_Layer: 5
   m_Name: bg
   m_TagString: Untagged
@@ -3583,6 +3614,20 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0.2901961, b: 0.37254903, a: 1}
   m_EffectDistance: {x: 0, y: -15}
   m_UseGraphicAlpha: 1
+--- !u!114 &1873520874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873520860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69869e6165e8b4b41aa5cd689840c400, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pressedScale: 0.9
+  speed: 12
 --- !u!1 &1928324587
 GameObject:
   m_ObjectHideFlags: 0
