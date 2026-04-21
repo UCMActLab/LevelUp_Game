@@ -23,8 +23,8 @@ public class GiveEndFeedback : MonoBehaviour
         _feedbackGO.SetTitle(info.feedback);
         _feedbackGO.SetImage(info.sprite);
 
-        LevelScore score = ScoreManager.Instance.ScoreStats;
-        _feedbackGO.SetFalseShared(score.falseArticlesShared);
+        LevelScore score = ScoreManager.Instance.TotalScoreStats;
+        _feedbackGO.SetFalseShared(score.falseArticles - score.falseArticlesShared);
         _feedbackGO.SetTrueShared(score.trueArticlesShared);
         _feedbackGO.SetArticlesRead(score.readArticles, score.readableArticles);
     }

@@ -2,6 +2,7 @@ using System;
 using UnityEditor;
 using Unity.Services.Analytics;
 using UnityEngine;
+using AYellowpaper.SerializedCollections.Editor.Data;
 
 public enum Score
 {
@@ -42,6 +43,7 @@ public struct LevelScore
     public int questionsRight;
     public int totalQuestions;
 
+    public int score;
     public int maxScore;
 
 }
@@ -71,7 +73,9 @@ public class ScoreManager : Singleton<ScoreManager>
     public Score State { get { return _currentState; } }
 
     LevelScore _score;
+    LevelScore _totalScore;
     public LevelScore ScoreStats { get { return _score; } }
+    public LevelScore TotalScoreStats { get { return _totalScore; } }
 
     public bool CanContinue = true;
 
@@ -138,6 +142,29 @@ public class ScoreManager : Singleton<ScoreManager>
         return (int)Mathf.Ceil((quest.toDo.articlesToIdentify + quest.toDo.falseArticlesToSkip) * _thresholdForCompletingQuest);
     }
 
+    public int CalculateQuestScore(Quest quest)
+    {
+        int scoreAchieved = quest.done.identifiedArticles * _pointsForIdentifyingTrueArticle +
+                    quest.done.falseArticlesSkipped * _pointsForSkippingFalseArticle;
+
+        if (quest.toDo.toShareWithFamily > 0)
+            scoreAchieved += Mathf.Min(quest.toDo.toShareWithFamily, quest.done.sharedWithFamily) *
+                _pointsForSharingToRightGroup;
+
+        if (quest.toDo.toShareWithFriends > 0)
+            scoreAchieved += Mathf.Min(quest.toDo.toShareWithFriends, quest.done.sharedWithFriends) *
+                _pointsForSharingToRightGroup;
+
+        if (quest.toDo.toShareWithNeighbours > 0)
+            scoreAchieved += Mathf.Min(quest.toDo.toShareWithNeighbours, quest.done.sharedWithNeighbours) *
+                _pointsForSharingToRightGroup;
+
+        if (quest.groupsHaveTopics)
+            scoreAchieved += quest.done.themesCorrectlyAddressed * _pointsForSharingRightTheme;
+
+        return scoreAchieved;
+    }
+
     /// <summary>
     /// Devuelve si la quest se ha completado o no
     /// </summary>
@@ -145,25 +172,8 @@ public class ScoreManager : Singleton<ScoreManager>
     /// <returns></returns>
     public bool EvaluateQuest(Quest quest)
     {
-        int scoreAchieved = quest.done.identifiedArticles * _pointsForIdentifyingTrueArticle +
-                            quest.done.falseArticlesSkipped * _pointsForSkippingFalseArticle;
-
-        if (quest.toDo.toShareWithFamily > 0) 
-            scoreAchieved += Mathf.Min(quest.toDo.toShareWithFamily, quest.done.sharedWithFamily) * 
-                _pointsForSharingToRightGroup;
-        
-        if (quest.toDo.toShareWithFriends> 0) 
-            scoreAchieved += Mathf.Min(quest.toDo.toShareWithFriends, quest.done.sharedWithFriends) * 
-                _pointsForSharingToRightGroup;
-
-        if (quest.toDo.toShareWithNeighbours > 0) 
-            scoreAchieved += Mathf.Min(quest.toDo.toShareWithNeighbours, quest.done.sharedWithNeighbours) * 
-                _pointsForSharingToRightGroup;
-
-        if (quest.groupsHaveTopics) 
-            scoreAchieved += quest.done.themesCorrectlyAddressed * _pointsForSharingRightTheme;
-
-        bool questCompleted = scoreAchieved >= MinimumScoreToCompleteQuest(quest);
+        int questScore = CalculateQuestScore(quest);
+        bool questCompleted = questScore >= MinimumScoreToCompleteQuest(quest);
 
         if (questCompleted)
         {
@@ -207,6 +217,40 @@ public class ScoreManager : Singleton<ScoreManager>
             _score.trueArticles += quest.toDo.articlesToIdentify;
             _score.falseArticles += quest.toDo.falseArticlesToSkip;
             _score.readableArticles += quest.toDo.toRead;
+
+            _score.maxScore = quest.GetMaxPossibleScore();
+            _totalScore.maxScore += _score.maxScore;
+
+            _score.score = questScore;
+            _totalScore.score += _score.score;
+
+            _totalScore.falseArticles += _score.falseArticles;
+            _totalScore.trueArticles += _score.trueArticles;
+            _totalScore.totalArticles += _score.totalArticles;
+        
+            _totalScore.readableArticles += _score.readableArticles;
+            _totalScore.readArticles += _score.readArticles;
+            _totalScore.trueArticlesShared += _score.trueArticlesShared;
+            _totalScore.falseArticlesShared += _score.falseArticlesShared;
+            _totalScore.sharedWithRightGroup += _score.sharedWithRightGroup;
+            _totalScore.sharedRightTheme += _score.sharedRightTheme;
+
+            if(_totalScore.score == _totalScore.maxScore)
+            {
+                _currentState = global::Score.GOLD;
+            }
+            else if(_totalScore.score >= (int)Mathf.Ceil(_totalScore.maxScore * 0.75f))
+            {
+                _currentState = global::Score.SILVER;
+            }
+            else if (_totalScore.score >= (int)Mathf.Ceil(_totalScore.maxScore * _thresholdForCompletingQuest))
+            {
+                _currentState = global::Score.BRONZE;
+            }
+            else
+            {
+                _currentState = global::Score.NONE;
+            }
         }
 
         return questCompleted;

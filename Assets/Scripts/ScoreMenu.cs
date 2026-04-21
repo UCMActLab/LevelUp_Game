@@ -1,10 +1,19 @@
+using FMOD;
 using System.Collections;
+using System.Net.Sockets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ScoreMenu : MonoBehaviour
 {
+    [Header("General")]
+    [SerializeField] private Sprite _notFilled = null;
+    [SerializeField] private Sprite _filled = null;
+    [SerializeField] private Image _firstStar = null;
+    [SerializeField] private Image _secondStar = null;
+    [SerializeField] private Image _thirdStar = null;
+
     [Header("Scores Object")]
     [SerializeField] private GameObject _readArticlesObject = null;
     [SerializeField] private GameObject _trueArticlesObject = null;
@@ -153,6 +162,37 @@ public class ScoreMenu : MonoBehaviour
         _rightThemesObject.SetActive(topics);
 
         SetValues(_questionsObject, _questionsSlider, _questionsText, -1, -1, 1.25f);
+
+
+        int minimnumScore = ScoreManager.Instance.MinimumScoreToCompleteQuest(quest);
+
+        int score = ScoreManager.Instance.CalculateQuestScore(quest);
+
+        if (score == quest.GetMaxPossibleScore())
+        {
+            _firstStar.sprite = _filled;
+            _secondStar.sprite = _filled;
+            _thirdStar.sprite = _filled;
+        }
+        else if (score >= (int)Mathf.Ceil(quest.GetMaxPossibleScore() * 0.75f))
+        {
+            _firstStar.sprite = _filled;
+            _secondStar.sprite = _filled;
+            _thirdStar.sprite = _notFilled;
+        }
+        else if (score >= minimnumScore)
+        {
+            _firstStar.sprite = _filled;
+            _secondStar.sprite = _notFilled;
+            _thirdStar.sprite = _notFilled;
+        }
+        else
+        {
+            _firstStar.sprite = _notFilled;
+            _secondStar.sprite = _notFilled;
+            _thirdStar.sprite = _notFilled;
+        }
+        
 
         if (!badFalseSharing && !badTrueSharing && !badReading)
         {

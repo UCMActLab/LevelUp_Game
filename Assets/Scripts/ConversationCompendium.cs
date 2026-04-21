@@ -1,7 +1,9 @@
+using DA_Assets.Extensions;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Localization;
-using System.Linq;
+using UnityEngine.Localization.Tables;
 
 public class ConversationCompendium : Singleton<ConversationCompendium>
 {
@@ -105,14 +107,23 @@ public class ConversationCompendium : Singleton<ConversationCompendium>
             //    cv.Messages.Add(msg);
             //}
 
+            var nameList = TranslationManager.Instance.GetAllTableEntries("NAMES");
+            nameList.Shuffle();
+
+            var messageList = TranslationManager.Instance.GetAllTableEntries(table);
+            messageList.Shuffle();
+
+            Queue<StringTableEntry> nameEntries = new Queue<StringTableEntry>(nameList);
+            Queue<StringTableEntry> messageEntries = new Queue<StringTableEntry>(messageList);
+
             int n = Random.Range(2, 5);
             for (int i = 0; i < n; ++i)
             {
                 Messages messages = new Messages();
 
-                messages.Name = TranslationManager.Instance.GetRandomEntryKey("NAMES");
+                messages.Name = nameEntries.Dequeue().LocalizedValue;
                 messages.MessageList = new List<string>();
-                messages.MessageList.Add(TranslationManager.Instance.GetRandomEntryKey(table));
+                messages.MessageList.Add(messageEntries.Dequeue().LocalizedValue);
 
                 cv.Messages.Add(messages);
             }
