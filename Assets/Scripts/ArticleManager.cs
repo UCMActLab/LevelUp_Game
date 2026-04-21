@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -251,8 +252,60 @@ public class ArticleManager : Singleton<ArticleManager>
         ArticlesCreated = true;
     }
 
+    /// <summary>
+    /// Guarda una lista de strings (JSON) en archivos individuales.
+    /// </summary>
+    public void SaveJsonList(List<string> jsonStrings)
+    {
+        for (int i = 0; i < jsonStrings.Count; i++)
+        {
+            // Creamos un nombre único, por ejemplo: data_0.json, data_1.json...
+            string fileName = $"data_{i}.json";
+            string fullPath = Path.Combine(Application.persistentDataPath, fileName);
+
+            try
+            {
+                File.WriteAllText(fullPath, jsonStrings[i]);
+                Debug.Log($"Archivo guardado en: {fullPath}");
+            }
+            catch (IOException e)
+            {
+                Debug.LogError($"Error al guardar el archivo {fileName}: {e.Message}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Lee todos los archivos .json que encuentre en el persistentDataPath.
+    /// </summary>
+    public List<string> LoadAllJsons()
+    {
+        List<string> loadedJsons = new List<string>();
+        string path = Application.persistentDataPath;
+
+        // Obtenemos solo los archivos que terminan en .json
+        string[] files = Directory.GetFiles(path, "*.json");
+
+        foreach (string file in files)
+        {
+            try
+            {
+                string content = File.ReadAllText(file);
+                loadedJsons.Add(content);
+            }
+            catch (IOException e)
+            {
+                Debug.LogError($"Error al leer el archivo {file}: {e.Message}");
+            }
+        }
+
+        return loadedJsons;
+    }
+
     public void ParseArticles(List<string> jsonData)
     {
+        SaveJsonList(jsonData);
+
         for (int i = 0; i < jsonData.Count; ++i)
         {
             jsonData[i] = jsonData[i].Replace("\"Conversation\":{}", "\"Conversation\":[]");

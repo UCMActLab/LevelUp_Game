@@ -77,9 +77,10 @@ public class ServerManager : MonoBehaviour
 
     private void ConnectionFailed()
     {
-        List<string> json = new List<string>();
-        json.Add(Resources.Load<TextAsset>("Backup/articles").text);
-        OnJsonReceived.Invoke(json);
+        // List<string> json = new List<string>();
+        // json.Add(Resources.Load<TextAsset>("Backup/articles").text);
+
+        OnJsonReceived.Invoke(ArticleManager.Instance.LoadAllJsons());
     }
 
     IEnumerator serverLogin()
