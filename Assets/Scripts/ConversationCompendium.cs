@@ -121,9 +121,9 @@ public class ConversationCompendium : Singleton<ConversationCompendium>
             {
                 Messages messages = new Messages();
 
-                messages.Name = nameEntries.Dequeue().LocalizedValue;
+                messages.Name = nameEntries.Dequeue().Key;
                 messages.MessageList = new List<string>();
-                messages.MessageList.Add(messageEntries.Dequeue().LocalizedValue);
+                messages.MessageList.Add(messageEntries.Dequeue().Key);
 
                 cv.Messages.Add(messages);
             }

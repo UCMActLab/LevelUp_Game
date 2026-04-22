@@ -1,6 +1,4 @@
-using FMOD;
 using System.Collections;
-using System.Net.Sockets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,8 +6,7 @@ using UnityEngine.UI;
 public class ScoreMenu : MonoBehaviour
 {
     [Header("General")]
-    [SerializeField] private Sprite _notFilled = null;
-    [SerializeField] private Sprite _filled = null;
+    [SerializeField] private Sprite _starSprite = null;
     [SerializeField] private Image _firstStar = null;
     [SerializeField] private Image _secondStar = null;
     [SerializeField] private Image _thirdStar = null;
@@ -77,6 +74,10 @@ public class ScoreMenu : MonoBehaviour
 
     public void ShowScore(Quest quest)
     {
+        _firstStar.sprite = _starSprite;
+        _secondStar.sprite = _starSprite;
+        _thirdStar.sprite = _starSprite;
+
         _readArticlesSlider.value = 0.0f;
         _falseArticlesSlider.value = 0.0f;
         _trueArticlesSlider.value = 0.0f;
@@ -149,6 +150,10 @@ public class ScoreMenu : MonoBehaviour
         {
             SetValues(_rightThemesObject, _rightThemesSlider, _rightThemesText, 
                 quest.done.themesCorrectlyAddressed, quest.toDo.articlesToIdentify, 1.25f);
+
+            _familyToggleGameObject.SetActive(false);
+            _friendsToggleGameObject.SetActive(false);
+            _neighboursToggleGameObject.SetActive(false);
         }
         else
         {
@@ -170,29 +175,28 @@ public class ScoreMenu : MonoBehaviour
 
         if (score == quest.GetMaxPossibleScore())
         {
-            _firstStar.sprite = _filled;
-            _secondStar.sprite = _filled;
-            _thirdStar.sprite = _filled;
+            _firstStar.color = Color.white;
+            _secondStar.color = Color.white;
+            _thirdStar.color = Color.white;
         }
         else if (score >= (int)Mathf.Ceil(quest.GetMaxPossibleScore() * 0.75f))
         {
-            _firstStar.sprite = _filled;
-            _secondStar.sprite = _filled;
-            _thirdStar.sprite = _notFilled;
+            _firstStar.color = Color.white; 
+            _secondStar.color = Color.white;
+            _thirdStar.color = Color.black;
         }
         else if (score >= minimnumScore)
         {
-            _firstStar.sprite = _filled;
-            _secondStar.sprite = _notFilled;
-            _thirdStar.sprite = _notFilled;
+            _firstStar.color = Color.white;
+            _secondStar.color = Color.black;
+            _thirdStar.color = Color.black;
         }
         else
         {
-            _firstStar.sprite = _notFilled;
-            _secondStar.sprite = _notFilled;
-            _thirdStar.sprite = _notFilled;
+            _firstStar.color = Color.black;
+            _secondStar.color = Color.black;
+            _thirdStar.color = Color.black;
         }
-        
 
         if (!badFalseSharing && !badTrueSharing && !badReading)
         {

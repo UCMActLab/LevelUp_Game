@@ -258,8 +258,7 @@ public class LevelManager : Singleton<LevelManager>
         }
         else
         {
-            string messages = "El juego comenzará cuando esté cargado";
-            _gameAssistant.ShowMessage(messages);
+            _gameAssistant.ShowMessage(TranslationManager.Instance.GetLocalizedStringValue("Translation", "LOADING_MESSAGE"));
             _assistantWaitsForGame = true;
         }
     }

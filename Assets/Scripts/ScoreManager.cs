@@ -2,8 +2,6 @@ using System;
 using UnityEditor;
 using Unity.Services.Analytics;
 using UnityEngine;
-using AYellowpaper.SerializedCollections.Editor.Data;
-
 public enum Score
 {
     GOLD = 3,

@@ -24,7 +24,7 @@ public class Quest : ScriptableObject
 
         int score = this.toDo.articlesToIdentify + this.toDo.falseArticlesToSkip + 
             
-                                                ((thereAreGroups && groupsHaveTopics) ? 
+                                                ((thereAreGroups && !groupsHaveTopics) ? 
                                                 (this.toDo.toShareWithFamily
                                                 + this.toDo.toShareWithNeighbours +
                                                 this.toDo.toShareWithFriends) : 0) +

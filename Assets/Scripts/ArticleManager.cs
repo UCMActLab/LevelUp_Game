@@ -64,7 +64,7 @@ public class ArticleManager : Singleton<ArticleManager>
         ArticlesCreated = false;
 
 #if UNITY_EDITOR
-
+        _loadImages = false;
 #else 
         _loadImages = true;
 #endif
