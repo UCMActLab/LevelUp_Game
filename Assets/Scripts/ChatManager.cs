@@ -38,7 +38,7 @@ public class ChatManager : MonoBehaviour
     private GameObject _lastSharedArticle = null;
 
     [Header("Parameters")]
-    [SerializeField, Range(0.0f, 5.0f)] private float _waitingBetweenMessages = 0.1f;
+    [SerializeField, Range(0.0f, 5.0f)] private float _waitingBetweenMessages = 0.6f;
     [SerializeField] private bool _playOnAwake = false;
 
     IEnumerator _displayConvCoroutine = null;
@@ -69,7 +69,12 @@ public class ChatManager : MonoBehaviour
 
     public void SendArticle(ArticleData articleData)
     {
+        _scrollRect.verticalNormalizedPosition = 1.0f;
         MessageView newMessage = Instantiate(_playerMessagePrefab, _currentChat.transform).GetComponent<MessageView>();
+
+        // pop animation
+        StartCoroutine(PopAnimation(newMessage.GetComponent<RectTransform>()));
+
         // TRADUCCIÓN
         newMessage.Setup("", "Translation", "ARTICLE/PLAYER_MESSAGE");
 
@@ -77,10 +82,15 @@ public class ChatManager : MonoBehaviour
         if (articleData.convType == ConversationType.TUTORIAL) prefabToUse = _tutorialArticlePrefab;
 
         _lastSharedArticle = Instantiate(prefabToUse, _currentChat.transform);
+        // pop animation
+        StartCoroutine(PopAnimation(_lastSharedArticle.GetComponent<RectTransform>()));
         ArticleGameObject setter = _lastSharedArticle.GetComponent<ArticleGameObject>();
         articleData.articleBody = string.Empty;
         setter.SetArticleData(articleData);
         setter.DestroyButtons();
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_currentChat.GetComponent<RectTransform>());
+        _scrollRect.verticalNormalizedPosition = 1.0f;
     }
 
     public GameObject SpawnShareButtons()
@@ -160,7 +170,6 @@ public class ChatManager : MonoBehaviour
                 yield return new WaitForSeconds(_waitingBetweenMessages);
                 _messageWritingAnimator?.Disable();
 
-                _chatScrollAnimation?.PlayAnimation();
 
                 MessageView newMessage = Instantiate(_messagePrefab, _currentChat.transform).GetComponent<MessageView>();
                 if(!currentMessages.NeedsTranslation && _currentConversation.Type == ConversationType.NONE)
@@ -171,6 +180,12 @@ public class ChatManager : MonoBehaviour
                 {
                     newMessage.Setup(currentMessages.Name, messageTable, currentMessages.GetNextMessage());
                 }
+
+                LayoutRebuilder.ForceRebuildLayoutImmediate(_currentChat.GetComponent<RectTransform>());
+                StartCoroutine(PopAnimation(newMessage.GetComponent<RectTransform>()));
+
+                yield return new WaitForSeconds(0.2f);
+                _chatScrollAnimation?.PlayAnimation();  
             }
         }
 
@@ -274,5 +289,38 @@ public class ChatManager : MonoBehaviour
     public Topics GetGroupTheme(int id)
     {
         return _groupChats[id].GetComponent<GroupSettings>().Topic;
+    }
+
+    // Pau
+    IEnumerator PopAnimation(RectTransform target)
+    {
+        Vector3 originalScale = Vector3.one;
+        target.localScale = new Vector3(0.8f, 0.8f, 1f); 
+
+        float time = 0f;
+        float duration = 0.15f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+            float scale = Mathf.Lerp(0.8f, 1.1f, t);
+            target.localScale = new Vector3(scale, scale, 1f);
+
+            yield return null;
+        }
+
+        time = 0f;
+        while (time < 0.1f)
+        {
+            time += Time.deltaTime;
+            float t = time / 0.1f;
+            float scale = Mathf.Lerp(1.1f, 1f, t);
+            target.localScale = new Vector3(scale, scale, 1f);
+
+            yield return null;
+        }
+
+        target.localScale = originalScale;
     }
 }
