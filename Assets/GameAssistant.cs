@@ -171,8 +171,7 @@ public class GameAssistant : MonoBehaviour
             rect.localRotation = Quaternion.identity;
             rect.localScale = Vector3.one;
 
-            _messageAnimator.ResetTrigger("NewMessage");
-            _messageAnimator.SetTrigger("NewMessage");
+            _messageAnimator.Play("NewMessageTutorial", 0, 0f);
             if (_message.TryGetComponent(out RebuildLayoutOnStart rebuild)) rebuild.RebuildAllLayouts();
         }
         else
