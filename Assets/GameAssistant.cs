@@ -1,6 +1,7 @@
 using AYellowpaper.SerializedCollections;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -52,6 +53,8 @@ public class GameAssistant : MonoBehaviour
     const GameAssistantState INITIAL_STATE = GameAssistantState.NORMAL;
     GameAssistantState _currentState = GameAssistantState.NORMAL;
 
+    public GameAssistantState State { get {  return _currentState; } }
+
     [Header("Visuals")]
     [SerializeField, SerializedDictionary]
     SerializedDictionary<GameAssistantState, Sprite> _spriteOnState = new SerializedDictionary<GameAssistantState, Sprite>();
@@ -68,7 +71,7 @@ public class GameAssistant : MonoBehaviour
     [SerializeField] private Button _okAssitantButton = null;
     // this button is for handling events when showing Messages
     [SerializeField] private Button _okAssitantButtonOneShots = null;
-    [SerializeField] private Button _assistantHeadButton = null;
+    // [SerializeField] private Button _assistantHeadButton = null;
 
     [Header("Parameters")]
     [SerializeField] float noActionTimeUntilAdvice = 1.0f;
@@ -140,6 +143,25 @@ public class GameAssistant : MonoBehaviour
     public void ShowMessage(string msg)
     {
         EnqueueMessage(msg, ProcessNextMessage);
+    }
+
+    public void ShowEnqueuedMessages(UnityAction onComplete = null)
+    {
+        AddActionToQueueEnd(onComplete);
+        ProcessNextMessage();
+    }
+    
+    private void AddActionToQueueEnd(UnityAction onComplete)
+    {
+        if (onComplete == null) return;
+
+        var list = _messageQueue.ToList();
+        QueuedMessage message = list[_messageQueue.Count -1];
+        list.RemoveAt(_messageQueue.Count - 1);
+        message.OnComplete += onComplete;
+
+        _messageQueue = new Queue<QueuedMessage>(list);
+        _messageQueue.Enqueue(message);
     }
 
     private void EnqueueMessage(string msg, UnityAction onComplete = null, bool activateMessage = true)
@@ -220,7 +242,7 @@ public class GameAssistant : MonoBehaviour
                 else EnqueueMessage(messages[i], () => { ChangeState(GameAssistantState.NORMAL); ProcessNextMessage(); }, false);
             }
             
-            _assistantHeadButton.onClick.AddListener(() => { ProcessNextMessage(); _assistantHeadButton.onClick.RemoveAllListeners(); });
+            // _assistantHeadButton.onClick.AddListener(() => { ProcessNextMessage(); _assistantHeadButton.onClick.RemoveAllListeners(); });
         }
     }
 
@@ -265,6 +287,7 @@ public class GameAssistant : MonoBehaviour
     {
         if (_articleData != null)
         {
+            _articleData.OnSkip.RemoveListener(LevelManager.Instance.ShowNextArticle);
             _articleData.OnSkip.RemoveListener(OnArticleSkip);
             _articleData.OnRead.RemoveListener(OnArticleRead);
             _articleData.OnShare.RemoveListener(OnArticleShare);
@@ -272,9 +295,9 @@ public class GameAssistant : MonoBehaviour
 
         _articleData = article;
         _articleData.OnSkip.AddListener(OnArticleSkip);
+        _articleData.OnSkip.AddListener(LevelManager.Instance.ShowNextArticle);
         _articleData.OnRead.AddListener(OnArticleRead);
         _articleData.OnShare.AddListener(OnArticleShare);
-
 
         _timer = 0.0f;
         _keepTrackOfTime = true;
@@ -282,9 +305,9 @@ public class GameAssistant : MonoBehaviour
 
     private void OnArticleSkip()
     {
-        if (_readingArticle)
+        if (_readingArticle || !_articleData.HasReadArticle)
         {
-            SkipedBeforeReading();
+            SkippedBeforeReading();
         }
         _timer = 0.0f;
     }
@@ -429,7 +452,7 @@ public class GameAssistant : MonoBehaviour
         }
     }
 
-    private void SkipedBeforeReading()
+    private void SkippedBeforeReading()
     {
         _skipBeforeReadCounter++;
 

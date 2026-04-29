@@ -215,7 +215,7 @@ public class LevelManager : Singleton<LevelManager>
         _gameLoaded = false;
         _loadingAnimation?.SetActive(true);
         List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WELCOME_", 8, 0);
-        _gameAssistant.ShowMessages(messages.ToArray(), WorryAssistantTutorial);
+        // _gameAssistant.ShowMessages(messages.ToArray(), WorryAssistantTutorial);
         yield return new WaitUntil(() => ArticleManager.Instance.ArticlesCreated);
         SetupBuildLevels();
         
@@ -223,44 +223,7 @@ public class LevelManager : Singleton<LevelManager>
         _loadingAnimation?.SetActive(false);
         _fader.StartFade(1.5f, 0.8f, 0.0f);
         
-        if (_assistantWaitsForGame)
-        {
-            _gameAssistant.HideMessage();
-            StartLevel();
-        }
-    }
-
-    private void WorryAssistantTutorial()
-    {
-        _gameAssistant.WorryAssistant(TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WORRIED_TUTORIAL_", 4, 0));
-
-        _gameAssistant.onStateChanged.AddListener(LastWelcomeMessages);
-    }
-
-    private void LastWelcomeMessages(GameAssistantState state)
-    {
-        if (state != GameAssistantState.NORMAL) return;
-
-        List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WELCOME_", 3, 8);
-        _gameAssistant.ShowMessages(messages.ToArray(), AvatarWelcomesToGame);
-
-        _gameAssistant.onStateChanged.RemoveListener(LastWelcomeMessages);
-    }
-
-    private void AvatarWelcomesToGame()
-    {
-        if (_gameLoaded)
-        {
-            _assistantWaitsForGame = false;
-            _gameAssistant.HideMessage();
-
-            StartLevel();
-        }
-        else
-        {
-            _gameAssistant.ShowMessage(TranslationManager.Instance.GetLocalizedStringValue("Translation", "LOADING_MESSAGE"));
-            _assistantWaitsForGame = true;
-        }
+        StartLevel();
     }
 
     private void StartLevel() 
@@ -355,6 +318,17 @@ public class LevelManager : Singleton<LevelManager>
             ShowMessagesFailedLevel();
     }
 
+    private bool ShowWorriedMessageBetweenArticles()
+    {
+        bool hasMessage = _gameAssistant.State == GameAssistantState.BAD;
+        if (hasMessage)
+        {
+            _gameAssistant.ShowEnqueuedMessages(ShowNextArticle);
+        }
+
+        return hasMessage;
+    }
+
     public void ShowNextArticle()
     {
         if(_currentLevel >= _levelsInfo.Count)
@@ -374,6 +348,8 @@ public class LevelManager : Singleton<LevelManager>
             // ScoreManager.Instance.CalculateArticlePoints(_articleData);
             _articleData.OnSkip.RemoveAllListeners();
             _articleData.DestroyArticle();
+
+            if (ShowWorriedMessageBetweenArticles()) return;
         }
 
         if (!_levelStarted)
@@ -409,7 +385,6 @@ public class LevelManager : Singleton<LevelManager>
             _progressTracker.UpdateValue();
             _articleObject = Instantiate(_articlePrefab, _articleFeed.transform);
             _articleData = _articleObject.GetComponent<ArticleGameObject>();
-            _articleData.OnSkip.AddListener(ShowNextArticle);
             ArticleData data = Instantiate(_levels[_currentLevel][_currentArticle]);
 
 #if UNITY_EDITOR

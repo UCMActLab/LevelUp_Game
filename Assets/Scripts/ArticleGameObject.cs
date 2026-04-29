@@ -115,6 +115,8 @@ public class ArticleGameObject : MonoBehaviour
         buttons[buttons.Length-1].onClick.AddListener(() =>
         {
             _hasSharedArticle = true;
+
+            OnShare.Invoke();
             
             _convManager.ChangeToMainChat();
 
