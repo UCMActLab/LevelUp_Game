@@ -303,14 +303,6 @@ public class LevelManager : Singleton<LevelManager>
         _faderTextHolder.StartFade(1.0f, 1.0f, 0.0f);
     }
 
-    //public void SkipArticleIfCantShare()
-    //{
-    //    if(_articleData.HasSharedWithAllGroups)
-    //    {
-    //        ShowNextArticle();
-    //    }
-    //}
-
     public void ShowTest(Test test)
     {
         _testLogic.SetTest(test, true);

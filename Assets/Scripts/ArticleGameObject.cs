@@ -1,14 +1,11 @@
-using Ink.Runtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 using UnityEngine.Events;
 using UnityEngine.Localization.Components;
 using System.Collections;
 using Unity.Services.Analytics;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
-using System.Data;
 
 public class ArticleGameObject : MonoBehaviour
 {
@@ -39,11 +36,6 @@ public class ArticleGameObject : MonoBehaviour
     [SerializeField]
     private float _maxTextSize = 120;
 
-    //public event Action<Choice> OnReadChoice;
-    //public event Action<Choice> OnSkipChoice;
-    //public event Action<Choice> OnShareChoice;
-    //public event Action<Choice> AnswerClicked;
-
     bool _hasReadArticle;
     public bool HasReadArticle {  get { return _hasReadArticle; } }
 
@@ -57,7 +49,6 @@ public class ArticleGameObject : MonoBehaviour
     [HideInInspector]
     public UnityEvent OnShare;
 
-    // InkConversationManager _inkConvManager = null;
     ChatManager _convManager = null;
 
     ArticleFeed _articleFeed = null;
@@ -95,7 +86,6 @@ public class ArticleGameObject : MonoBehaviour
     {
         _articleFeed = GetComponentInParent<ArticleFeed>();
 
-        // _inkConvManager = FindAnyObjectByType<InkConversationManager>();
         _convManager = FindAnyObjectByType<ChatManager>();
 
         _articleBody.SetActive(false);
@@ -122,22 +112,26 @@ public class ArticleGameObject : MonoBehaviour
         _shareArticleButtons = _convManager.SpawnShareButtons();
         Button[] buttons = _shareArticleButtons.GetComponentsInChildren<Button>();
 
-        buttons[0].onClick.AddListener(() =>
+        buttons[buttons.Length-1].onClick.AddListener(() =>
         {
+            _hasSharedArticle = true;
+            
             _convManager.ChangeToMainChat();
-            // LevelManager.Instance.ShowNextArticle();
-            // EnableButtonsInteraction(false);
+
+            LevelManager.Instance.ShowNextArticle();
             
             Destroy(_shareArticleButtons);
             _shareArticleButtons = null;
+
         });
 
-        for (int i = 1; i <  buttons.Length; i++) {
+        // nos saltamos el último botón, que es el de no compartir
+        for (int i = 0; i <  buttons.Length - 1; i++) {
             Button bt = buttons[i];
 
-            if (i < numGroups + 1)
+            if (i < numGroups)
             {
-                bt.interactable = !_sharedWithGroups[i - 1];
+                bt.interactable = !_sharedWithGroups[i];
                 if (bt.interactable)
                 {
                     AddShareArticleListenerToButton(i, bt);
@@ -147,14 +141,7 @@ public class ArticleGameObject : MonoBehaviour
             {
                 bt.gameObject.SetActive(false);
             }
-
-            //int tempInt = i;
-            //Conversation conversation = null;
-            //if(Data.conversation != null && Data.conversation.Count > i - 1) { conversation = Data.conversation[i - 1]; }
-            //bt.onClick.AddListener(() => ShareArticle(tempInt, _shareArticleButtons, conversation));
         }
-
-        // OnShare.Invoke();
     }
 
     public void AddShareArticleListenerToButton(int group, Button button)
@@ -162,7 +149,7 @@ public class ArticleGameObject : MonoBehaviour
         button.onClick.RemoveAllListeners();
         int tempInt = group;
         Conversation conversation = null;
-        if (Data.conversation != null && Data.conversation.Count > group - 1) { conversation = Data.conversation[group - 1]; }
+        if (Data.conversation != null && Data.conversation.Count > group) { conversation = Data.conversation[group]; }
         button.onClick.AddListener(() => ShareArticle(tempInt, _shareArticleButtons, conversation));
     }
 
@@ -224,10 +211,10 @@ public class ArticleGameObject : MonoBehaviour
         };
         AnalyticsManager.Instance.SubmitEvent(newEvent);
 
-        _convManager.ChangeGroup(groupID);
+        _convManager.ChangeGroup(groupID + 1);
         // Data should be an instance
 
-        _sharedWithGroups[groupID - 1] = true;
+        _sharedWithGroups[groupID] = true;
         Data.sharedWithGroups = _sharedWithGroups;
         _convManager.SendArticle(Data);
 
