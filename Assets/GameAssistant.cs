@@ -165,9 +165,14 @@ public class GameAssistant : MonoBehaviour
             _messageText.SetText(next.Text);
             _message.SetActive(true);
             _okAssitantButton.gameObject.SetActive(true); // Usamos el botón estándar
-            
-            _messageAnimator.SetTrigger("NewMessage");
-            if(_message.TryGetComponent(out RebuildLayoutOnStart rebuild)) rebuild.RebuildAllLayouts();
+
+            // reseteamos antess de animar la cajita
+            RectTransform rect = _message.GetComponent<RectTransform>();
+            rect.localRotation = Quaternion.identity;
+            rect.localScale = Vector3.one;
+
+            _messageAnimator.Play("NewMessageTutorial", 0, 0f);
+            if (_message.TryGetComponent(out RebuildLayoutOnStart rebuild)) rebuild.RebuildAllLayouts();
         }
         else
         {
