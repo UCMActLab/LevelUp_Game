@@ -13,8 +13,8 @@ public class ArticleData : ScriptableObject
     public string ID;
     public string theme;
 
-    public bool canBeSharedWithGroups;
-    public int numGroupsToShareWith;
+    public bool canBeSharedWithGroups; // true -> hay grupos | false -> solo se "valida", no se envía
+    public int numGroupsToShareWith; // > 0 si hay grupos | 
 
     public ConversationType convType = ConversationType.NONE;
     public System.Collections.Generic.List<Conversation> conversation;
