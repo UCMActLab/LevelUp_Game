@@ -175,18 +175,21 @@ public class ArticleGameObject : MonoBehaviour
     {
         if (_skipped) return;
 
-        // ANIMACION ARTICULO 
+        // ANIMACION 
         if(IsTrue)
         {
             GetComponent<ElectionVFX>().setGradient(false);
             GetComponent<Animator>().SetTrigger("incorrect"); // CONTESTA MAL
+            gButtonSkip.GetComponent<Animator>().SetTrigger("incorrect");
+            gButtonSkip.GetComponent<ElectionVFX>().setGradient(false);
                 
         }
         else
         {
             GetComponent<ElectionVFX>().setGradient(true);
             GetComponent<Animator>().SetTrigger("correct"); // CONTESTA BIEN
-
+            gButtonSkip.GetComponent<Animator>().SetTrigger("correct");
+            gButtonSkip.GetComponent<ElectionVFX>().setGradient(true);
         }
 
         _skipped = true;
@@ -487,7 +490,8 @@ public class ArticleGameObject : MonoBehaviour
         // on animation end -> shownextarticle
 
         _shareButton.onClick.RemoveAllListeners();
-        _shareButton.onClick.AddListener(() => GetComponent<Animator>().SetTrigger("Share"));
+        //_shareButton.onClick.AddListener(() => GetComponent<Animator>().SetTrigger("Share"));
+        _shareButton.onClick.AddListener(sharebuttonVFX);
     }
 
     public void VerifyArticleSharing()
@@ -516,27 +520,22 @@ public class ArticleGameObject : MonoBehaviour
     }
     #endregion
 
-
-    public void setVFX(bool correct)
+    public void sharebuttonVFX()
     {
-        if (correct)
+        // ANIMACION 
+        if (IsTrue)
         {
-            if(GetComponent<Animator>())
-            {
-                GetComponent<Animator>().SetTrigger("correct");
-                GetComponent<ElectionVFX>().setGradient(correct);
-                Debug.Log("Hola!!!");
-            }
-            //gArticleBackground.GetComponent<Animator>().SetTrigger("x");
+            GetComponent<ElectionVFX>().setGradient(true);
+            GetComponent<Animator>().SetTrigger("correct"); // CONTESTA BIEN
+            gButtonShare.GetComponent<Animator>().SetTrigger("correct");
+            gButtonShare.GetComponent<ElectionVFX>().setGradient(true);
         }
         else
         {
-            if (GetComponent<Animator>())
-            {
-                GetComponent<Animator>().SetTrigger("incorrect");
-                GetComponent<ElectionVFX>().setGradient(!correct);
-                Debug.Log("hilala!!!");
-            }
+            GetComponent<ElectionVFX>().setGradient(false);
+            GetComponent<Animator>().SetTrigger("incorrect"); // CONTESTA MAL
+            gButtonShare.GetComponent<Animator>().SetTrigger("incorrect");
+            gButtonShare.GetComponent<ElectionVFX>().setGradient(false);
         }
     }
 }

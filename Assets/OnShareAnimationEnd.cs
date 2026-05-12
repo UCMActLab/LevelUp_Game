@@ -14,7 +14,8 @@ public class OnShareAnimationEnd : StateMachineBehaviour
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         base.OnStateExit(animator, stateInfo, layerIndex);
-        animator.GetComponent<ArticleGameObject>().VerifyArticleSharing();
+
+        animator.GetComponentInParent<ArticleGameObject>().VerifyArticleSharing();
     }
 
 }
