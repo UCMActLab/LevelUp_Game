@@ -61,6 +61,18 @@ public class ArticleGameObject : MonoBehaviour
     int _numGroupsToShareWith;
 
     GameObject _shareArticleButtons = null;
+
+    [Header("Gradients")]
+    [SerializeField] GradientObject correctA;
+    [SerializeField] GradientObject correctB;
+    [SerializeField] GradientObject incorrectA;
+    [SerializeField] GradientObject incorrectB;
+
+    [Header("GameObjects")]
+    [SerializeField] GameObject gButtonSkip;
+    [SerializeField] GameObject gButtonShare;
+    [SerializeField] GameObject gArticleBackground;
+
     public bool IsTrue { get { return Data.isTrue; } }
 
     public bool[] HasSharedWithGroups
@@ -163,8 +175,15 @@ public class ArticleGameObject : MonoBehaviour
     {
         if (_skipped) return;
 
+        // ANIMACION ARTICULO 
         GetComponent<Animator>().SetTrigger("Skip");
+
+        // ANIMACION BOTON
+        //butSk.GetComponent<Animator>().SetTrigger("Correct");
+        Debug.Log("madremia");
+        
         _skipped = true;
+
 
         StartCoroutine(SkipArticle_Wait());
     }
@@ -489,4 +508,28 @@ public class ArticleGameObject : MonoBehaviour
         _shareButton.onClick.AddListener(() => OnShareWithGroups(3));
     }
     #endregion
+
+
+    public void setVFX(bool correct)
+    {
+        if (correct)
+        {
+            if(GetComponent<Animator>())
+            {
+                GetComponent<Animator>().SetTrigger("correct");
+                GetComponent<ElectionVFX>().setGradient(correct);
+                Debug.Log("Hola!!!");
+            }
+            //gArticleBackground.GetComponent<Animator>().SetTrigger("x");
+        }
+        else
+        {
+            if (GetComponent<Animator>())
+            {
+                GetComponent<Animator>().SetTrigger("incorrect");
+                GetComponent<ElectionVFX>().setGradient(!correct);
+                Debug.Log("hilala!!!");
+            }
+        }
+    }
 }
