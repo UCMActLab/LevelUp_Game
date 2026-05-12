@@ -176,12 +176,19 @@ public class ArticleGameObject : MonoBehaviour
         if (_skipped) return;
 
         // ANIMACION ARTICULO 
-        GetComponent<Animator>().SetTrigger("Skip");
+        if(IsTrue)
+        {
+            GetComponent<ElectionVFX>().setGradient(false);
+            GetComponent<Animator>().SetTrigger("incorrect"); // CONTESTA MAL
+                
+        }
+        else
+        {
+            GetComponent<ElectionVFX>().setGradient(true);
+            GetComponent<Animator>().SetTrigger("correct"); // CONTESTA BIEN
 
-        // ANIMACION BOTON
-        //butSk.GetComponent<Animator>().SetTrigger("Correct");
-        Debug.Log("madremia");
-        
+        }
+
         _skipped = true;
 
 

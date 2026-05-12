@@ -15,7 +15,6 @@ public class ElectionVFX : MonoBehaviour
 
     public void setGradient(bool g)
     {
-        Debug.Log("que pasa???????????");
         if(g) GetComponent<DAGradient>().Gradient = grCorrect.gradient;
         else GetComponent<DAGradient>().Gradient = grIncorrect.gradient;
     }
