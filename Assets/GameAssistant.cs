@@ -72,6 +72,7 @@ public class GameAssistant : MonoBehaviour
     // this button is for handling events when showing Messages
     [SerializeField] private Button _okAssitantButtonOneShots = null;
     // [SerializeField] private Button _assistantHeadButton = null;
+    [SerializeField] private GameObject _buttonBackground = null;
 
     [Header("Parameters")]
     [SerializeField] float noActionTimeUntilAdvice = 1.0f;
@@ -189,6 +190,7 @@ public class GameAssistant : MonoBehaviour
             _messageText.SetText(next.Text);
             _message.SetActive(true);
             _okAssitantButton.gameObject.SetActive(true); // Usamos el botón estándar
+            _buttonBackground.SetActive(true);
 
             // reseteamos antess de animar la cajita
             RectTransform rect = _message.GetComponent<RectTransform>();
@@ -205,6 +207,7 @@ public class GameAssistant : MonoBehaviour
             _isDisplayingQueue = false;
             _message.SetActive(false);
             _okAssitantButton.gameObject.SetActive(false); // Usamos el botón estándar
+            _buttonBackground.SetActive(false);
             _keepTrackOfTime = true;
             _timer = 0.0f;
         }
