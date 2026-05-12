@@ -178,6 +178,8 @@ public class GameAssistant : MonoBehaviour
     {
         if (_messageQueue.Count > 0)
         {
+            // ver cuándo es el primer mensaje
+
             _isDisplayingQueue = true;
             _keepTrackOfTime = false;
             
@@ -198,6 +200,8 @@ public class GameAssistant : MonoBehaviour
         }
         else
         {
+            // se acaban los mensajes
+
             _isDisplayingQueue = false;
             _message.SetActive(false);
             _okAssitantButton.gameObject.SetActive(false); // Usamos el botón estándar

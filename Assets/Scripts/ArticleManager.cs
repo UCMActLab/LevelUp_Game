@@ -63,9 +63,7 @@ public class ArticleManager : Singleton<ArticleManager>
         base.Awake();
         ArticlesCreated = false;
 
-#if UNITY_EDITOR
-        _loadImages = false;
-#else 
+#if !UNITY_EDITOR
         _loadImages = true;
 #endif
     }
@@ -137,7 +135,7 @@ public class ArticleManager : Singleton<ArticleManager>
                 string headline = data.Headline.Trim(' ');
                 string body = data.Body.Trim(' ');
 
-                if (headline == string.Empty || body == string.Empty) { continue; }
+                // if (headline == string.Empty || body == string.Empty) { continue; }
 
                 article.ID = "art_" + i.ToString();
                 article.isTrue = data.isTrue;
