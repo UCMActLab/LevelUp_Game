@@ -153,13 +153,22 @@ public class ArticleManager : Singleton<ArticleManager>
                     }
                     else
                     {
-                        string imageID = data.Multimedia.Replace("https://drive.google.com/file/d/", "");
-                        imageID = imageID.Replace("/view?usp=sharing", "");
-                        imageID = imageID.Replace("/view?usp=drive_link", "");
-                        imageID = imageID.Replace("image:", "");
+                        string finalURL = null;
 
-                        string driveURL = "https://levelup-game.fundacionmaldita.es/api/proxy/gdrive?fileId=" + imageID;
-                        UnityWebRequest request = UnityWebRequestTexture.GetTexture(driveURL);
+                        if (data.Multimedia.Contains("drive.google.com/file/d/"))
+                        {
+                            string imageID = data.Multimedia.Replace("https://drive.google.com/file/d/", "");
+                            imageID = imageID.Replace("/view?usp=sharing", "");
+                            imageID = imageID.Replace("/view?usp=drive_link", "");
+                            imageID = imageID.Replace("image:", "");
+                            finalURL = "https://levelup-game.fundacionmaldita.es/api/proxy/gdrive?fileId=" + imageID;
+                        }
+                        else
+                        {
+                            finalURL = data.Multimedia;
+                        }
+
+                        UnityWebRequest request = UnityWebRequestTexture.GetTexture(finalURL);
 
                         yield return request.SendWebRequest();
 
@@ -179,14 +188,14 @@ public class ArticleManager : Singleton<ArticleManager>
                     }
                 }
 
-                string source = data.Source;
-                if (source.Length < 3)
-                {
-                    if (data.isTrue) { source = "newspaper"; }
-                    else source = "social";
-                }
+                //string source = data.Source;
+                //if (source.Length < 3)
+                //{
+                //    if (data.isTrue) { source = "newspaper"; }
+                //    else source = "social";
+                //}
 
-                article.companyName = source;
+                article.companyName = data.Source;
                 if (data.Conversation.Count != 0)
                 {
                     article.conversation = new List<Conversation>();
@@ -206,7 +215,6 @@ public class ArticleManager : Singleton<ArticleManager>
                             conversation.Messages.Add(msg);
                         }
 
-                        // Al final sí que hacemos distinción por grupos... hihi, tengo que decírselo a andrea
                         article.conversation.Add(conversation);
                     }
                 }
