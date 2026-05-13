@@ -190,6 +190,7 @@ public class ArticleGameObject : MonoBehaviour
             GetComponent<Animator>().SetTrigger("correct"); // CONTESTA BIEN
             gButtonSkip.GetComponent<Animator>().SetTrigger("correct");
             gButtonSkip.GetComponent<ElectionVFX>().setGradient(true);
+            gButtonSkip.GetComponent<ElectionVFX>().setParticles();
         }
 
         _skipped = true;
@@ -529,6 +530,7 @@ public class ArticleGameObject : MonoBehaviour
             GetComponent<Animator>().SetTrigger("correct"); // CONTESTA BIEN
             gButtonShare.GetComponent<Animator>().SetTrigger("correct");
             gButtonShare.GetComponent<ElectionVFX>().setGradient(true);
+            gButtonShare.GetComponent<ElectionVFX>().setParticles();
         }
         else
         {

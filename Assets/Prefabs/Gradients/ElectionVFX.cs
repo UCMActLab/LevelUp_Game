@@ -7,6 +7,8 @@ public class ElectionVFX : MonoBehaviour
     GradientObject grCorrect;
     [SerializeField]
     GradientObject grIncorrect;
+    [SerializeField]
+    GameObject particles;
 
 
     private void Start()
@@ -18,4 +20,11 @@ public class ElectionVFX : MonoBehaviour
         if(g) GetComponent<DAGradient>().Gradient = grCorrect.gradient;
         else GetComponent<DAGradient>().Gradient = grIncorrect.gradient;
     }
+
+    public void setParticles()
+    {
+        if(particles)
+            particles.SetActive(true);
+    }
+
 }
