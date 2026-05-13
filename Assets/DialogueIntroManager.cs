@@ -23,19 +23,19 @@ public class DialogueIntroManager : MonoBehaviour
 
     private void SetUp()
     {
-        _titleDialogueIndex = 0;
+        //_titleDialogueIndex = 0;
         _bodyDialogueIndex = 0;
 
-        _titleDialogue.SetSettings(_titleSettings[_titleDialogueIndex]);
+        //_titleDialogue.SetSettings(_titleSettings[_titleDialogueIndex]);
         _bodyDialogue.SetSettings(_bodySettings[_bodyDialogueIndex]);
 
-        _titleDialogue.onLineEnded.AddListener(_bodyDialogue.ShowText);
+        //_titleDialogue.onLineEnded.AddListener(_bodyDialogue.ShowText);
 
         _bodyDialogue.onLineEnded.AddListener(() => SetFeedbackOkButton(true));
         _bodyDialogue.onDialogueEnd.AddListener(AdvanceDialogues);
 
         // _titleDialogue.waitForInteraction = false;
-        _titleDialogue.waitTimeForNext = 0.0f;
+        //_titleDialogue.waitTimeForNext = 0.0f;
         // _bodyDialogue.waitForInteraction = false;
     }
 
