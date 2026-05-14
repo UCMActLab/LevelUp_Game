@@ -74,8 +74,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4283848528
-  m_fontColor: {r: 0.31238872, g: 0.33962262, b: 0.33630142, a: 1}
+    rgba: 4284434944
+  m_fontColor: {r: 0, g: 0.2901961, b: 0.37254903, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -176,8 +176,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1130.4673, y: -330}
-  m_SizeDelta: {x: 2260.9346, y: 330}
+  m_AnchoredPosition: {x: 805.8394, y: -330}
+  m_SizeDelta: {x: 1611.6788, y: 330}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &8902967001767601659
 CanvasRenderer:
@@ -364,15 +364,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: OK
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d5485192381c77a4caab9fecf68c6777, type: 2}
-  m_sharedMaterial: {fileID: -4961238897438906590, guid: d5485192381c77a4caab9fecf68c6777, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 825a990cd6f137e4f8f9752ef6b93808, type: 2}
+  m_sharedMaterial: {fileID: 8359816148280568497, guid: 825a990cd6f137e4f8f9752ef6b93808, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4283848528
-  m_fontColor: {r: 0.31238872, g: 0.33962262, b: 0.33630142, a: 1}
+    rgba: 4284434944
+  m_fontColor: {r: 0, g: 0.2901961, b: 0.37254903, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -674,6 +674,7 @@ GameObject:
   - component: {fileID: 5179155031763050126}
   - component: {fileID: 4734579986900271383}
   - component: {fileID: 3025398299958452}
+  - component: {fileID: 6135959557284023202}
   m_Layer: 5
   m_Name: OK_Assistant_OneShots
   m_TagString: Untagged
@@ -861,6 +862,51 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hand: {fileID: 2057693223933395343}
   timeHand: 3
+--- !u!114 &6135959557284023202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3671414413945993383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a449e8c2392630345a61b822d5511db1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blendMode: 1
+  intensity: 0.447
+  angle: 0
+  gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 0.5764706, g: 1, b: 0.7254902, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
 --- !u!1 &5012678146942787743
 GameObject:
   m_ObjectHideFlags: 0
@@ -1014,6 +1060,7 @@ GameObject:
   - component: {fileID: 4108223709935745163}
   - component: {fileID: 1677958979504984438}
   - component: {fileID: 1877771389618394635}
+  - component: {fileID: 2912148403249289927}
   m_Layer: 5
   m_Name: OK_Assistant
   m_TagString: Untagged
@@ -1201,6 +1248,51 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hand: {fileID: 442534211917506565}
   timeHand: 3
+--- !u!114 &2912148403249289927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5580533866955047376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a449e8c2392630345a61b822d5511db1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blendMode: 1
+  intensity: 0.447
+  angle: 0
+  gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 0.5764706, g: 1, b: 0.7254902, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
 --- !u!1 &7722278609308543455
 GameObject:
   m_ObjectHideFlags: 0
@@ -1234,8 +1326,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1130.4673, y: 0}
-  m_SizeDelta: {x: 2260.9346, y: 0}
+  m_AnchoredPosition: {x: 805.8394, y: 0}
+  m_SizeDelta: {x: 1611.6788, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &453239617597544960
 MonoBehaviour:
