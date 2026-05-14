@@ -135,7 +135,7 @@ public class ArticleManager : Singleton<ArticleManager>
                 string headline = data.Headline.Trim(' ');
                 string body = data.Body.Trim(' ');
 
-                // if (headline == string.Empty || body == string.Empty) { continue; }
+                if (headline == string.Empty && body == string.Empty && data.Multimedia == string.Empty) { continue; }
 
                 article.ID = "art_" + i.ToString();
                 article.isTrue = data.isTrue;
