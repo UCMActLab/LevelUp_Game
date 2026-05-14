@@ -502,7 +502,7 @@ public class LevelManager : Singleton<LevelManager>
     {
         PostTotalScoreToDatabase();
 
-        SceneChanger.Instance.ChangeScene("EndGame");
+        SceneChanger.Instance.ChangeScene("EndLevels");
 
         AnalyticsManager.Instance.SubmitEvent("FreeMode_End");
     }

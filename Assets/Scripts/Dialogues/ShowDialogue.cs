@@ -11,6 +11,7 @@ public class ShowDialogue : MonoBehaviour
 
     [Header("Parameters")]
     [SerializeField, Range(0.0f, 1.0f)] float _volume = 0.5f;
+    [SerializeField] bool _activateOnEnable = true;
 
     [Header("Writing Sounds")]
     [SerializeField] FMODUnity.EventReference _writeCharacterEvent;
@@ -82,8 +83,6 @@ public class ShowDialogue : MonoBehaviour
                 string currentMessage = _settings.texts[_currentText - 1].GetLocalizedString();
                 bool isLastMessage = _currentText >= _settings.texts.Count;
 
-                if (!isLastMessage) currentMessage += "...";
-
                 _text.text = currentMessage;
             }
 
@@ -110,7 +109,7 @@ public class ShowDialogue : MonoBehaviour
 
     private void OnEnable()
     {
-        ShowText();
+        if(_activateOnEnable) ShowText();
     }
 
     private void EndDialog()
@@ -173,8 +172,6 @@ public class ShowDialogue : MonoBehaviour
 
         int alphaIndex = 0;
         string displayText = "";
-
-        if (!isLastMessage) messageToShow += "...";
 
         foreach (char c in messageToShow.ToCharArray())
         {

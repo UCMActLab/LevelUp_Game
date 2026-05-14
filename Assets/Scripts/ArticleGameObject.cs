@@ -194,23 +194,6 @@ public class ArticleGameObject : MonoBehaviour
         }
 
         _skipped = true;
-
-
-        StartCoroutine(SkipArticle_Wait());
-    }
-
-    IEnumerator SkipArticle_Wait()
-    {
-        yield return new WaitForSeconds(1.25f);
-
-        CustomEvent newEvent = new CustomEvent("Skip_Action")
-        {
-            {"IsTrue", Data.isTrue },
-            {"NewsID", Data.ID }
-        };
-        AnalyticsManager.Instance.SubmitEvent(newEvent);
-
-        InvokeOnSkip();
     }
 
     public void InvokeOnSkip()
