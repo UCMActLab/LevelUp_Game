@@ -9,7 +9,7 @@ public class ShowDialogue : MonoBehaviour
     public bool waitForInteraction = false;
     public float waitTimeForNext = 1.5f;
 
-    [Header("Paremeters")]
+    [Header("Parameters")]
     [SerializeField, Range(0.0f, 1.0f)] float _volume = 0.5f;
 
     [Header("Writing Sounds")]
@@ -28,10 +28,8 @@ public class ShowDialogue : MonoBehaviour
 
     private bool _textEnded;
     private bool _canGoNext = false;
-    private bool _skipCurrent = false;
 
     DialogSettings _settings;
-
     int _currentText;
 
     private const string HTML_ALPHA_NULL = "<alpha=#00>";
@@ -52,16 +50,16 @@ public class ShowDialogue : MonoBehaviour
 
     public void Update()
     {
-        if ((_textEnded && ((waitForInteraction && _canGoNext) || !waitForInteraction)) || _skipCurrent)
+        // Avanza al siguiente texto si ha terminado de escribirse y se permite avanzar
+        if (_textEnded && ((waitForInteraction && _canGoNext) || !waitForInteraction))
         {
-            StopAllCoroutines();
             ShowText();
         }
     }
 
-    public void QuitSkip()
+    // He renombrado QuitSkip a CleanAlphaTags ya que describe mejor su función actual
+    public void CleanAlphaTags()
     {
-        _skipCurrent = false;
         _text.text = _text.text.Replace(HTML_ALPHA_NULL, string.Empty);
         _text.text = _text.text.Replace(HTML_ALPHA_FULL, string.Empty);
     }
@@ -73,7 +71,46 @@ public class ShowDialogue : MonoBehaviour
 
     public void SkipCurrentText()
     {
-        _skipCurrent = true;
+        // 1. Si la animación NO ha terminado, mostramos todo el texto de golpe
+        if (!_textEnded)
+        {
+            StopAllCoroutines(); // Detiene WriteNewText y AnimText
+
+            // Construimos el texto completo basándonos en el índice actual
+            if (_currentText > 0 && _currentText <= _settings.texts.Count)
+            {
+                string currentMessage = _settings.texts[_currentText - 1].GetLocalizedString();
+                bool isLastMessage = _currentText >= _settings.texts.Count;
+
+                if (!isLastMessage) currentMessage += "...";
+
+                _text.text = currentMessage;
+            }
+
+            CleanAlphaTags(); // Limpiamos cualquier etiqueta alpha sobrante de la animación
+
+            _textEnded = true;
+            _canGoNext = false; // Evitamos que salte de texto automáticamente si requiere interacción
+
+            PlayEndWritingSound();
+            onLineEnded.Invoke();
+        }
+        // 2. Si la animación YA terminó (o lo acabamos de saltar), avanzamos al siguiente texto
+        else
+        {
+            _canGoNext = true;
+
+            // Si el diálogo no estaba configurado para esperar interacción, forzamos el avance visual aquí
+            if (!waitForInteraction)
+            {
+                ShowText();
+            }
+        }
+    }
+
+    private void OnEnable()
+    {
+        ShowText();
     }
 
     private void EndDialog()
@@ -87,28 +124,25 @@ public class ShowDialogue : MonoBehaviour
         StopAllCoroutines();
         _textEnded = false;
         _canGoNext = false;
-        if(_currentText >= _settings.texts.Count)
+
+        if (_currentText >= _settings.texts.Count)
         {
-            QuitSkip();
+            CleanAlphaTags();
             EndDialog();
         }
         else
         {
-            // añadir algún tipo de animación ??
             StartCoroutine(WriteNewText(_settings.texts[_currentText++].GetLocalizedString(), _currentText >= _settings.texts.Count));
         }
     }
 
     IEnumerator WriteNewText(string text, bool isLastText)
     {
-        if(_text.text != string.Empty && !_skipCurrent)
+        if (_text.text != string.Empty)
         {
-            //int[] rangeArray = Enumerable.Range(0, _text.text.Length - 1).ToArray();
-            //rangeArray.Shuffle();
-
             string originalText = _text.text.Replace(HTML_ALPHA_NULL, "");
 
-            for(int i = 0; i < originalText.Length; ++i)
+            for (int i = 0; i < originalText.Length; ++i)
             {
                 string displayText = new string(originalText);
                 displayText = displayText.Insert(0, HTML_ALPHA_NULL);
@@ -121,29 +155,15 @@ public class ShowDialogue : MonoBehaviour
             }
         }
 
-        _skipCurrent = false;
         StartCoroutine(AnimText(text, isLastText));
-
     }
 
-    private void PlayWritingSound()
-    {
-        PlaySound(_writeCharacterEvent);
-    }
-
-    private void PlayErasingSound()
-    {
-        PlaySound(_eraseCharacterEvent);
-    }
-
-    private void PlayEndWritingSound()
-    {
-        PlaySound(_endWritingEvent);
-    }
+    private void PlayWritingSound() { PlaySound(_writeCharacterEvent); }
+    private void PlayErasingSound() { PlaySound(_eraseCharacterEvent); }
+    private void PlayEndWritingSound() { PlaySound(_endWritingEvent); }
 
     private void PlaySound(FMODUnity.EventReference sound)
     {
-        
         FMODUnity.RuntimeManager.PlayOneShot(sound, _volume);
     }
 
@@ -175,7 +195,7 @@ public class ShowDialogue : MonoBehaviour
 
         if (!waitForInteraction)
         {
-            if(!isLastMessage)
+            if (!isLastMessage)
             {
                 yield return new WaitForSeconds(waitTimeForNext / 4);
 

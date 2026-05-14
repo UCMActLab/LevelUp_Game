@@ -4,11 +4,9 @@ using UnityEngine.Events;
 public class DialogueIntroManager : MonoBehaviour
 {
     [Header("ShowDialogue(s)")]
-    [SerializeField] ShowDialogue _titleDialogue;
     [SerializeField] ShowDialogue _bodyDialogue;
 
     [Header("DialogueSettings")]
-    [SerializeField] DialogSettings[] _titleSettings;
     [SerializeField] DialogSettings[] _bodySettings;
 
     [Header("Eventos")]
@@ -18,25 +16,15 @@ public class DialogueIntroManager : MonoBehaviour
     [SerializeField]
     private Animator _okButton = null;
 
-    int _titleDialogueIndex = 0;
     int _bodyDialogueIndex = 0;
 
     private void SetUp()
     {
-        _titleDialogueIndex = 0;
         _bodyDialogueIndex = 0;
 
-        _titleDialogue.SetSettings(_titleSettings[_titleDialogueIndex]);
         _bodyDialogue.SetSettings(_bodySettings[_bodyDialogueIndex]);
 
-        _titleDialogue.onLineEnded.AddListener(_bodyDialogue.ShowText);
-
-        _bodyDialogue.onLineEnded.AddListener(() => SetFeedbackOkButton(true));
         _bodyDialogue.onDialogueEnd.AddListener(AdvanceDialogues);
-
-        // _titleDialogue.waitForInteraction = false;
-        _titleDialogue.waitTimeForNext = 0.0f;
-        // _bodyDialogue.waitForInteraction = false;
     }
 
     public void SetFeedbackOkButton(bool active)
@@ -46,18 +34,15 @@ public class DialogueIntroManager : MonoBehaviour
 
     private void AdvanceDialogues()
     {
-        if(_titleDialogueIndex + 1 >= _titleSettings.Length)
+        if(++_bodyDialogueIndex >= _bodySettings.Length)
         {
             EndDialogues();
             return;
         }
 
-        _titleDialogue.SetSettings(_titleSettings[++_titleDialogueIndex]);
-        _bodyDialogue.SetSettings(_bodySettings[++_bodyDialogueIndex]);
+        _bodyDialogue.SetSettings(_bodySettings[_bodyDialogueIndex]);
 
-        _titleDialogue.ShowText();
         _bodyDialogue.waitForInteraction = true;
-        _bodyDialogue.QuitSkip();
     }
 
     private void EndDialogues()
@@ -68,7 +53,5 @@ public class DialogueIntroManager : MonoBehaviour
     public void StartDialogues()
     {
         SetUp();
-
-        _titleDialogue.ShowText();
     }
 }

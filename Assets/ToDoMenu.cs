@@ -39,6 +39,8 @@ public class ToDoMenu : MonoBehaviour
 
     [Header("GENERAL")]
     [SerializeField]
+    private GameObject _toDoInteractionBlock = null;
+    [SerializeField]
     private TextMeshProUGUI _minimumArticles = null;
     [SerializeField]
     private GameObject _extra = null;
@@ -47,6 +49,16 @@ public class ToDoMenu : MonoBehaviour
     //private TextMeshProUGUI _trueNumber = null;
     //[SerializeField]
     //private TextMeshProUGUI _falseNumber = null;
+
+    private void OnEnable()
+    {
+        _toDoInteractionBlock.SetActive(true);
+    }
+
+    private void OnDisable()
+    {
+        _toDoInteractionBlock.SetActive(false);
+    }
 
     public void SetValues(Quest quest)
     {
