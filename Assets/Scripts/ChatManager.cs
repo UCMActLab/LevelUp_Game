@@ -100,6 +100,7 @@ public class ChatManager : MonoBehaviour
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
         }
+        _shareButtonsParent.parent.gameObject.SetActive(true);
         return gO;
     }
 
@@ -232,6 +233,7 @@ public class ChatManager : MonoBehaviour
         else
         {
             _backToChatButton.SetActive(true);
+            _backToChatButton.transform.parent.parent.gameObject.SetActive(true);
         }
     }
 

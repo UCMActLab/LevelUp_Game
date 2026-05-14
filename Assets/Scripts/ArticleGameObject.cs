@@ -128,6 +128,8 @@ public class ArticleGameObject : MonoBehaviour
         {
             _hasSharedArticle = true;
 
+            buttons[buttons.Length - 1].transform.parent.parent.parent.gameObject.SetActive(false);
+
             OnShare.Invoke();
             
             _convManager.ChangeToMainChat();
@@ -165,6 +167,8 @@ public class ArticleGameObject : MonoBehaviour
         Conversation conversation = null;
         if (Data.conversation != null && Data.conversation.Count > group) { conversation = Data.conversation[group]; }
         button.onClick.AddListener(() => ShareArticle(tempInt, _shareArticleButtons, conversation));
+        button.onClick.AddListener(() => button.transform.parent.parent.parent.parent.gameObject.SetActive(false));
+
     }
 
     /// <summary>

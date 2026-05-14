@@ -65,9 +65,9 @@ public class GameAssistant : MonoBehaviour
     [SerializeField] private GameObject _message = null;
     private TextMeshProUGUI _messageText = null;
     private Animator _messageAnimator = null;
-    
-    // TODO: ADD SOUND TO MESSAGES
 
+    // TODO: ADD SOUND TO MESSAGES
+    [SerializeField] private GameObject _footer = null;
     [SerializeField] private Button _okAssitantButton = null;
     // this button is for handling events when showing Messages
     [SerializeField] private Button _okAssitantButtonOneShots = null;
@@ -530,6 +530,11 @@ public class GameAssistant : MonoBehaviour
 
     private void Update()
     {
+        if(_isDisplayingQueue)
+        {
+            _footer.SetActive(true);
+        }
+
 #if UNITY_EDITOR
         d_hasScrolled.SetText(_hasScrolled.ToString());
         d_isReading.SetText(_readingArticle.ToString());
