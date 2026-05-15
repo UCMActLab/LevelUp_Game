@@ -356,7 +356,7 @@ public class GameAssistant : MonoBehaviour
             // WORRY MAN acerca de esparcir desinformación
 
             // WORRIED/SHARED_FALSE/READED_ARTICLE/0/0
-            List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WORRIED/SHARED_FALSE/READED_ARTICLE/0/", 5);
+            List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WORRIED/SHARED_FALSE/READED_ARTICLE/0/", 2);
 
             WorryAssistant(messages);
 
@@ -430,7 +430,7 @@ public class GameAssistant : MonoBehaviour
             if (_fakeArticlesShared >= _sharedFakeArticles)
             {
                 // WORRY MAN pero con distinto texto diciendo que se está esparciendo desinformación por no leer
-                List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WORRIED/SHARED_FALSE/DOESNT_READ/0/", 3);
+                List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WORRIED/SHARED_FALSE/DOESNT_READ/0/", 2);
 
                 //List<string> messages = new List<string>();
                 //messages.Add("No estás leyendo las cosas antes de compartirlas...");
@@ -443,7 +443,7 @@ public class GameAssistant : MonoBehaviour
             else
             {
                 // WORRY MAN así en general diciendo que hay que fijarse en las fuentes y cómo están escritas las cosas
-                List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WORRIED/SHARED_TRUE/DOESNT_READ/0/", 4);
+                List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WORRIED/SHARED_TRUE/DOESNT_READ/0/", 2);
 
                 //messages.Add("No estás leyendo las cosas antes de compartirlas...");
                 //messages.Add("Tienes suerte de que algunos son ciertos");
@@ -466,7 +466,7 @@ public class GameAssistant : MonoBehaviour
         if (_skipBeforeReadCounter >= _skipBeforeReadArticles)
         {
             // WORRY MAN
-            List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WORRIED/SKIPPED/DOESNT_READ/0/", 3);
+            List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WORRIED/SKIPPED/DOESNT_READ/0/", 2);
 
             //messages.Add("No estás leyendo las cosas antes de saltártelas...");
             //messages.Add("A mí no me engañas jej");

@@ -184,7 +184,7 @@ public class ShowDialogue : MonoBehaviour
             if (alphaIndex % _writeSoundFrequence == 0) { PlayWritingSound(); }
 
             yield return new WaitForSeconds(_settings.speed);
-            if (!isLastMessage && alphaIndex >= messageToShow.Length - 3) break;
+            if (!isLastMessage && alphaIndex >= messageToShow.Length) break;
         }
 
         PlayEndWritingSound();

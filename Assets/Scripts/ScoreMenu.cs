@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -53,7 +54,7 @@ public class ScoreMenu : MonoBehaviour
     [Header("Feedback")]
     [SerializeField] private GameObject _feedback = null;
     [SerializeField] private GameAssistant _assistant = null;
-    private string _feedbackString = string.Empty;
+    private List<string> _feedbackString = new List<string>();
 
     private void OnEnable()
     {
@@ -84,7 +85,9 @@ public class ScoreMenu : MonoBehaviour
         _trueArticlesSlider.value = 0.0f;
         _questionsSlider.value = 0.0f;
 
-        string feedback = string.Empty;
+        List<string> feedback = new List<string>();
+
+        feedback.Add(TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/FIRST"));
 
         bool badReading = quest.done.readedArticles < quest.toDo.toRead;
         bool badTrueSharing = quest.done.identifiedArticles < quest.toDo.articlesToIdentify;
@@ -92,29 +95,20 @@ public class ScoreMenu : MonoBehaviour
 
         if (badReading)
         {
-            List<string> f_aux = TranslationManager.Instance.GetLocalizedStringsList("Translation", "SCORE/FEEDBACK/READ/", 3, 0);
-            foreach (string f in f_aux) {
-                feedback += f + '\n';
-            }
+            feedback.AddRange(TranslationManager.Instance.GetLocalizedStringsList("Translation", "SCORE/FEEDBACK/READ/", 1, 0));
         }
         _readArticlesObject.SetActive(false);
         //SetValues(_readArticlesObject, _readArticlesSlider, _readArticlesText, quest.done.readedArticles, quest.toDo.toRead, 1.25f);
 
         if (badTrueSharing)
         {
-            if (feedback != string.Empty && !badReading) feedback += '\n';
-            feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_TRUE");
+            feedback.Add(TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_TRUE"));
         }
         SetValues(_trueArticlesObject, _trueArticlesSlider, _trueArticlesText, quest.done.identifiedArticles, quest.toDo.articlesToIdentify, 1.25f);
 
         if (badFalseSharing)
         {
-            if (feedback != string.Empty && !badReading) feedback += '\n';
-            List<string> f_aux = TranslationManager.Instance.GetLocalizedStringsList("Translation", "SCORE/FEEDBACK/SHARE_FALSE/", 3, 0);
-            foreach (string f in f_aux)
-            {
-                feedback += f + '\n';
-            }
+            feedback.AddRange(TranslationManager.Instance.GetLocalizedStringsList("Translation", "SCORE/FEEDBACK/SHARE_FALSE/", 1, 0));
         }
         SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, quest.done.falseArticlesSkipped, quest.toDo.falseArticlesToSkip, 1.25f);
 
@@ -170,12 +164,10 @@ public class ScoreMenu : MonoBehaviour
             _neighboursToggleGameObject.SetActive(false);
         }
 
-
         _shareWithText.gameObject.SetActive(groups);
         _rightThemesObject.SetActive(topics);
 
         SetValues(_questionsObject, _questionsSlider, _questionsText, -1, -1, 1.25f);
-
 
         int minimnumScore = ScoreManager.Instance.MinimumScoreToCompleteQuest(quest);
 
@@ -208,7 +200,7 @@ public class ScoreMenu : MonoBehaviour
 
         if (!badFalseSharing && !badTrueSharing && !badReading)
         {
-            feedback = TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/GOOD_JOB");
+            feedback.Add(TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/GOOD_JOB"));
         }
 
         _feedbackString = feedback;
@@ -224,7 +216,7 @@ public class ScoreMenu : MonoBehaviour
 
     public void ShowFeedback()
     {
-        string[] feedback = _feedbackString.Split('\n');
+        string[] feedback = _feedbackString.ToArray();
         _assistant.ShowMessages(feedback, LevelManager.Instance.ShowMessagesEndLevel);
     }
 
