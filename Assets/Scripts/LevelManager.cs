@@ -183,7 +183,6 @@ public class LevelManager : Singleton<LevelManager>
             else if (_queueFalseArticles.Count > 0)
             {
                 data = _queueFalseArticles.Dequeue();
-
             }
             else if (_queueFalseArticles.Count == 0 && _queueTrueArticles.Count == 0)
             {
@@ -194,6 +193,7 @@ public class LevelManager : Singleton<LevelManager>
             }
 
             data.canBeSharedWithGroups = level.articleIsSharedWithGroups;
+            articlesCantRead = data.articleBody == string.Empty ? articlesCantRead + 1 : articlesCantRead;
             if (data.articleBody == string.Empty) articlesToReadInLevel--;
             _levels[_currentLevel].Add(data);
         }

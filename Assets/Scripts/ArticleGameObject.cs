@@ -38,6 +38,8 @@ public class ArticleGameObject : MonoBehaviour
 
     bool _hasReadArticle;
     public bool HasReadArticle {  get { return _hasReadArticle; } }
+    bool _canBeRead;
+    public bool CanBeRead { get { return _canBeRead; } }
 
     bool _hasSharedArticle;
     public bool HasSharedArticle { get { return _hasSharedArticle; } }
@@ -437,12 +439,11 @@ public class ArticleGameObject : MonoBehaviour
         else { 
             _articleTitle.text = Data.articleTitle;
             _bodyText.text = Data.articleBody;
-        } 
-        
-        if(Data.articleBody == string.Empty)
-        {
-            ActivateReadButton(false);
         }
+
+        _canBeRead = Data.articleBody != string.Empty;
+
+        ActivateReadButton(_canBeRead);
 
         _numGroupsToShareWith = data.numGroupsToShareWith;
         

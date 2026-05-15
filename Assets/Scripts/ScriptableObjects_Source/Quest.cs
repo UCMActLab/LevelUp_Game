@@ -58,7 +58,7 @@ public class Quest : ScriptableObject
 
         toDo.toRead = articlesToRead;
 
-        if(thereAreGroups && !groupsHaveThemes)
+        if (thereAreGroups && !groupsHaveThemes)
         {
             Debug.Log(string.Format("MISSION: YOU HAVE TO SEND {0} TO FAMILY, {1} TO FRIENDS, {2} TO NEIGHBOURS", 
                 toDo.toShareWithFamily, toDo.toShareWithFriends, toDo.toShareWithNeighbours));

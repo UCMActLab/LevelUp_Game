@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -91,22 +92,29 @@ public class ScoreMenu : MonoBehaviour
 
         if (badReading)
         {
-            feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/READ");
+            List<string> f_aux = TranslationManager.Instance.GetLocalizedStringsList("Translation", "SCORE/FEEDBACK/READ/", 3, 0);
+            foreach (string f in f_aux) {
+                feedback += f + '\n';
+            }
         }
         _readArticlesObject.SetActive(false);
         //SetValues(_readArticlesObject, _readArticlesSlider, _readArticlesText, quest.done.readedArticles, quest.toDo.toRead, 1.25f);
 
         if (badTrueSharing)
         {
-            if (feedback != string.Empty) feedback += '\n';
+            if (feedback != string.Empty && !badReading) feedback += '\n';
             feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_TRUE");
         }
         SetValues(_trueArticlesObject, _trueArticlesSlider, _trueArticlesText, quest.done.identifiedArticles, quest.toDo.articlesToIdentify, 1.25f);
 
         if (badFalseSharing)
         {
-            if (feedback != string.Empty) feedback += '\n';
-            feedback += TranslationManager.Instance.GetLocalizedStringValue("Translation", "SCORE/FEEDBACK/SHARE_FALSE");
+            if (feedback != string.Empty && !badReading) feedback += '\n';
+            List<string> f_aux = TranslationManager.Instance.GetLocalizedStringsList("Translation", "SCORE/FEEDBACK/SHARE_FALSE/", 3, 0);
+            foreach (string f in f_aux)
+            {
+                feedback += f + '\n';
+            }
         }
         SetValues(_falseArticlesObject, _falseArticlesSlider, _falseArticlesText, quest.done.falseArticlesSkipped, quest.toDo.falseArticlesToSkip, 1.25f);
 

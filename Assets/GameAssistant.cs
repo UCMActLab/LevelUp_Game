@@ -312,7 +312,7 @@ public class GameAssistant : MonoBehaviour
 
     private void OnArticleSkip()
     {
-        if (_readingArticle || !_articleData.HasReadArticle)
+        if ((_readingArticle || !_articleData.HasReadArticle) && _articleData.CanBeRead)
         {
             SkippedBeforeReading();
         }
