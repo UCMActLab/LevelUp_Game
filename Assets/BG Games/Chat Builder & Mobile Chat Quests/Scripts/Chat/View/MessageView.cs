@@ -37,6 +37,15 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
             }
 
             _messageLocalized.StringReference.SetReference(table, message);
+
+            // VFX
+            if (GetComponent<ElectionVFX>())
+            {
+                if (isArticleTrue)
+                    GetComponent<ElectionVFX>().setParticles();
+
+                GetComponent<ElectionVFX>().setGradient(isArticleTrue);
+            }
         }
 
         public void Setup(string name, string message, bool isArticleTrue)
@@ -48,6 +57,15 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
                 _nameText.SetText(name);
             }
             _messageText.SetText(message);
+
+            // VFX
+            if (GetComponent<ElectionVFX>())
+            {
+                if(isArticleTrue)
+                    GetComponent<ElectionVFX>().setParticles();
+
+                    GetComponent<ElectionVFX>().setGradient(isArticleTrue);
+            }
         }
     }
 }
