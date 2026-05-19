@@ -25,98 +25,99 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.System
 
         public event Action SpawnedMessage;
 
-        public MessageView SpawnMessage(SenderType senderType, string name, string message, Transform chat, Sprite sprite = null)
-        {
-            var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
-            if(chat != null)
-            {
-                if(message.Length > 0)
-                {
-                    var newMessage = Instantiate(prefab, chat);
-                    newMessage.Setup(name, "Translation", message);
-                    if(sprite != null) newMessage.GetComponentInChildren<Image>().sprite = sprite;
+        //    public MessageView SpawnMessage(SenderType senderType, string name, string message, Transform chat, Sprite sprite = null)
+        //    {
+        //        var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
+        //        if(chat != null)
+        //        {
+        //            if(message.Length > 0)
+        //            {
+        //                var newMessage = Instantiate(prefab, chat);
+        //                newMessage.Setup(name, "Translation", message);
+        //                if(sprite != null) newMessage.GetComponentInChildren<Image>().sprite = sprite;
 
-                    SpawnedMessage?.Invoke();
-            
-                    return newMessage;
-                }
-            }
-            return null;
-        }
-    
-        public MessageView SpawnMessage(SenderType senderType, string name, Sprite sprite, Transform chat, Sprite speakerSprite = null)
-        {
-            var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
-            if (chat != null)
-            {
-                var newMessage = Instantiate(prefab, chat);
-                newMessage.Setup(name, sprite);
-                if (speakerSprite != null) newMessage.GetComponentInChildren<Image>().sprite = speakerSprite; 
-                
-                SpawnedMessage?.Invoke();
+        //                SpawnedMessage?.Invoke();
 
-                return newMessage;
-            }
-            return null;
-        }
+        //                return newMessage;
+        //            }
+        //        }
+        //        return null;
+        //    }
 
-        public MessageView SpawnMessageV(SenderType senderType, string name, string video, Transform chat, Sprite sprite = null)
-        {
-            var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
-            if (chat != null)
-            {
-                var newMessage = Instantiate(prefab, chat);
-                newMessage.SetupV(name, video);
-                if (sprite != null) newMessage.GetComponentInChildren<Image>().sprite = sprite;
+        //    public MessageView SpawnMessage(SenderType senderType, string name, Sprite sprite, Transform chat, Sprite speakerSprite = null)
+        //    {
+        //        var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
+        //        if (chat != null)
+        //        {
+        //            var newMessage = Instantiate(prefab, chat);
+        //            newMessage.Setup(name, sprite);
+        //            if (speakerSprite != null) newMessage.GetComponentInChildren<Image>().sprite = speakerSprite; 
 
-                SpawnedMessage?.Invoke();
+        //            SpawnedMessage?.Invoke();
 
-                return newMessage;
-            }
-            return null;
-        }
+        //            return newMessage;
+        //        }
+        //        return null;
+        //    }
 
-        public MessageView SpawnMessage(SenderType senderType, string name, AudioClip audio, Transform chat, Sprite sprite = null)
-        {
-            var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
-            if (chat != null)
-            {
-                var newMessage = Instantiate(prefab, chat);
-                newMessage.Setup(name, audio);
-                if (sprite != null) newMessage.GetComponentInChildren<Image>().sprite = sprite;
+        //    public MessageView SpawnMessageV(SenderType senderType, string name, string video, Transform chat, Sprite sprite = null)
+        //    {
+        //        var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
+        //        if (chat != null)
+        //        {
+        //            var newMessage = Instantiate(prefab, chat);
+        //            newMessage.SetupV(name, video);
+        //            if (sprite != null) newMessage.GetComponentInChildren<Image>().sprite = sprite;
 
-                SpawnedMessage?.Invoke();
+        //            SpawnedMessage?.Invoke();
 
-                return newMessage;
-            }
-            return null;
-        }
+        //            return newMessage;
+        //        }
+        //        return null;
+        //    }
 
-        public MessageView SpawnMessage(SenderType senderType, ArticleData articleData, Transform chat, Sprite sprite = null)
-        {
-            var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
-            if (chat != null)
-            {
-                var newMessage = Instantiate(prefab, chat);
-                newMessage.Setup("", "Translation", HAVEYOUSEENTHIS_KEYWORD[LanguageSelection.chosenLanguage]);
+        //    public MessageView SpawnMessage(SenderType senderType, string name, AudioClip audio, Transform chat, Sprite sprite = null)
+        //    {
+        //        var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
+        //        if (chat != null)
+        //        {
+        //            var newMessage = Instantiate(prefab, chat);
+        //            newMessage.Setup(name, audio);
+        //            if (sprite != null) newMessage.GetComponentInChildren<Image>().sprite = sprite;
 
-                GameObject article = Instantiate(_articlePrefab, newMessage.transform);
-                ArticleGameObject setter = article.GetComponent<ArticleGameObject>();
-                articleData.articleBody = string.Empty;
-                setter.SetArticleData(articleData);
-                setter.DestroyButtons();
+        //            SpawnedMessage?.Invoke();
 
-                SpawnedMessage?.Invoke();
+        //            return newMessage;
+        //        }
+        //        return null;
+        //    }
 
-                return newMessage;
-            }
-            return null;
-        }
-    }
+        //    public MessageView SpawnMessage(SenderType senderType, ArticleData articleData, Transform chat, Sprite sprite = null)
+        //    {
+        //        var prefab = senderType == SenderType.Interlocutor ? _messageInterlocutorViewPrefab : _messagePlayerViewPrefab;
+        //        if (chat != null)
+        //        {
+        //            var newMessage = Instantiate(prefab, chat);
+        //            newMessage.Setup("", "Translation", HAVEYOUSEENTHIS_KEYWORD[LanguageSelection.chosenLanguage]);
 
-    public enum SenderType
-    {
-        Player = 0,
-        Interlocutor = 1
+        //            GameObject article = Instantiate(_articlePrefab, newMessage.transform);
+        //            ArticleGameObject setter = article.GetComponent<ArticleGameObject>();
+        //            articleData.articleBody = string.Empty;
+        //            setter.SetArticleData(articleData);
+        //            setter.DestroyButtons();
+
+        //            SpawnedMessage?.Invoke();
+
+        //            return newMessage;
+        //        }
+        //        return null;
+        //    }
+        //}
+
+        //public enum SenderType
+        //{
+        //    Player = 0,
+        //    Interlocutor = 1
+        //}
     }
 }
