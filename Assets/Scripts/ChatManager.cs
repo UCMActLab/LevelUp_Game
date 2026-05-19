@@ -37,6 +37,8 @@ public class ChatManager : MonoBehaviour
 
     private GameObject _lastSharedArticle = null;
 
+    private ArticleGameObject _currentArticle = null;
+
     [Header("Parameters")]
     [SerializeField, Range(0.0f, 5.0f)] private float _waitingBetweenMessages = 0.6f;
     [SerializeField] private bool _playOnAwake = false;
@@ -76,7 +78,7 @@ public class ChatManager : MonoBehaviour
         StartCoroutine(PopAnimation(newMessage.GetComponent<RectTransform>()));
 
         // TRADUCCIÓN
-        newMessage.Setup("", "Translation", "ARTICLE/PLAYER_MESSAGE");
+        newMessage.Setup("", "Translation", "ARTICLE/PLAYER_MESSAGE", articleData.isTrue);
 
         GameObject prefabToUse = _articlePrefab;
         if (articleData.convType == ConversationType.TUTORIAL) prefabToUse = _tutorialArticlePrefab;
@@ -84,10 +86,10 @@ public class ChatManager : MonoBehaviour
         _lastSharedArticle = Instantiate(prefabToUse, _currentChat.transform);
         // pop animation
         StartCoroutine(PopAnimation(_lastSharedArticle.GetComponent<RectTransform>()));
-        ArticleGameObject setter = _lastSharedArticle.GetComponent<ArticleGameObject>();
+        _currentArticle = _lastSharedArticle.GetComponent<ArticleGameObject>();
         articleData.articleBody = string.Empty;
-        setter.SetArticleData(articleData);
-        setter.DestroyButtons();
+        _currentArticle.SetArticleData(articleData);
+        _currentArticle.DestroyButtons();
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(_currentChat.GetComponent<RectTransform>());
         _scrollRect.verticalNormalizedPosition = 1.0f;
@@ -175,11 +177,11 @@ public class ChatManager : MonoBehaviour
                 MessageView newMessage = Instantiate(_messagePrefab, _currentChat.transform).GetComponent<MessageView>();
                 if(!currentMessages.NeedsTranslation && _currentConversation.Type == ConversationType.NONE)
                 {
-                    newMessage.Setup(currentMessages.Name, currentMessages.GetNextMessage());
+                    newMessage.Setup(currentMessages.Name, currentMessages.GetNextMessage(), _currentArticle.Data.isTrue);
                 }
                 else
                 {
-                    newMessage.Setup(currentMessages.Name, messageTable, currentMessages.GetNextMessage());
+                    newMessage.Setup(currentMessages.Name, messageTable, currentMessages.GetNextMessage(), _currentArticle.Data.isTrue);
                 }
 
                 LayoutRebuilder.ForceRebuildLayoutImmediate(_currentChat.GetComponent<RectTransform>());

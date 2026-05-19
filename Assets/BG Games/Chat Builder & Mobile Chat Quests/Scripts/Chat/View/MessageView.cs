@@ -25,7 +25,7 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
         [SerializeField] private Image _image;
         [SerializeField] private ImageOnFullScreenAdjuster _adjuster;
 
-        public void Setup(string name, string table, string message)
+        public void Setup(string name, string table, string message, bool isArticleTrue)
         {
             if(name != "")
             {
@@ -39,47 +39,15 @@ namespace BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View
             _messageLocalized.StringReference.SetReference(table, message);
         }
 
-        public void Setup(string name, string message)
+        public void Setup(string name, string message, bool isArticleTrue)
         {
+
+
             if (name != "")
             {
                 _nameText.SetText(name);
             }
             _messageText.SetText(message);
-        }
-
-        public void Setup(string name, Sprite spite)
-        {
-            if (spite == null) return;
-
-            if (_nameText != null) _nameText.SetText(name);
-            _imageHolder.SetActive(true);
-            _image.sprite = spite;
-            _adjuster.SetupProportions();
-        }
-
-        public void SetupV(string name, string video)
-        {
-            if (video == null) return;
-
-            if (_nameText != null) _nameText.SetText(name);
-            _videoHolder.SetActive(true);
-            RenderTexture tex = new RenderTexture(1080, 1080, 32);
-
-            _rawImage.texture = tex;
-            _videoPlayer.targetTexture = tex;
-
-            _videoPlayer.url = video;
-        }
-
-        public void Setup(string name, AudioClip audio)
-        {
-            if (audio == null) return;
-
-            if (_nameText != null) _nameText.SetText(name);
-            _audioHolder.SetActive(true);
-
-            _audioSource.clip = audio;
         }
     }
 }
