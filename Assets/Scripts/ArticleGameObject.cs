@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.Localization.Components;
-using System.Collections;
 using Unity.Services.Analytics;
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
 
@@ -407,7 +406,19 @@ public class ArticleGameObject : MonoBehaviour
 
         _companyLogo.sprite = Data.companyLogo;
         _articleImage.sprite = Data.articleImage;
-        _articleImage.gameObject.SetActive(_articleImage.sprite != null);
+
+        bool hasImage = _articleImage.sprite != null;
+
+        if(hasImage)
+        {
+            Button zoomActivation = _articleImage.gameObject.AddComponent<Button>();
+
+            ImageZoomPanel zoomPanel = FindAnyObjectByType<ImageZoomPanel>(FindObjectsInactive.Include);
+
+            if (zoomPanel != null) zoomActivation.onClick.AddListener(() => zoomPanel.ShowImageZoomPanel(_articleImage));
+        }
+
+        _articleImage.gameObject.SetActive(hasImage);
 
         if(_company == null) _company = _companyText.GetComponent<LocalizeStringEvent>();
         if (Data.companyName.ToLower() == "newspaper" ||
