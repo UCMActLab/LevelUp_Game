@@ -329,6 +329,11 @@ public class LevelManager : Singleton<LevelManager>
         return hasMessage;
     }
 
+    private void ShowImmediateFeedback(string[] feedback)
+    {
+        _gameAssistant.ShowMessages(feedback, ShowNextArticle);
+    }
+
     public void ShowNextArticle()
     {
         if(_currentLevel >= _levelsInfo.Count)
@@ -340,16 +345,19 @@ public class LevelManager : Singleton<LevelManager>
 
         if (_articleObject != null)
         {
-            if(!_quests[_currentLevel].EvaluateArticle(_articleData))
+            bool result = _quests[_currentLevel].EvaluateArticle(_articleData);
+            if (!result)
             {
                 _discardedArticlesDuringLevel.Add(_articleData.Data);
             }
 
-            // ScoreManager.Instance.CalculateArticlePoints(_articleData);
+            string[] feedback = _articleData.Data.feedback;
+
             _articleData.OnSkip.RemoveAllListeners();
             _articleData.DestroyArticle();
 
-            if (ShowWorriedMessageBetweenArticles()) return;
+            if (feedback == null && ShowWorriedMessageBetweenArticles()) return;
+            else if (!result && (feedback != null && feedback.Length > 0)) { ShowImmediateFeedback(feedback); return; }
         }
 
         if (!_levelStarted)

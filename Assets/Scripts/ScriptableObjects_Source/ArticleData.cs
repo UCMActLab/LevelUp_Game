@@ -12,6 +12,7 @@ public class ArticleData : ScriptableObject
     public string articleBody;
     public string ID;
     public string theme;
+    public string[] feedback;
 
     public bool canBeSharedWithGroups; // true -> hay grupos | false -> solo se "valida", no se envía
     public int numGroupsToShareWith; // > 0 si hay grupos | 

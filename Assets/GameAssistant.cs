@@ -240,6 +240,8 @@ public class GameAssistant : MonoBehaviour
 
     public void WorryAssistant(List<string> messages)
     {
+        if (_articleData.Data.feedback != null) return;
+
         if (GameAssistantState.BAD != _currentState)
         {
             ChangeState(GameAssistantState.BAD);

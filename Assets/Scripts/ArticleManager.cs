@@ -17,6 +17,7 @@ public struct ArticleJSONData {
     public string Source;
     public string Links;
     public string themes;
+    public string[] ImmediateFeedbacks;
     public List<ConversationJSON> Conversation;
 }
 
@@ -142,6 +143,8 @@ public class ArticleManager : Singleton<ArticleManager>
                 article.articleTitle = headline;
                 article.articleBody = data.Body.Trim(' ');
                 article.theme = data.themes;
+
+                article.feedback = data.ImmediateFeedbacks;
 
                 // article.image = data.Multimedia; TODO: Tratamiento de imágenes
                 Debug.Log("Load Images: " + _loadImages + data.Multimedia);
