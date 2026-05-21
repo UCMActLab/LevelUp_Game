@@ -87,6 +87,11 @@ public class LevelManager : Singleton<LevelManager>
     Queue<ArticleData> _queueTrueArticles;
     Queue<ArticleData> _queueFalseArticles;
 
+    [SerializeField]
+    GameObject _showLevel;
+    [SerializeField]
+    private TextMeshProUGUI _showLevelText = null;
+
     protected override void Awake()
     {
         _destroyOnLoad = true;
@@ -247,6 +252,9 @@ public class LevelManager : Singleton<LevelManager>
         _newLevelText.gameObject.SetActive(true);
         _newLevelText.SetText(string.Format(TranslationManager.Instance.GetLocalizedStringValue("Translation", "CURRENT_LEVEL"), _currentLevel + 1));
 
+        _showLevel.SetActive(true);
+        _showLevelText.SetText(string.Format(TranslationManager.Instance.GetLocalizedStringValue("Translation", "CURRENT_LEVEL"), _currentLevel + 1));
+
         _faderText.StartFade(1.5f, 0.0f, 1.0f);
         _faderText.OnFadeEnd.AddListener(StartLevelAux);
     }
@@ -281,6 +289,9 @@ public class LevelManager : Singleton<LevelManager>
 
     public void ShowEndLevel(int level)
     {
+        _showLevel.SetActive(false);
+
+
         _todoButton.gameObject.SetActive(false);
 
         _fader.StartFade(0.8f, 0.0f, 0.8f);
