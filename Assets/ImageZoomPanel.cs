@@ -14,6 +14,9 @@ public class ImageZoomPanel : MonoBehaviour
     private Vector3 _lastMousePosition;
     private RectTransform _parentRectTransform;
 
+    [SerializeField]
+    GameObject panel;
+
     private void Start()
     {
         // Guardamos la referencia al RectTransform del padre para saber las dimensiones de la pantalla/panel
@@ -128,6 +131,13 @@ public class ImageZoomPanel : MonoBehaviour
 
         _image.sprite = imageToShow.sprite;
 
+        panel.SetActive(true);
         gameObject.SetActive(true);
+    }
+
+    public void closeImage()
+    {
+        panel.SetActive(false);
+        gameObject.SetActive(false);
     }
 }
