@@ -51,11 +51,6 @@ public class LevelManager : Singleton<LevelManager>
     private bool _gameLoaded = false;
 
     [SerializeField]
-    private TextMeshProUGUI _newLevelText = null;
-    FaderText _faderText = null;
-    Fader _faderTextHolder = null;
-
-    [SerializeField]
     private GameObject _endLevelScreen = null;
 
     private GameObject _articleObject = null;
@@ -124,9 +119,6 @@ public class LevelManager : Singleton<LevelManager>
         _progressTracker = FindAnyObjectByType<GameProgressTracker>();
 
         if(!_fader) _fader = FindAnyObjectByType<Fader>();
-
-        _faderText = _newLevelText.GetComponent<FaderText>();
-        _faderTextHolder = _newLevelText.transform.parent.GetComponent<Fader>();
 
         _numLevels = _levelsInfo.Count;
 
@@ -244,34 +236,10 @@ public class LevelManager : Singleton<LevelManager>
             return;
         }
 
-        _fader.StartFade(1.0f, 0.8f, 0.0f);
         _levelStarted = true;
-        // Aquí deberíamos meter cosas de "Nivel 1!" y eso
-        if (_faderTextHolder.Value <= 0.1f) _faderTextHolder.StartFade(1.0f, 0.0f, 1.0f);
-
-        _newLevelText.gameObject.SetActive(true);
-        _newLevelText.SetText(string.Format(TranslationManager.Instance.GetLocalizedStringValue("Translation", "CURRENT_LEVEL"), _currentLevel + 1));
 
         _showLevel.SetActive(true);
         _showLevelText.SetText(string.Format(TranslationManager.Instance.GetLocalizedStringValue("Translation", "CURRENT_LEVEL"), _currentLevel + 1));
-
-        _faderText.StartFade(1.5f, 0.0f, 1.0f);
-        _faderText.OnFadeEnd.AddListener(StartLevelAux);
-    }
-
-    private void StartLevelAux()
-    {
-        StartCoroutine(_StartLevelAux());
-    }
-
-    IEnumerator _StartLevelAux()
-    {
-        _faderText.OnFadeEnd.RemoveAllListeners();
-        yield return new WaitForSeconds(1.3f);
-        _faderText.StartFade(1.5f, 1.0f, 0.0f);
-        yield return new WaitForSeconds(0.65f);
-        ShowNextArticle();
-        _faderTextHolder.StartFade(1.0f, 1.0f, 0.0f);
     }
 
     public void ShowTest(Test test)
@@ -468,7 +436,7 @@ public class LevelManager : Singleton<LevelManager>
                 messages[i] = messagesList[i].GetLocalizedString();
             }
 
-            _fader.StartFade(1.0f, 0.0f, 0.8f, true);
+            if (_fader.Value < 0.8f) _fader.StartFade(1.0f, 0.0f, 0.8f, true);
             _gameAssistant.ShowMessages(messages, StartLevelPostMessages);
         }
     }

@@ -8,15 +8,19 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+public enum MessageType { WORRIED, NORMAL };
+
 public struct QueuedMessage
 {
     public string Text;
     public UnityAction OnComplete;
+    public MessageType MType;
 
-    public QueuedMessage(string text, UnityAction onComplete = null)
+    public QueuedMessage(string text, UnityAction onComplete = null, MessageType mType = MessageType.NORMAL)
     {
         Text = text;
         OnComplete = onComplete;
+        MType = mType;
     }
 }
 
@@ -165,7 +169,7 @@ public class GameAssistant : MonoBehaviour
         _messageQueue.Enqueue(message);
     }
 
-    private void EnqueueMessage(string msg, UnityAction onComplete = null, bool activateMessage = true)
+    private void EnqueueMessage(string msg, UnityAction onComplete = null, MessageType mType = MessageType.NORMAL, bool activateMessage = true)
     {
         _messageQueue.Enqueue(new QueuedMessage(msg, onComplete));
         
@@ -185,6 +189,17 @@ public class GameAssistant : MonoBehaviour
             _keepTrackOfTime = false;
             
             QueuedMessage next = _messageQueue.Dequeue();
+            MessageType mType = next.MType;
+
+            if (mType == MessageType.NORMAL)
+            {
+
+            }
+            else if (mType == MessageType.WORRIED) 
+            {
+                
+            }
+
             _currentMessageAction = next.OnComplete;
 
             _messageText.SetText(next.Text);
@@ -247,8 +262,8 @@ public class GameAssistant : MonoBehaviour
             ChangeState(GameAssistantState.BAD);
             for (int i = 0; i < messages.Count; ++i)
             {
-                if (i == messages.Count - 1) EnqueueMessage(messages[i], ProcessNextMessage, false);
-                else EnqueueMessage(messages[i], () => { ChangeState(GameAssistantState.NORMAL); ProcessNextMessage(); }, false);
+                if (i == messages.Count - 1) EnqueueMessage(messages[i], ProcessNextMessage, MessageType.WORRIED, false);
+                else EnqueueMessage(messages[i], () => { ChangeState(GameAssistantState.NORMAL); ProcessNextMessage(); }, MessageType.WORRIED, false);
             }
             
             // _assistantHeadButton.onClick.AddListener(() => { ProcessNextMessage(); _assistantHeadButton.onClick.RemoveAllListeners(); });
