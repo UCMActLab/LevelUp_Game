@@ -121,6 +121,7 @@ public class GameAssistant : MonoBehaviour
     [SerializeField]
     Sprite _iVERI_bad;
 
+
     private void Initialize()
     {
         if (_assistantImage == null)
