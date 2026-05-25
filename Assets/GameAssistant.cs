@@ -1,4 +1,5 @@
 using AYellowpaper.SerializedCollections;
+using DA_Assets.DAG;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,6 +109,18 @@ public class GameAssistant : MonoBehaviour
 
     public UnityEvent<GameAssistantState> onStateChanged = new UnityEvent<GameAssistantState>();
 
+    [Header("Assistant Objects")]
+    [SerializeField]
+    GameObject _gVERI;
+    [SerializeField]
+    GameObject _gVERIBackground;
+    [SerializeField]
+    GameObject _gMessageBackground;
+    [SerializeField]
+    Sprite _iVERI_good;
+    [SerializeField]
+    Sprite _iVERI_bad;
+
     private void Initialize()
     {
         if (_assistantImage == null)
@@ -184,6 +197,7 @@ public class GameAssistant : MonoBehaviour
         if (_messageQueue.Count > 0)
         {
             // ver cuándo es el primer mensaje
+            Debug.Log("MENSAJE");
 
             _isDisplayingQueue = true;
             _keepTrackOfTime = false;
@@ -193,11 +207,15 @@ public class GameAssistant : MonoBehaviour
 
             if (mType == VERIMessageType.NORMAL)
             {
-
+                _gMessageBackground.GetComponent<DAGradient>().Gradient = GetComponent<ElectionVFX>().getGradientA();
+                _gVERI.GetComponent<Image>().sprite = _iVERI_good;
+                Debug.Log("BUENO");
             }
             else if (mType == VERIMessageType.WORRIED) 
             {
-                
+                _gMessageBackground.GetComponent<DAGradient>().Gradient = GetComponent<ElectionVFX>().getGradientB();
+                _gVERI.GetComponent<Image>().sprite = _iVERI_bad;
+                Debug.Log("MALO");
             }
 
             _currentMessageAction = next.OnComplete;
