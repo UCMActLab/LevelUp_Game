@@ -218,7 +218,7 @@ public class LevelManager : Singleton<LevelManager>
         
         _gameLoaded = true;
         _loadingAnimation?.SetActive(false);
-        _fader.StartFade(1.5f, 0.8f, 0.0f);
+        _fader.StartFade(1.5f, 0.8f, 0.0f, true);
         
         StartLevel();
     }
@@ -262,7 +262,7 @@ public class LevelManager : Singleton<LevelManager>
 
         _todoButton.gameObject.SetActive(false);
 
-        _fader.StartFade(0.8f, 0.0f, 0.8f);
+        _fader.StartFade(0.8f, 0.0f, 0.8f, true);
 
         Test test = _levelsInfo[level].test;
         if (test)
@@ -330,13 +330,12 @@ public class LevelManager : Singleton<LevelManager>
                 _discardedArticlesDuringLevel.Add(_articleData.Data);
             }
 
-            string[] feedback = _articleData.Data.feedback;
-
             _articleData.OnSkip.RemoveAllListeners();
             _articleData.DestroyArticle();
 
-            if (feedback == null && ShowWorriedMessageBetweenArticles()) return;
-            else if (!result && (feedback != null && feedback.Length > 0)) { ShowImmediateFeedback(feedback); return; }
+            if (!(_articleData.Data.HasFeedback()) && ShowWorriedMessageBetweenArticles()) return;
+            else if (!result && (_articleData.Data.HasNegativeFeedback())) { ShowImmediateFeedback(_articleData.Data.feedback); return; }
+            else if (result && (_articleData.Data.HasPositiveFeedback())) { ShowImmediateFeedback(_articleData.Data.posFeedback); return; }
         }
 
         if (!_levelStarted)
@@ -482,7 +481,7 @@ public class LevelManager : Singleton<LevelManager>
     {
         _todoButton.onClick.Invoke();
         _gameAssistant.HideMessage();
-        _fader.StartFade(1.0f, 0.8f, 0.0f);
+        _fader.StartFade(1.0f, 0.8f, 0.0f, true);
     }
 
     private void EndAllLevels()
