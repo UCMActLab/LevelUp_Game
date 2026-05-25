@@ -13,6 +13,22 @@ public class ArticleData : ScriptableObject
     public string ID;
     public string theme;
     public string[] feedback;
+    public string[] posFeedback;
+
+    public bool HasFeedback()
+    {
+        return HasPositiveFeedback() || HasNegativeFeedback();
+    }
+
+    public bool HasNegativeFeedback()
+    {
+        return (feedback != null && feedback.Length > 0);
+    }
+
+    public bool HasPositiveFeedback()
+    {
+        return (posFeedback != null && posFeedback.Length > 0);
+    }
 
     public bool canBeSharedWithGroups; // true -> hay grupos | false -> solo se "valida", no se envía
     public int numGroupsToShareWith; // > 0 si hay grupos | 

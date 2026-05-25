@@ -18,6 +18,7 @@ public struct ArticleJSONData {
     public string Links;
     public string themes;
     public string[] ImmediateFeedbacks;
+    public string[] PosImmediateFeedbacks;
     public List<ConversationJSON> Conversation;
 }
 
@@ -145,6 +146,7 @@ public class ArticleManager : Singleton<ArticleManager>
                 article.theme = data.themes;
 
                 article.feedback = data.ImmediateFeedbacks;
+                article.posFeedback = data.PosImmediateFeedbacks;
 
                 // article.image = data.Multimedia; TODO: Tratamiento de imágenes
                 Debug.Log("Load Images: " + _loadImages + data.Multimedia);

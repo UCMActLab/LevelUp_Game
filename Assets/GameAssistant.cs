@@ -184,7 +184,7 @@ public class GameAssistant : MonoBehaviour
 
     private void EnqueueMessage(string msg, UnityAction onComplete = null, VERIMessageType mType = VERIMessageType.NORMAL, bool activateMessage = true)
     {
-        _messageQueue.Enqueue(new QueuedMessage(msg, onComplete));
+        _messageQueue.Enqueue(new QueuedMessage(msg, onComplete, mType));
         
         if (!_isDisplayingQueue && activateMessage)
         {
@@ -273,7 +273,8 @@ public class GameAssistant : MonoBehaviour
 
     public void WorryAssistant(List<string> messages)
     {
-        if (_articleData.Data.feedback != null) return;
+        if (_articleData.Data.feedback != null && _articleData.Data.feedback.Length > 0) 
+            return;
 
         if (GameAssistantState.BAD != _currentState)
         {
