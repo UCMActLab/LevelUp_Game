@@ -195,41 +195,38 @@ public class ServerManager : MonoBehaviour
         }
     }
 
-    //void processServerAnswer()
-    //{
-    //    Debug.Log("no he explotado del todo");
+    public IEnumerator PostUserToDatabase(string countryLabel)
+    {
+        yield return new WaitUntil(() => _isLoggedIn);
 
-    //    TextAsset jsonAsset = Resources.Load<TextAsset>("FakeNewsVideogame");
-    //    serverAnswer = JsonUtility.FromJson<RootObject>(jsonAsset.text);
+        string message = "{\n    \"CNT_"+countryLabel+"\":" + 1 + "\r\n}";
 
-    //    TextAsset inkAsset = Resources.Load<TextAsset>("Languages/" + LanguageSelection.chosenLanguage + inkPath);
-    //    inkText = inkAsset.text;
+        using (UnityWebRequest www = UnityWebRequest.Post(
+            "https://levelup-game.fundacionmaldita.es/api/scores/",
+            message, "application/json"))
+        {
+            try
+            {
+                www.SetRequestHeader("Authorization", serverLoginInfo.data.token);
 
-    //    for (int i = 0; i < serverAnswer.Articles.Count; ++i)
-    //    {            
-    //        var art = serverAnswer.Articles[i];
-    //        // Replace de los campos que son independientes al idioma escogido
-    //        inkText = inkText.Replace("{\"VAR?\":\"news\"},{ \"VAR =\":\"" + art.ConversationRef + "_theme\"}", "{\"VAR?\":\"" + art.Themes + "\"},{ \"VAR =\":\"" + art.ConversationRef + "_theme\"}");
-    //        inkText = inkText.Replace("true,{\"VAR=\":\"" + art.ConversationRef + "_key\"}", art.Key.ToString().ToLower() + ",{\"VAR=\":\"" + art.ConversationRef + "_key\"}");
-    //        inkText = inkText.Replace("true,{\"VAR=\":\"" + art.ConversationRef + "_true\"}", art.IsFake.ToString().ToLower() + ",{\"VAR=\":\"" + art.ConversationRef + "_true\"}");
+            }
+            catch (Exception e)
+            {
+                Debug.Log(www.error);
+            }
 
-    //        var lang = serverAnswer.Articles[i].ES;
-    //        // Depende del idioma escogido en el menú se sustituye la informacion correspondiente
-    //        if (LanguageSelection.chosenLanguage == Language.czech) lang = serverAnswer.Articles[i].CR;
-    //        else if (LanguageSelection.chosenLanguage == Language.bulgarian) lang = serverAnswer.Articles[i].B;
+            yield return www.SendWebRequest();
 
-    //        // Replace cada uno de los campos: headline, multimedia, source, body, reactions
-    //        inkText = inkText.Replace(art.ConversationRef + "_headline", lang.Headline);
-    //        inkText = inkText.Replace(art.ConversationRef + "_multimedia", lang.Multimedia);
-    //        inkText = inkText.Replace(art.ConversationRef + "_source", lang.Source);
-    //        inkText = inkText.Replace(art.ConversationRef + "_body", lang.Body);
-    //        inkText = inkText.Replace(art.ConversationRef + "_ReactionG1", lang.Reaction_G1);
-    //        inkText = inkText.Replace(art.ConversationRef + "_ReactionG2", lang.Reaction_G2);
-    //        inkText = inkText.Replace(art.ConversationRef + "_ReactionG3", lang.Reaction_G3);
-    //    }
-    //    Debug.Log("hecho :)");
-    //    //SceneManager.LoadScene("ChatDemo");
-    //}
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError(www.error);
+            }
+            else
+            {
+                Debug.Log("Form upload complete!");
+            }
+        }
+    }
 }
 
 

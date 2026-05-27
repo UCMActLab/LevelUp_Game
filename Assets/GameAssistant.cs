@@ -65,7 +65,7 @@ public class GameAssistant : MonoBehaviour
     SerializedDictionary<GameAssistantState, Sprite> _spriteOnState = new SerializedDictionary<GameAssistantState, Sprite>();
 
     [Header("Scene References")]
-    [SerializeField] private Image _assistantImage = null;
+    // [SerializeField] private Image _assistantImage = null;
     [SerializeField] private ScrollRect _scroll = null;
     [SerializeField] private GameObject _message = null;
     private TextMeshProUGUI _messageText = null;
@@ -124,15 +124,15 @@ public class GameAssistant : MonoBehaviour
 
     private void Initialize()
     {
-        if (_assistantImage == null)
-        {
-            Debug.LogError("Game Assistant Image not found...");
-        }
-        else
-        {
-            _assistantImage.enabled = true;
+        //if (_assistantImage == null)
+        //{
+        //    Debug.LogError("Game Assistant Image not found...");
+        //}
+        //else
+        //{
+        //    _assistantImage.enabled = true;
 
-        }
+        //}
         Debug.Assert(_scroll != null, "Scroll was not set.");
         Debug.Assert(_message != null, "Message was not set.");
 
@@ -516,7 +516,7 @@ public class GameAssistant : MonoBehaviour
     public void ChangeState(GameAssistantState newState)
     {
         _currentState = newState;
-        _assistantImage.sprite = _spriteOnState[newState];
+        // _assistantImage.sprite = _spriteOnState[newState];
 
         onStateChanged.Invoke(_currentState);
 

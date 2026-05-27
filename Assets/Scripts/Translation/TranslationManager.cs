@@ -47,6 +47,8 @@ public class TranslationManager : Singleton<TranslationManager>
     {
         _currentLocaleID = localeID;
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[_currentLocaleID];
+
+        StartCoroutine(ServerManager.Instance.PostUserToDatabase(GetCurrentCountryLabel()));
     }
 
     public string GetRandomEntryKey(string table)

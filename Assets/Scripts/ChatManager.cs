@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering.Universal.Internal;
@@ -33,6 +34,7 @@ public class ChatManager : MonoBehaviour
     [SerializeField] private GameAssistant _assistant = null;
     [SerializeField] private ToDoMenu _topicMenu = null;
 
+
     private GameObject _currentChat;
 
     private GameObject _lastSharedArticle = null;
@@ -46,6 +48,7 @@ public class ChatManager : MonoBehaviour
     IEnumerator _displayConvCoroutine = null;
 
     public UnityEvent<int> OnChatChanged = new UnityEvent<int>();
+
 
     private void StartConversation()
     {
@@ -132,6 +135,7 @@ public class ChatManager : MonoBehaviour
     public void ChangeToMainChat()
     {
         if (_currentChat == _mainChat) return;
+        
         ChangeGroup(-1);
     }
 
@@ -234,6 +238,7 @@ public class ChatManager : MonoBehaviour
         }
         else
         {
+            _backToChatButton.transform.SetParent(_currentChat.transform, false);
             _backToChatButton.SetActive(true);
             _backToChatButton.transform.parent.parent.gameObject.SetActive(true);
         }
