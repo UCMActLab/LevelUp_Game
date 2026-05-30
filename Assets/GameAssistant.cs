@@ -91,7 +91,9 @@ public class GameAssistant : MonoBehaviour
     [Header("How many to get assistant worried")]
     [SerializeField]
     private int _skipBeforeReadArticles = 2;
+    [SerializeField]
     private int _sharingNotReadingArticles = 2;
+    [SerializeField]
     private int _sharedFakeArticles = 2;
 
     bool _readingArticle = false;
@@ -259,11 +261,11 @@ public class GameAssistant : MonoBehaviour
 
     // --- ADAPTACIÓN DE TUS FUNCIONES EXISTENTES ---
 
-    public void ShowMessages(string[] msgs, UnityAction oneShot = null)
+    public void ShowMessages(string[] msgs, UnityAction oneShot = null, VERIMessageType mType = VERIMessageType.NORMAL)
     {
         for (int i = 0; i < msgs.Length; ++i) {
             UnityAction action = i < msgs.Length -1 ? ProcessNextMessage : () => { ProcessNextMessage(); oneShot(); };
-            EnqueueMessage(msgs[i], action);
+            EnqueueMessage(msgs[i], action, mType);
         }
     }
 

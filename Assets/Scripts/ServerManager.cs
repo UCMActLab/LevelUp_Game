@@ -199,7 +199,7 @@ public class ServerManager : MonoBehaviour
     {
         yield return new WaitUntil(() => _isLoggedIn);
 
-        string message = "{\n    \"CNT_"+countryLabel+"\":" + 1 + "\r\n}";
+        string message = "{\n    \"score\":1,\n    \"country\":\"CNT_" + countryLabel+"\"\r\n}";
 
         using (UnityWebRequest www = UnityWebRequest.Post(
             "https://levelup-game.fundacionmaldita.es/api/scores/",

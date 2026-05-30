@@ -308,9 +308,9 @@ public class LevelManager : Singleton<LevelManager>
         return hasMessage;
     }
 
-    private void ShowImmediateFeedback(string[] feedback)
+    private void ShowImmediateFeedback(string[] feedback, VERIMessageType mType)
     {
-        _gameAssistant.ShowMessages(feedback, ShowNextArticle);
+        _gameAssistant.ShowMessages(feedback, ShowNextArticle, mType);
     }
 
     public void ShowNextArticle()
@@ -334,8 +334,8 @@ public class LevelManager : Singleton<LevelManager>
             _articleData.DestroyArticle();
 
             if (!(_articleData.Data.HasFeedback()) && ShowWorriedMessageBetweenArticles()) return;
-            else if (!result && (_articleData.Data.HasNegativeFeedback())) { ShowImmediateFeedback(_articleData.Data.feedback); return; }
-            else if (result && (_articleData.Data.HasPositiveFeedback())) { ShowImmediateFeedback(_articleData.Data.posFeedback); return; }
+            else if (!result && (_articleData.Data.HasNegativeFeedback())) { ShowImmediateFeedback(_articleData.Data.feedback, VERIMessageType.WORRIED); return; }
+            else if (result && (_articleData.Data.HasPositiveFeedback())) { ShowImmediateFeedback(_articleData.Data.posFeedback, VERIMessageType.NORMAL); return; }
         }
 
         if (!_levelStarted)
@@ -398,7 +398,9 @@ public class LevelManager : Singleton<LevelManager>
                 }
                 else
                 {
-                    ShowMessagesLevelStart(_levelsInfo[_currentLevel].avatarMessagesOnStart);
+                    List<LocalizedString> messages = _levelsInfo[_currentLevel].avatarMessagesFirstTimeOnLevel;
+                    messages.AddRange(_levelsInfo[_currentLevel].avatarInstructions);
+                    ShowMessagesLevelStart(_levelsInfo[_currentLevel].avatarInstructions);
                 }
 
                 HashSet<Topics> topics = new HashSet<Topics>();
@@ -451,7 +453,7 @@ public class LevelManager : Singleton<LevelManager>
             }
 
             _fader.StartFade(1.0f, 0.0f, 0.8f, true);
-            if (_levelsInfo[_currentLevel].avatarMessagesOnStart.Count > 0)
+            if (_levelsInfo[_currentLevel].avatarInstructions.Count > 0)
             {
                 int auxLevel = _currentLevel;
                 _gameAssistant.ShowMessages(messages, ShowNextArticle);
@@ -469,7 +471,7 @@ public class LevelManager : Singleton<LevelManager>
         buttons[1].onClick.RemoveAllListeners();
 
         buttons[0].onClick.AddListener(() => 
-        { ShowMessagesLevelStart(_levelsInfo[_currentLevel].avatarMessagesOnStart); _receiveExplanationOnLevelRepeat.SetActive(false); });
+        { ShowMessagesLevelStart(_levelsInfo[_currentLevel].avatarInstructions); _receiveExplanationOnLevelRepeat.SetActive(false); });
 
         buttons[1].onClick.AddListener(() => 
         { StartLevelPostMessages(); _receiveExplanationOnLevelRepeat.SetActive(false); });

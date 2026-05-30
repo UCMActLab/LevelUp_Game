@@ -16,7 +16,8 @@ public class LevelInfo : ScriptableObject
     public bool articleIsSharedWithGroups;
     public bool groupHavePreferredTheme;
 
-    public List<LocalizedString> avatarMessagesOnStart = new List<LocalizedString>();
+    public List<LocalizedString> avatarMessagesFirstTimeOnLevel = new List<LocalizedString>();
+    public List<LocalizedString> avatarInstructions = new List<LocalizedString>();
 
     [Range(1, 3)]
     public int numGroupsToShareWith = 1;
@@ -31,7 +32,7 @@ public class LevelInfo : ScriptableObject
         {
             string[] propertyNames = {
                     "test", "numArticles", "numTrueArticles", "articleIsSharedWithGroups", 
-                "numGroupsToShareWith", "avatarMessagesOnStart", "groupHavePreferredTheme"
+                "numGroupsToShareWith", "avatarMessagesFirstTimeOnLevel", "avatarInstructions", "groupHavePreferredTheme"
                 };
 
             _properties = new Dictionary<string, SerializedProperty>();
@@ -47,7 +48,9 @@ public class LevelInfo : ScriptableObject
             EditorGUI.BeginChangeCheck();
 
             GUILayout.Label("On Level Start");
-            DrawProperty(_properties["avatarMessagesOnStart"], "Avatar Messages on Start");
+            DrawProperty(_properties["avatarMessagesFirstTimeOnLevel"], "Avatar Messages on Start");
+            GUILayout.Label("On Level Repeat (and Start)");
+            DrawProperty(_properties["avatarInstructions"], "Avatar Instructions");
 
             GUILayout.Label("Test Settings");
             DrawProperty(_properties["test"], "Test");

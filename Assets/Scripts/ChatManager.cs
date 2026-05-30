@@ -238,9 +238,16 @@ public class ChatManager : MonoBehaviour
         }
         else
         {
-            _backToChatButton.transform.SetParent(_currentChat.transform, false);
+            if (_backToChatButton.transform.parent == _currentChat.transform)
+            {
+                _backToChatButton.transform.SetAsLastSibling();
+            }
+            else
+            {
+                _backToChatButton.transform.SetParent(_currentChat.transform, false);
+            }
+
             _backToChatButton.SetActive(true);
-            _backToChatButton.transform.parent.parent.gameObject.SetActive(true);
         }
     }
 
