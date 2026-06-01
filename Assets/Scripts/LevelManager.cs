@@ -87,6 +87,8 @@ public class LevelManager : Singleton<LevelManager>
     [SerializeField]
     private TextMeshProUGUI _showLevelText = null;
 
+    private bool _articleReceivedFlag = false;
+
     protected override void Awake()
     {
         _destroyOnLoad = true;
@@ -123,7 +125,7 @@ public class LevelManager : Singleton<LevelManager>
         _numLevels = _levelsInfo.Count;
 
         _loadingAnimation?.SetActive(false);
-        StartCoroutine(GetArticlesFromResources());
+        GetArticlesFromResources();
 
         if (!_testLogic) _testLogic = GameObject.FindFirstObjectByType<TestLogic>();
 
@@ -134,11 +136,36 @@ public class LevelManager : Singleton<LevelManager>
         AnalyticsManager.Instance.SubmitEvent(newEvent);
     }
 
+    private void OnFalseArticleProcessedFromWeb(ArticleData data)
+    {
+        if (_queueFalseArticles == null)
+            _queueFalseArticles = ArticleManager.Instance.GetFalseArticlesByLanguage((int)LanguageSelection.chosenLanguage);
+        else _queueFalseArticles.Enqueue(data);
+
+        _articleReceivedFlag = true;
+    }
+
+    private void OnTrueArticleProcessedFromWeb(ArticleData data)
+    {
+        if (_queueTrueArticles == null)
+            _queueTrueArticles = ArticleManager.Instance.GetTrueArticlesByLanguage((int)LanguageSelection.chosenLanguage);
+        else _queueTrueArticles.Enqueue(data);
+
+        _articleReceivedFlag = true;
+    }
+
     private void SetupBuildLevels()
     {
-        _queueTrueArticles = ArticleManager.Instance.GetTrueArticlesByLanguage((int)LanguageSelection.chosenLanguage);
-        _queueFalseArticles = ArticleManager.Instance.GetFalseArticlesByLanguage((int)LanguageSelection.chosenLanguage);
-
+        if (!ArticleManager.Instance.ArticlesCreated)
+        {
+            ArticleManager.Instance.OnFalseArticleProcessed.AddListener(OnFalseArticleProcessedFromWeb);
+            ArticleManager.Instance.OnTrueArticleProcessed.AddListener(OnTrueArticleProcessedFromWeb);
+        }
+        else
+        {
+            _queueTrueArticles = ArticleManager.Instance.GetTrueArticlesByLanguage((int)LanguageSelection.chosenLanguage);
+            _queueFalseArticles = ArticleManager.Instance.GetFalseArticlesByLanguage((int)LanguageSelection.chosenLanguage);
+        }
         _levels = new List<List<ArticleData>>();
         _quests = new List<Quest>();
 
@@ -147,9 +174,17 @@ public class LevelManager : Singleton<LevelManager>
         ScoreManager.Instance.FindPointsMenu();
     }
 
-    private bool BuildNextLevel()
+    private IEnumerator BuildNextLevel()
     {
-        if (_queueFalseArticles.Count == 0 && _queueTrueArticles.Count == 0) return false;
+        if (ArticleManager.Instance.ArticlesCreated &&
+            _queueFalseArticles.Count == 0 && _queueTrueArticles.Count == 0)
+        {
+            OnLevelBuilt(false);
+            yield break;
+        }
+
+        _loadingAnimation?.SetActive(true);
+        yield return new WaitUntil(() => _queueFalseArticles != null && _queueTrueArticles != null);
 
         ScoreManager.Instance.SetNumLevels(_numLevels);
 
@@ -164,7 +199,18 @@ public class LevelManager : Singleton<LevelManager>
         if (_currentLevelCompleted) { _levels.Add(new List<ArticleData>()); _quests.Add(null); }
         else { _levels[_currentLevel].Clear(); _quests[_currentLevel] = null; }
 
-        if (maxArticles < level.numArticles)
+        bool enoughArticles = maxArticles >= level.numArticles;
+
+        while (!enoughArticles && !ArticleManager.Instance.ArticlesCreated) 
+        {
+            yield return new WaitUntil(() => _articleReceivedFlag);
+            _articleReceivedFlag = false;
+
+            maxArticles = _queueTrueArticles.Count + _queueFalseArticles.Count;
+            enoughArticles = maxArticles >= level.numArticles;
+        }
+
+        if (!enoughArticles && ArticleManager.Instance.ArticlesCreated)
         {
             level.numArticles = maxArticles;
         }
@@ -186,7 +232,9 @@ public class LevelManager : Singleton<LevelManager>
                 Quest quest_1 = new Quest();
                 quest_1.BuildQuest(trueArticlesInLevel, articlesInLevel, level.articleIsSharedWithGroups ? level.numGroupsToShareWith : 0, articlesInLevel - articlesCantRead, level.groupHavePreferredTheme);
                 _quests[_currentLevel] = quest_1;
-                return true;
+                
+                OnLevelBuilt(true);
+                yield break;
             }
 
             data.canBeSharedWithGroups = level.articleIsSharedWithGroups;
@@ -204,21 +252,21 @@ public class LevelManager : Singleton<LevelManager>
         quest.BuildQuest(trueArticlesInLevel, articlesInLevel, numGroups, articlesInLevel - articlesCantRead, level.groupHavePreferredTheme);
         _quests[_currentLevel] = quest;
 
-        return true;
+        OnLevelBuilt(true);
+        yield break;
     }
 
-    private IEnumerator GetArticlesFromResources()
+    private void GetArticlesFromResources()
     {
         _gameLoaded = false;
         _loadingAnimation?.SetActive(true);
         List<string> messages = TranslationManager.Instance.GetLocalizedStringsList("ASSISTANT_ADVICES", "WELCOME_", 8, 0);
         // _gameAssistant.ShowMessages(messages.ToArray(), WorryAssistantTutorial);
-        yield return new WaitUntil(() => ArticleManager.Instance.ArticlesCreated);
+        // yield return new WaitUntil(() => ArticleManager.Instance.ArticlesCreated);
         SetupBuildLevels();
         
         _gameLoaded = true;
         _loadingAnimation?.SetActive(false);
-        _fader.StartFade(1.5f, 0.8f, 0.0f, true);
         
         StartLevel();
     }
@@ -227,19 +275,28 @@ public class LevelManager : Singleton<LevelManager>
     {
         if (_discardedArticlesDuringLevel != null) _discardedArticlesDuringLevel.Clear();
         _discardedArticlesDuringLevel = new List<ArticleData>();
-        
-        if(!BuildNextLevel())
+
+        StartCoroutine(BuildNextLevel());
+    }
+
+    private void OnLevelBuilt(bool success)
+    {
+        _loadingAnimation?.SetActive(false);
+
+        if (!success)
         {
             _progressTracker.UpdateValue();
             EndAllLevels();
-
-            return;
         }
+        else
+        {
+            _fader.StartFade(1.5f, 0.8f, 0.0f, true);
 
-        _levelStarted = true;
+            _levelStarted = true;
 
-        _showLevel.SetActive(true);
-        _showLevelText.SetText(string.Format(TranslationManager.Instance.GetLocalizedStringValue("Translation", "CURRENT_LEVEL"), _currentLevel + 1));
+            _showLevel.SetActive(true);
+            _showLevelText.SetText(string.Format(TranslationManager.Instance.GetLocalizedStringValue("Translation", "CURRENT_LEVEL"), _currentLevel + 1));
+        }
     }
 
     public void ShowTest(Test test)
@@ -488,9 +545,20 @@ public class LevelManager : Singleton<LevelManager>
     {
         PostTotalScoreToDatabase();
 
-        SceneChanger.Instance.ChangeScene("EndLevels");
-
-        AnalyticsManager.Instance.SubmitEvent("FreeMode_End");
+        _gameAssistant.ShowMessages(
+            TranslationManager.Instance.GetLocalizedStringsList("TUTORIAL_STEPS", "CLOSURE/", 4, 1).ToArray(),
+            () =>
+            {
+                _fader.OnFadeEnd.RemoveAllListeners();
+                _fader.OnFadeEnd.AddListener(
+                    () =>
+                    {
+                        AnalyticsManager.Instance.SubmitEvent("FreeMode_End");
+                        SceneChanger.Instance.ChangeScene("EndLevels");
+                    }
+                );
+                _fader.StartFade(1.2f, _fader.Value, 1.0f);
+            });
     }
 
     public Topics GetGroupTheme(int id)

@@ -239,8 +239,8 @@ public class ChatManager : MonoBehaviour
         else
         {
             _backToChatButton.transform.SetParent(_currentChat.transform, false);
+            _backToChatButton.transform.SetAsLastSibling();
             _backToChatButton.SetActive(true);
-            _backToChatButton.transform.parent.parent.gameObject.SetActive(true);
         }
     }
 

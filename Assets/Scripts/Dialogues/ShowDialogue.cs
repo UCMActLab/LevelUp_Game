@@ -30,7 +30,7 @@ public class ShowDialogue : MonoBehaviour
     private bool _textEnded;
     private bool _canGoNext = false;
 
-    DialogSettings _settings;
+    DialogSettings _settings = null;
     int _currentText;
 
     private const string HTML_ALPHA_NULL = "<alpha=#00>";
@@ -51,6 +51,8 @@ public class ShowDialogue : MonoBehaviour
 
     public void Update()
     {
+        if (_settings == null) return;
+
         // Avanza al siguiente texto si ha terminado de escribirse y se permite avanzar
         if (_textEnded && ((waitForInteraction && _canGoNext) || !waitForInteraction))
         {
@@ -120,6 +122,8 @@ public class ShowDialogue : MonoBehaviour
 
     public void ShowText()
     {
+        if (_settings == null) return;
+
         StopAllCoroutines();
         _textEnded = false;
         _canGoNext = false;
