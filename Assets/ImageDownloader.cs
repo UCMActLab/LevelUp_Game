@@ -3,21 +3,21 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Runtime.InteropServices;
 using System;
+using AYellowpaper.SerializedCollections;
 
 public class ImageDownloader : MonoBehaviour
 {
     // Importamos la función de nuestro plugin .jslib
     [DllImport("__Internal")]
-    private static extern void DownloadFile(string filename, string base64);
+    private static extern void DownloadFileRaw(string filename, byte[] array, int size);
 
-    [Header("Configuración")]
-    [Tooltip("La URL de la imagen que quieres descargar")]
-    public string imageUrl = "https://www.w3.org/People/mimasa/test/imgformat/img/w3c_home.png";
+    [Header("Configuration")]
+    [SerializedDictionary]
+    public SerializedDictionary<Language, string> imageURLs;
 
-    // Este es el método que debes asignar al evento OnClick() de tu botón en el Canvas
     public void OnDownloadButtonClicked()
     {
-        string imageID = imageUrl.Replace("https://drive.google.com/file/d/", "");
+        string imageID = imageURLs[LanguageSelection.chosenLanguage].Replace("https://drive.google.com/file/d/", "");
         imageID = imageID.Replace("/view?usp=sharing", "");
         imageID = imageID.Replace("/view?usp=drive_link", "");
         imageID = imageID.Replace("image:", "");
@@ -45,9 +45,9 @@ public class ImageDownloader : MonoBehaviour
                 byte[] imageBytes = texture.EncodeToPNG();
                 string base64String = Convert.ToBase64String(imageBytes);
 
-                // 4. Llamar a JavaScript (Solo funciona en la build final de WebGL)
 #if UNITY_WEBGL && !UNITY_EDITOR
-                DownloadFile("imagen_descargada.png", base64String);
+                // 4. Llamar a JavaScript (Solo funciona en la build final de WebGL)
+                DownloadFileRaw("Certificate_" + LanguageSelection.chosenLanguage, imageBytes, imageBytes.Length);
 #else
                 Debug.LogWarning("La descarga directa a través del navegador solo funciona en la Build de WebGL. En el editor no se ejecutará.");
 #endif

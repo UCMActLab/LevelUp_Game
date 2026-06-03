@@ -1,18 +1,24 @@
 mergeInto(LibraryManager.library, {
-    DownloadFile: function(filenamePtr, base64Ptr) {
-        // Convertir los punteros de memoria de Unity a strings de JavaScript
+    DownloadFileRaw: function(filenamePtr, arrayPtr, size) {
         var filename = UTF8ToString(filenamePtr);
-        var base64 = UTF8ToString(base64Ptr);
+        
+        // Creamos una referencia directa a los bytes dentro del HEAP de Unity
+        var bytes = new Uint8Array(HEAPU8.buffer, arrayPtr, size);
 
-        // Crear un enlace HTML invisible
+        // Generamos un objeto Blob nativo del navegador
+        var blob = new Blob([bytes], { type: 'image/png' });
+        var url = URL.createObjectURL(blob);
+
+        // Forzamos la descarga mediante el DOM
         var link = document.createElement('a');
         link.download = filename;
-        // Asignar los datos de la imagen en formato Base64
-        link.href = 'data:image/png;base64,' + base64;
+        link.href = url;
         
-        // Simular un clic para iniciar la descarga
         document.body.appendChild(link);
         link.click();
+        
+        // Limpieza inmediata de la memoria del navegador
         document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     }
 });
