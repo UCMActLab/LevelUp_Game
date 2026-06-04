@@ -365,9 +365,9 @@ public class LevelManager : Singleton<LevelManager>
         return hasMessage;
     }
 
-    private void ShowImmediateFeedback(string[] feedback)
+    private void ShowImmediateFeedback(string[] feedback, VERIMessageType mType)
     {
-        _gameAssistant.ShowMessages(feedback, ShowNextArticle);
+        _gameAssistant.ShowMessages(feedback, ShowNextArticle, mType);
     }
 
     public void ShowNextArticle()
@@ -391,8 +391,8 @@ public class LevelManager : Singleton<LevelManager>
             _articleData.DestroyArticle();
 
             if (!(_articleData.Data.HasFeedback()) && ShowWorriedMessageBetweenArticles()) return;
-            else if (!result && (_articleData.Data.HasNegativeFeedback())) { ShowImmediateFeedback(_articleData.Data.feedback); return; }
-            else if (result && (_articleData.Data.HasPositiveFeedback())) { ShowImmediateFeedback(_articleData.Data.posFeedback); return; }
+            else if (!result && (_articleData.Data.HasNegativeFeedback())) { ShowImmediateFeedback(_articleData.Data.feedback, VERIMessageType.WORRIED); return; }
+            else if (result && (_articleData.Data.HasPositiveFeedback())) { ShowImmediateFeedback(_articleData.Data.posFeedback, VERIMessageType.NORMAL); return; }
         }
 
         if (!_levelStarted)
@@ -546,7 +546,7 @@ public class LevelManager : Singleton<LevelManager>
         PostTotalScoreToDatabase();
 
         _gameAssistant.ShowMessages(
-            TranslationManager.Instance.GetLocalizedStringsList("TUTORIAL_STEPS", "CLOSURE/", 4, 1).ToArray(),
+            TranslationManager.Instance.GetLocalizedStringsList("Translation", "CLOSURE_", 4, 1).ToArray(),
             () =>
             {
                 _fader.OnFadeEnd.RemoveAllListeners();
