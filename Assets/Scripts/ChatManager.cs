@@ -3,10 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering.Universal.Internal;
 using UnityEngine.UI;
 
 public class ChatManager : MonoBehaviour
@@ -33,7 +31,7 @@ public class ChatManager : MonoBehaviour
     [SerializeField] private GameObject _backToChatButton = null;
     [SerializeField] private GameAssistant _assistant = null;
     [SerializeField] private ToDoMenu _topicMenu = null;
-
+    [SerializeField] private GameObject _footer = null;
 
     private GameObject _currentChat;
 
@@ -122,11 +120,14 @@ public class ChatManager : MonoBehaviour
         }
         else
         {
+            
             if(_assistant != null) _assistant.HideMessage();
             GameObject group = _groupChats[groupID];
             ChangeCurrentChat(group);
             _currentChat.GetComponent<GroupSettings>().ActivateGroupInfo(true);
             if(_header!=null) _header?.SetActive(false);
+            if(_footer!=null) 
+                _footer?.SetActive(false);
         }
 
         OnChatChanged.Invoke(groupID);

@@ -492,7 +492,7 @@ public class LevelManager : Singleton<LevelManager>
                 messages[i] = messagesList[i].GetLocalizedString();
             }
 
-            if (_fader.Value < 0.8f) _fader.StartFade(1.0f, 0.0f, 0.8f, true);
+            // if (_fader.Value < 0.8f) _fader.StartFade(1.0f, 0.0f, 0.8f, true);
             _gameAssistant.ShowMessages(messages, StartLevelPostMessages);
         }
     }
@@ -507,7 +507,7 @@ public class LevelManager : Singleton<LevelManager>
                 messages[i] = _onLevelFailedMessages[i].GetLocalizedString();
             }
 
-            _fader.StartFade(1.0f, 0.0f, 0.8f, true);
+            // _fader.StartFade(1.0f, 0.0f, 0.8f, true);
             if (_levelsInfo[_currentLevel].avatarMessagesOnStart.Count > 0)
             {
                 int auxLevel = _currentLevel;
@@ -538,7 +538,7 @@ public class LevelManager : Singleton<LevelManager>
     {
         _todoButton.onClick.Invoke();
         _gameAssistant.HideMessage();
-        _fader.StartFade(1.0f, 0.8f, 0.0f, true);
+        _fader.StartFade(1.0f, _fader.Value, 0.0f, true);
     }
 
     private void EndAllLevels()
