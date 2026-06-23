@@ -1,4 +1,5 @@
 using BG_Games.Chat_Builder___Mobile_Chat_Quests.Scripts.Chat.View;
+using DA_Assets.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -264,14 +265,19 @@ public class ChatManager : MonoBehaviour
         if(_currentConversation != null) _currentConversation = Instantiate(_currentConversation);
     }
 
-    public void RandomizeAllGroupTopics(List<Topics> topicPool = null, int numGroups = 3)
+    public void RandomizeAllGroupTopics(List<Topics> topicPool = null, List<Topics> falseTopicPool = null, int numGroups = 3)
     {
         // Creamos la "bolsa" con las 5 opciones.
         if (topicPool == null) topicPool = TopicsDictionary.topics.Values.ToList();
-        List<Topics> copy = new List<Topics>(topicPool);
+        List<Topics> copy = new List<Topics>(falseTopicPool);
+
+        List<Topics> currentPool = topicPool;
+
+        List<GameObject> shuffledGroupChats = new List<GameObject>(_groupChats);
+        shuffledGroupChats.Shuffle();
 
         int i = 0;
-        foreach (GameObject groupObj in _groupChats)
+        foreach (GameObject groupObj in shuffledGroupChats)
         {
             if (i >= numGroups + 1) break;
 
@@ -281,12 +287,14 @@ public class ChatManager : MonoBehaviour
             if (settings != null)
             {
                 // El método de GroupSettings escoge uno
-                settings.AssignRandomTopic(topicPool);
+                settings.AssignRandomTopic(currentPool);
                 _topicMenu.SetTopic(settings.Name, settings.Topic);
             }
 
-
-            if (topicPool.Count <= 0) topicPool = new List<Topics>(copy);
+            if (currentPool.Count <= 0)
+            {
+                currentPool = new List<Topics>(falseTopicPool);
+            }
             i++;
         }
 

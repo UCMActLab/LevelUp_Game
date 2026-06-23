@@ -87,7 +87,7 @@ public class GameAssistant : MonoBehaviour
     // this depends on the current article title's length or body if the user has already started reading it.
     [SerializeField]
     float _hasDoneActionAdditionalTime = 10.0f;
-    [SerializeField, Range(0.2f, 1.5f), Tooltip("Time to read each word in article's body")]
+    [SerializeField, Range(0.01f, 1.5f), Tooltip("Time to read each word in article's body")]
     float _readTimePerWord = 0.075f;
 
     [Header("How many to get assistant worried")]

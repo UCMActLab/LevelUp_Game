@@ -459,15 +459,17 @@ public class LevelManager : Singleton<LevelManager>
                 }
 
                 HashSet<Topics> topics = new HashSet<Topics>();
+                HashSet<Topics> falseTopics = new HashSet<Topics>();
                 foreach (ArticleData article in _levels[_currentLevel])
                 {
                     if (article.isTrue) topics.Add(TopicsDictionary.topics[article.theme]);
+                    else falseTopics.Add(TopicsDictionary.topics[article.theme]);
                 }
 
                 // añadir mensaje de "ahora a tus grupos les interesa: blabla"
                 if (_levelsInfo[_currentLevel].groupHavePreferredTheme)
                 {
-                    _chatManager.RandomizeAllGroupTopics(topics.ToList(), _levelsInfo[_currentLevel].numGroupsToShareWith);
+                    _chatManager.RandomizeAllGroupTopics(topics.ToList(), falseTopics.ToList(), _levelsInfo[_currentLevel].numGroupsToShareWith);
                 }
 
                 _todoMenu.SetValues(_quests[_currentLevel]);
