@@ -11,13 +11,20 @@ public class Fader : MonoBehaviour
 
     public UnityEvent OnFadeEnd;
 
-    Image _image;
+    Image _myImage = null;
+
+    Image _image { get { 
+            if (_myImage == null)
+            {
+                _myImage = GetComponent<Image>();
+            }
+            return _myImage; } }
 
     public float Value { get { return _image.color.a; } }
 
     void Start()
     {
-        _image = GetComponent<Image>();
+        _myImage = GetComponent<Image>();
 
         ChangeAlpha(_startingValue);
     }

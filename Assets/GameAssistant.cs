@@ -68,6 +68,8 @@ public class GameAssistant : MonoBehaviour
     // [SerializeField] private Image _assistantImage = null;
     [SerializeField] private ScrollRect _scroll = null;
     [SerializeField] private GameObject _message = null;
+    [SerializeField] private Fader _fader = null;
+
     private TextMeshProUGUI _messageText = null;
     private Animator _messageAnimator = null;
 
@@ -85,7 +87,7 @@ public class GameAssistant : MonoBehaviour
     // this depends on the current article title's length or body if the user has already started reading it.
     [SerializeField]
     float _hasDoneActionAdditionalTime = 10.0f;
-    [SerializeField, Range(0.2f, 1.5f), Tooltip("Time to read each word in article's body")]
+    [SerializeField, Range(0.01f, 1.5f), Tooltip("Time to read each word in article's body")]
     float _readTimePerWord = 0.075f;
 
     [Header("How many to get assistant worried")]
@@ -228,6 +230,8 @@ public class GameAssistant : MonoBehaviour
             _okAssitantButton.gameObject.SetActive(true); // Usamos el botón estándar
             _buttonBackground.SetActive(true);
 
+            _fader.StartFade(0.25f, _fader.Value, 0.8f, true);
+
             // reseteamos antess de animar la cajita
             RectTransform rect = _message.GetComponent<RectTransform>();
             rect.localRotation = Quaternion.identity;
@@ -239,6 +243,7 @@ public class GameAssistant : MonoBehaviour
         else
         {
             // se acaban los mensajes
+            _fader.StartFade(0.25f, _fader.Value, 0.0f, true);
 
             _isDisplayingQueue = false;
             _message.SetActive(false);

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
 
 [Serializable]
@@ -57,6 +58,9 @@ public class ArticleManager : Singleton<ArticleManager>
 
     Dictionary<int, List<ArticleData>> _trueArticlesByLanguage = new Dictionary<int, List<ArticleData>>();
     Dictionary<int, List<ArticleData>> _falseArticlesByLanguage = new Dictionary<int, List<ArticleData>>();
+
+    public UnityEvent<ArticleData> OnFalseArticleProcessed = new UnityEvent<ArticleData>();
+    public UnityEvent<ArticleData> OnTrueArticleProcessed = new UnityEvent<ArticleData>();
 
     public bool ArticlesCreated { get; private set; }
 
@@ -222,6 +226,12 @@ public class ArticleManager : Singleton<ArticleManager>
 
                         article.conversation.Add(conversation);
                     }
+                    if(article.conversation.Count > 1)
+                    {
+                        Conversation friends = article.conversation[0];
+                        article.conversation.RemoveAt(0);
+                        article.conversation.Insert(1, friends);
+                    }
                 }
                 else
                 {
@@ -237,8 +247,16 @@ public class ArticleManager : Singleton<ArticleManager>
 
                 _articlesByLanguage[parsedLanguage].Add(article);
 
-                if (article.isTrue) _trueArticlesByLanguage[parsedLanguage].Add(article);
-                else _falseArticlesByLanguage[parsedLanguage].Add(article);
+                if (article.isTrue)
+                {
+                    _trueArticlesByLanguage[parsedLanguage].Add(article);
+                    OnTrueArticleProcessed.Invoke(article);
+                }
+                else
+                {
+                    _falseArticlesByLanguage[parsedLanguage].Add(article);
+                    OnFalseArticleProcessed.Invoke(article);
+                }
 
                 ++i;
             }
@@ -301,7 +319,7 @@ public class ArticleManager : Singleton<ArticleManager>
         {
             try
             {
-                string content = File.ReadAllText(file);
+                string content = File.ReadAllText(file, System.Text.Encoding.UTF8);
                 loadedJsons.Add(content);
             }
             catch (IOException e)

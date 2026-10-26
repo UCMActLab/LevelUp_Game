@@ -11,12 +11,24 @@ public class DialogueIntroManager : MonoBehaviour
 
     [Header("Eventos")]
     [SerializeField]
+    private bool _startOnAwake = false;
+
+    [SerializeField]
     private UnityEvent onDialoguesEnd = new UnityEvent();
 
     [SerializeField]
     private Animator _okButton = null;
 
     int _bodyDialogueIndex = 0;
+
+    private void Start()
+    {
+        if (_startOnAwake)
+        {
+            StartDialogues();
+            _bodyDialogue.ShowText();
+        }
+    }
 
     private void SetUp()
     {

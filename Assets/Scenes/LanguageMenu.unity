@@ -454,7 +454,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea842f23ed3a3ff4da793452bc612e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _loadImages: 0
+  _loadImages: 1
+  OnFalseArticleProcessed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTrueArticleProcessed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!224 &176059616 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5380945129847323173, guid: e36ae17d61ac4cc4d9f03c5111e8aecd, type: 3}
@@ -3890,7 +3896,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -4070,7 +4076,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 227143843701551490, guid: e36ae17d61ac4cc4d9f03c5111e8aecd, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.9999979
       objectReference: {fileID: 0}
     - target: {fileID: 227143843701551490, guid: e36ae17d61ac4cc4d9f03c5111e8aecd, type: 3}
       propertyPath: m_LocalRotation.x
@@ -4082,7 +4088,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 227143843701551490, guid: e36ae17d61ac4cc4d9f03c5111e8aecd, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: -0.0020426535
       objectReference: {fileID: 0}
     - target: {fileID: 227143843701551490, guid: e36ae17d61ac4cc4d9f03c5111e8aecd, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -4102,7 +4108,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 227143843701551490, guid: e36ae17d61ac4cc4d9f03c5111e8aecd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -0.234
       objectReference: {fileID: 0}
     - target: {fileID: 273443525105466686, guid: e36ae17d61ac4cc4d9f03c5111e8aecd, type: 3}
       propertyPath: m_IgnoreLayout
