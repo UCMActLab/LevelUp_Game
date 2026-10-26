@@ -9962,7 +9962,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: ENTENDIDO
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2b5dae3ac8a79c148804a12eee3e2ddc, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d5485192381c77a4caab9fecf68c6777, type: 2}
   m_sharedMaterial: {fileID: 8530444609268933871, guid: 2b5dae3ac8a79c148804a12eee3e2ddc, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -10028,7 +10028,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &80085278273748180
@@ -10564,7 +10564,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Esta noticia ha sido verificada por maldita.es.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 7e6e61794741e9447ba6bab084b880b0, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d5485192381c77a4caab9fecf68c6777, type: 2}
   m_sharedMaterial: {fileID: -32934131397107446, guid: 7e6e61794741e9447ba6bab084b880b0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -10630,7 +10630,7 @@ MonoBehaviour:
   m_margin: {x: 40, y: 15, z: 40, w: 15}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &8272407292398510692
@@ -10762,6 +10762,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 593194473917157602, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_text
+      value: Affected by the blackout? Here's how you can receive compensation.
+      objectReference: {fileID: 0}
+    - target: {fileID: 593194473917157602, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_margin.w
       value: 30
       objectReference: {fileID: 0}
@@ -10770,8 +10774,28 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 593194473917157602, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d5485192381c77a4caab9fecf68c6777, type: 2}
+    - target: {fileID: 593194473917157602, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_fontStyle
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 593194473917157602, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -4961238897438906590, guid: d5485192381c77a4caab9fecf68c6777, type: 2}
+    - target: {fileID: 593194473917157602, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_characterSpacing
+      value: -6.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 593194473917157602, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4283119104
+      objectReference: {fileID: 0}
+    - target: {fileID: 593194473917157602, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 679402552791183430, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_IsActive
@@ -11089,6 +11113,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3446163154813315990, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d5485192381c77a4caab9fecf68c6777, type: 2}
+    - target: {fileID: 3446163154813315990, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3464590285661658787, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_Material
       value: 
@@ -11179,7 +11211,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4268502915034848998, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1178.31
+      value: -1364.54
       objectReference: {fileID: 0}
     - target: {fileID: 4440153291816151461, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_AnchorMax.y
@@ -11413,6 +11445,10 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 55.7
       objectReference: {fileID: 0}
+    - target: {fileID: 5226599590945300404, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5236420555846226780, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -11520,6 +11556,10 @@ PrefabInstance:
     - target: {fileID: 5820123816214436987, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_text
       value: Rechazar
+      objectReference: {fileID: 0}
+    - target: {fileID: 5820123816214436987, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6052452288590946526, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_AnchorMax.y
@@ -11753,10 +11793,22 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 7089878430935370034, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7303827878590837358, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 686c8ce4aa09d694792c022b5c3f3ee9, type: 2}
+    - target: {fileID: 7331035985452878815, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d5485192381c77a4caab9fecf68c6777, type: 2}
+    - target: {fileID: 7331035985452878815, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7604245326933333043, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -11835,7 +11887,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7873546082416193720, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1703.8301
+      value: -2076.29
       objectReference: {fileID: 0}
     - target: {fileID: 8212875535266235995, guid: da99b3262ab2bf44998fb26cd407e53d, type: 3}
       propertyPath: m_IsActive

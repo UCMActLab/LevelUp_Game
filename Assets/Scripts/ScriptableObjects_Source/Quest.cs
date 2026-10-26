@@ -74,50 +74,69 @@ public class Quest : ScriptableObject
     public bool EvaluateArticle(ArticleGameObject data)
     {
         bool correctlyIdentified = true;
-        if (data.HasSharedArticle)
+        bool hasShared = data.HasSharedArticle;
+        if (hasShared)
         {
-            if(data.IsTrue)
+            if (thereAreGroups && data.NumGroupsSharedWith() > 0)
             {
-                done.identifiedArticles++;
-
-                bool alreadyScoredTheme = false;
-                for (int i = 0; i < data.HasSharedWithGroups.Length; ++i)
+                if (data.IsTrue)
                 {
-                    if (data.HasSharedWithGroups[i])
-                    {
-                        if (groupsHaveTopics && !alreadyScoredTheme)
-                        {
-                            if (TopicsDictionary.topics[data.Data.theme] == 
-                                LevelManager.Instance.GetGroupTheme(i + 1)) // i == 0 es el MainChat (donde se ven los artículos)
-                            {
-                                done.themesCorrectlyAddressed++;
-                                alreadyScoredTheme = true;
+                    done.identifiedArticles++;
 
+                    bool alreadyScoredTheme = false;
+                    for (int i = 0; i < data.HasSharedWithGroups.Length; ++i)
+                    {
+                        if (data.HasSharedWithGroups[i])
+                        {
+                            if (groupsHaveTopics && !alreadyScoredTheme)
+                            {
+                                if (TopicsDictionary.topics[data.Data.theme] ==
+                                    LevelManager.Instance.GetGroupTheme(i + 1)) // i == 0 es el MainChat (donde se ven los artículos)
+                                {
+                                    done.themesCorrectlyAddressed++;
+                                    alreadyScoredTheme = true;
+
+                                }
+                            }
+                            else
+                            {
+                                if (i == 0) done.sharedWithFamily++;
+                                else if (i == 1) done.sharedWithFriends++;
+                                else if (i == 2) done.sharedWithNeighbours++;
                             }
                         }
-                        else
-                        {
-                            if (i == 0) done.sharedWithFamily++;
-                            else if (i == 1) done.sharedWithFriends++;
-                            else if (i == 2) done.sharedWithNeighbours++;
-                        }
                     }
-
                 }
+                else
+                {
+                    done.falseArticlesShared++;
+                    correctlyIdentified = false;
+                }
+            }
+            else if (!thereAreGroups)
+            {
+                if (data.IsTrue)
+                {
+                    done.identifiedArticles++;
+                }
+                else
+                {
+                    done.falseArticlesShared++;
+                    correctlyIdentified = false;
+                }
+            }
+            else hasShared = false;
+        }
+        if (!hasShared)
+        {
+            if (data.IsTrue)
+            {
+                correctlyIdentified = false;
             }
             else
             {
-                done.falseArticlesShared++;
-                correctlyIdentified = false;
+                done.falseArticlesSkipped++;
             }
-        }
-        else if (data.IsTrue)
-        {
-            correctlyIdentified = false;
-        }
-        else
-        {
-            done.falseArticlesSkipped++;
         }
 
         if (data.HasReadArticle) done.readedArticles++;

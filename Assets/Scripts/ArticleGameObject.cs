@@ -81,6 +81,14 @@ public class ArticleGameObject : MonoBehaviour
         get {  return _sharedWithGroups; }
     }
 
+    public int NumGroupsSharedWith()
+    {
+        int result = 0;
+        foreach (bool b in _sharedWithGroups) if (b) result++;
+
+        return result;
+    }
+
     public bool HasSharedWithAllGroups { get
         {
             bool sharedAll = true;
